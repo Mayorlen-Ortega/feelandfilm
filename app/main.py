@@ -188,9 +188,18 @@ Output ONLY valid JSON matching:
   "not_found_message": "If theme and mood contradict completely, put error message here and make slate []"
 }"""
             raw_output = await query_ollama_fallback(prompt, sys_prompt)
-            data = json.loads(raw_output.strip()) if raw_output.strip() else {}
+            if not raw_output or raw_output.strip() == "{}":
+                data = {
+                    "not_found_message": "¡Corte! Nuestro agente cinéfilo está descansando en su camerino (Cuota de IA Excedida). Por favor, intenta de nuevo en un minuto.",
+                    "slate": []
+                }
+            else:
+                try:
+                    data = json.loads(raw_output.strip())
+                except:
+                    data = {"not_found_message": "Error técnico en la cabina de proyección.", "slate": []}
                         
-            return {"status": "success", "data": data, "agent_audit_trail": ["Ollama Fallback Used"]}
+            return {"status": "success", "data": data, "agent_audit_trail": ["Ollama Fallback Failed - Cinematic Error"]}
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/soundtrack")
@@ -229,7 +238,17 @@ async def get_soundtrack(request: SoundtrackRequest):
             sys_prompt = """You are a Soundtrack Expert. Provide detailed text. Return ONLY valid JSON matching:
 {"composer": "","vibe": "concise vibe description 1-2 sentences","standout_track": ""}"""
             raw_output = await query_ollama_fallback(request.movie_title, sys_prompt)
-            data = json.loads(raw_output.strip()) if raw_output.strip() else {}
+            if not raw_output or raw_output.strip() == "{}":
+                data = {
+                    "composer": "Desconocido",
+                    "vibe": "La banda sonora está en pausa comercial. El agente musical está descansando por límite de cuota.",
+                    "standout_track": "Silencio"
+                }
+            else:
+                try:
+                    data = json.loads(raw_output.strip())
+                except:
+                    data = {"composer": "Error", "vibe": "Error técnico.", "standout_track": "Error"}
             return {"status": "success", "data": data}
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -261,6 +280,8 @@ async def expand_synopsis(request: ExpandRequest):
         if "429" in str(e) or "quota" in str(e).lower() or "RESOURCE_EXHAUSTED" in str(e):
             sys_prompt = "You are a film expert. Provide a more detailed synopsis (3-5 sentences) based on the current one. DO NOT output JSON, just plain text."
             raw_output = await query_ollama_fallback(f"Title: {request.movie_title}\nCurrent Synopsis: {request.current_synopsis}", sys_prompt)
+            if not raw_output or raw_output.strip() == "{}":
+                return {"status": "success", "expanded_text": "El rollo de película se atascó (Límite de cuota alcanzado). ¡El director está resolviéndolo, vuelve a intentarlo en breve!"}
             return {"status": "success", "expanded_text": raw_output.strip()}
         raise HTTPException(status_code=500, detail=str(e))
 

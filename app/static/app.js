@@ -144,7 +144,7 @@ function renderResults(response) {
                         <div class="film-tags" style="margin-bottom: 15px; font-size: 1.05em;">${tagsHtml}</div>
                         <div class="film-synopsis" style="margin-bottom: 12px; font-style: italic; color: var(--text-secondary); line-height: 1.4;">
                             <span id="synopsis-text-${index}">${film.synopsis || ''}</span>
-                            <button class="expand-btn" data-title="${film.title}" data-index="${index}" style="background: none; border: none; color: var(--accent); text-decoration: underline; cursor: pointer; padding: 0; margin-left: 5px; font-size: 0.9em;">Learn more...</button>
+                            <button class="expand-btn" data-title="${film.title}" data-index="${index}" style="background: none; border: none; color: var(--accent); text-decoration: underline; cursor: pointer; padding: 0; margin-left: 8px; font-size: 0.9em; display: inline; font-style: normal; font-weight: bold; letter-spacing: 0.5px;">See more...</button>
                         </div>
                         ${film.reasoning ? `<div class="film-reason" style="margin-bottom: 12px; line-height: 1.4;">${film.reasoning}</div>` : ''}
                         <div class="film-fun-fact" style="margin-top: 15px; font-size: 0.9em; border-left: 3px solid var(--accent); padding-left: 12px; color: #bbb;"><strong>🎥 Fun Fact:</strong> ${film.fun_fact || ''}</div>
