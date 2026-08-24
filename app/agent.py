@@ -134,6 +134,6 @@ expand_agent = Agent(
     You are the Feel & Film Expander.
     You will receive a movie title and its current short synopsis.
     Your job is to provide a more detailed, expanded synopsis (roughly 3-5 sentences) that dives deeper into the plot and themes, but does not spoil the ending.
-    Output plain text only.
+    CRITICAL: Output ONLY the raw plain text of the synopsis. DO NOT format as JSON. DO NOT wrap in brackets or braces. DO NOT include the movie title. Just the pure text.
     """
 )

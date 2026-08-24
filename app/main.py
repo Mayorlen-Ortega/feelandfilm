@@ -275,7 +275,17 @@ async def expand_synopsis(request: ExpandRequest):
                 if hasattr(part, "text") and part.text:
                     raw_output += part.text
                     
-        return {"status": "success", "expanded_text": raw_output.strip()}
+        output_text = raw_output.strip()
+        if output_text.startswith("{") and output_text.endswith("}"):
+            try:
+                import json
+                parsed = json.loads(output_text)
+                if isinstance(parsed, dict) and len(parsed) > 0:
+                    output_text = list(parsed.values())[0]
+            except Exception:
+                pass
+                
+        return {"status": "success", "expanded_text": output_text}
     except Exception as e:
         if "429" in str(e) or "quota" in str(e).lower() or "RESOURCE_EXHAUSTED" in str(e):
             sys_prompt = "You are a film expert. Provide a more detailed synopsis (3-5 sentences) based on the current one. DO NOT output JSON, just plain text."
