@@ -113,7 +113,7 @@ function renderResults(response) {
     if (data.not_found_message && (!data.slate || data.slate.length === 0)) {
         container.innerHTML = `
             <div class="card" style="text-align: center; border-color: var(--accent);">
-                <h3>No hay coincidencias</h3>
+                <h3>NO MATCHES FOUND</h3>
                 <p>${data.not_found_message}</p>
             </div>
         `;
