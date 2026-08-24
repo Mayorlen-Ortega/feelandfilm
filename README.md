@@ -16,6 +16,7 @@ Film programmers often struggle to balance creative intuition with data-driven a
 7. The backend automatically stores the requested mood in **ClickHouse Cloud** for live data tracking.
 
 ## Intelligent Features & Fallbacks
+* **Sommelier Agent (Multi-Agent Orchestration):** A secondary ADK agent that acts as a cinematic sommelier, providing tailored snack and drink pairings that perfectly match the recommended movie's vibe.
 * **Theme Contradiction Validation:** If a user requests a completely contradictory combination (e.g., Sad Comedy), the AI politely rejects the request rather than hallucinating a non-existent film.
 * **Strict Age Filtering:** The AI enforces strict G/PG constraints when the "Kids (0-12)" demographic is selected, blocking mature/R-rated recommendations.
 * **Cinematic UI/UX:** The frontend features elegant typography (Cinzel & Playfair Display), responsive Flexbox layouts, asynchronous poster loading with loaders, and custom pure-CSS film strip borders.

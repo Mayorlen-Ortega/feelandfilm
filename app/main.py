@@ -295,6 +295,29 @@ async def expand_synopsis(request: ExpandRequest):
             return {"status": "success", "expanded_text": raw_output.strip()}
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/sommelier")
+async def get_sommelier(request: SoundtrackRequest):
+    try:
+        from app.agent import sommelier_agent
+        runner = Runner(agent=sommelier_agent, session_service=InMemorySessionService(), app_name="sommelier", auto_create_session=True)
+        content = Content(role="user", parts=[Part(text=f"Movie: {request.movie_title}")])
+        
+        raw_output = ""
+        async for event in runner.run_async(user_id="default", session_id="default", new_message=content):
+            parts = []
+            if hasattr(event, "content") and event.content:
+                parts = getattr(event.content, "parts", [])
+            elif hasattr(event, "data") and hasattr(event.data, "message"):
+                parts = getattr(event.data.message, "parts", [])
+                
+            for part in parts:
+                if hasattr(part, "text") and part.text:
+                    raw_output += part.text
+                    
+        return {"status": "success", "recommendation": raw_output.strip()}
+    except Exception as e:
+        return {"status": "success", "recommendation": "Our sommelier is currently preparing another order. Try again soon!"}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

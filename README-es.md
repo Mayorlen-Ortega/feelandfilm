@@ -17,6 +17,7 @@ Los programadores de cine a menudo luchan por equilibrar su intuición creativa 
 7. El backend almacena automáticamente el estado de ánimo solicitado en **ClickHouse Cloud** para el seguimiento de datos en vivo.
 
 ## Funciones Inteligentes y Respaldos (Fallbacks)
+* **Agente Sommelier (Orquestación Multi-Agente):** Un segundo agente ADK que actúa como un sommelier de cine, proporcionando recomendaciones de snacks y bebidas perfectamente maridadas con la atmósfera de la película recomendada.
 * **Validación de Contradicciones Temáticas:** Si un usuario pide una combinación completamente contradictoria (ej. Comedia Triste), la IA rechaza cortésmente la petición en lugar de alucinar una película inexistente.
 * **Filtrado Estricto de Edad:** La IA impone restricciones estrictas G/PG cuando se selecciona el grupo demográfico "Niños (0-12)", bloqueando recomendaciones maduras/clasificación R.
 * **Interfaz y Experiencia de Usuario (UI/UX) Cinematográfica:** El frontend cuenta con tipografía elegante (Cinzel & Playfair Display), diseños Flexbox responsivos, carga asíncrona de pósters con animaciones de carga y bordes de tira de película en CSS puro.

@@ -149,11 +149,13 @@ function renderResults(response) {
                         <div class="film-fun-fact" style="margin-top: 15px; font-size: 0.9em; border-left: 3px solid var(--accent); padding-left: 12px; color: #bbb;"><strong>🎥 Fun Fact:</strong> ${film.fun_fact || ''}</div>
                         <div class="film-actions" style="margin-top: 20px; display: flex; gap: 10px;">
                             <button class="soundtrack-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid var(--accent); color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; transition: all 0.3s;"><i class="fas fa-music"></i> Soundtrack Info</button>
-                            <button class="another-option-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid var(--accent); color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; transition: all 0.3s;"><i class="fas fa-redo"></i> Search Another Option</button>
+                            <button class="sommelier-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid #e74c3c; color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; transition: all 0.3s;"><i class="fas fa-wine-glass"></i> Snack Pairing</button>
+                            <button class="another-option-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid var(--accent); color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; transition: all 0.3s;"><i class="fas fa-redo"></i> Search Another</button>
                         </div>
                     </div>
                 </div>
                 <div class="soundtrack-info hidden" style="margin-top: 15px; padding: 10px; border: 1px dashed var(--accent); border-radius: 4px; font-size: 0.9em;"></div>
+                <div class="sommelier-info hidden" style="margin-top: 15px; padding: 10px; border: 1px dashed #e74c3c; border-radius: 4px; font-size: 0.9em; color: #ffcccc;"></div>
             `;
             container.appendChild(card);
 
@@ -178,6 +180,29 @@ function renderResults(response) {
             // Add event listeners for the new buttons
             const stBtn = card.querySelector('.soundtrack-btn');
             const anotherBtn = card.querySelector('.another-option-btn');
+            
+            const sommBtn = card.querySelector('.sommelier-btn');
+            const sommInfo = card.querySelector('.sommelier-info');
+
+            sommBtn.addEventListener('click', async () => {
+                sommBtn.disabled = true;
+                sommBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Pairing...';
+                try {
+                    const res = await fetch('/api/sommelier', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ movie_title: sommBtn.dataset.title })
+                    });
+                    const data = await res.json();
+                    sommInfo.classList.remove('hidden');
+                    sommInfo.innerHTML = `<strong>🍿 Sommelier:</strong> ${data.recommendation}`;
+                } catch (e) {
+                    sommInfo.classList.remove('hidden');
+                    sommInfo.innerHTML = "<strong>🍿 Sommelier:</strong> Sorry, out of popcorn!";
+                }
+                sommBtn.innerHTML = '<i class="fas fa-wine-glass"></i> Snack Pairing';
+                sommBtn.disabled = false;
+            });
 
             const stInfo = card.querySelector('.soundtrack-info');
 
