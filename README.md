@@ -1,5 +1,6 @@
-# Feel & Film
+*Read this in [Spanish](README-es.md).*
 
+# Feel & Film
 Feel & Film is an autonomous programming assistant for film clubs and enthusiasts, built for the Agentic Cinema: The Blockbuster Hackathon. 
 
 ## Problem and Target Users
@@ -42,14 +43,12 @@ The backend interacts directly with **ClickHouse Cloud** to persist and aggregat
 ## Deployment (Google Cloud Run)
 To satisfy the Google Cloud requirement, this project is fully containerized and ready for Cloud Run.
 
-1. Ensure Docker is installed or use Google Cloud Build.
-2. Submit the build: `gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/film-feel-studio`
-3. Deploy to Cloud Run:
-   ```bash
-   gcloud run deploy film-feel-studio \
-     --image gcr.io/YOUR_PROJECT_ID/film-feel-studio \
-     --platform managed \
-     --allow-unauthenticated \
-     --set-env-vars="GEMINI_API_KEY=...,TMDB_API_KEY=...,CLICKHOUSE_HOST=...,CLICKHOUSE_PORT=...,CLICKHOUSE_USER=...,CLICKHOUSE_PASSWORD=...,CLICKHOUSE_SECURE=True"
-   ```
-   *(Alternatively, use Google Secret Manager for production secrets).*
+The easiest way to deploy is via **Continuous Deployment with Cloud Build**:
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/run) and navigate to **Cloud Run**.
+2. Click **Create Service**.
+3. Select **Deploy one revision from an existing repository**.
+4. Connect your GitHub account and select this repository.
+5. In the Build Configuration, select **Dockerfile** (path: `/Dockerfile`).
+6. Under Authentication, select **Allow unauthenticated invocations**.
+7. Expand the **Variables & Secrets** section and add all your `.env` variables (`GEMINI_API_KEY`, `TMDB_API_KEY`, `CLICKHOUSE_...`).
+8. Click **Create**. Cloud Run will automatically build and deploy your app.
