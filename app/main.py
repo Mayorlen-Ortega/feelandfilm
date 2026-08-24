@@ -316,6 +316,12 @@ async def get_sommelier(request: SoundtrackRequest):
                     
         return {"status": "success", "recommendation": raw_output.strip()}
     except Exception as e:
+        print("Sommelier Error:", str(e))
+        if "429" in str(e) or "quota" in str(e).lower() or "RESOURCE_EXHAUSTED" in str(e):
+            sys_prompt = "You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences. DO NOT output JSON, just plain text."
+            raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt)
+            if raw_output and raw_output.strip() != "{}" and raw_output.strip() != "":
+                return {"status": "success", "recommendation": raw_output.strip()}
         return {"status": "success", "recommendation": "Our sommelier is currently preparing another order. Try again soon!"}
 
 if __name__ == "__main__":
