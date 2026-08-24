@@ -18,7 +18,6 @@ Film programmers often struggle to balance creative intuition with data-driven a
 * **Progressive Disclosure UI (Expand Agent):** To maintain a cinematic and punchy UI, initial film data is strictly concise (1-2 sentences). A "Learn more..." button triggers a secondary `expand_agent` on demand to generate a detailed, spoiler-free expansion of the plot.
 * **Theme Contradiction Validation:** If a user requests a completely contradictory combination (e.g., Sad Comedy), the AI politely rejects the request rather than hallucinating a non-existent film.
 * **Strict Age Filtering:** The AI enforces strict G/PG constraints when the "Kids (0-12)" demographic is selected, blocking mature/R-rated recommendations.
-* **Local LLM Fallback (Ollama):** To prevent downtime caused by Gemini free-tier quota limits (429 errors), the backend automatically fails over to a local Ollama instance (`llama3.2:3b`) ensuring seamless availability.
 * **Cinematic UI/UX:** The frontend features elegant typography (Cinzel & Playfair Display), responsive Flexbox layouts, asynchronous poster loading with loaders, and custom pure-CSS film strip borders.
 
 ## Google ADK Integration
@@ -26,7 +25,7 @@ The core logic is orchestrated using the `google-adk` Python framework. The `Age
 
 ## Tech Stack & Credits
 * **Agent Framework:** Google ADK
-* **LLM Models:** Gemini 3.5 Flash & Ollama (llama3.2:3b)
+* **LLM Models:** Gemini 3.5 Flash
 * **Database:** ClickHouse Cloud
 * **Data Sources:** This product uses the TMDB API but is not endorsed or certified by TMDB.
 
@@ -37,9 +36,8 @@ The backend interacts directly with **ClickHouse Cloud** to persist and aggregat
 1. Clone this repository.
 2. Install dependencies: `pip install -r requirements.txt`
 3. Copy `.env.example` to `.env` and fill in your credentials (`GEMINI_API_KEY`, `TMDB_API_KEY`, and ClickHouse variables).
-4. Ensure Ollama is running locally with the `llama3.2:3b` model installed to handle quota fallbacks.
-5. Start the server: `uvicorn app.main:app --reload`
-6. Open `http://localhost:8000`
+4. Start the server: `uvicorn app.main:app --reload`
+5. Open `http://localhost:8000`
 
 ## Deployment (Google Cloud Run)
 To satisfy the Google Cloud requirement, this project is fully containerized and ready for Cloud Run.
