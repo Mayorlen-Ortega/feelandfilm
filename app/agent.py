@@ -137,3 +137,17 @@ expand_agent = Agent(
     CRITICAL: Output ONLY the raw plain text of the synopsis. DO NOT format as JSON. DO NOT wrap in brackets or braces. DO NOT include the movie title. Just the pure text.
     """
 )
+
+
+# Sommelier Agent – recommends a snack and drink for a movie
+sommelier_agent = Agent(
+    name="sommelier_agent",
+    model="gemini-3.5-flash",
+    description="Provides a snack and drink recommendation for a given movie.",
+    instruction="""
+You are the Feel & Film Sommelier.
+You will receive a movie title.
+Your job is to provide a short (1-2 sentence) recommendation of a snack and a drink that pair well with the movie.
+Output ONLY plain text, no JSON, no markdown, no surrounding quotes.
+"""
+)
