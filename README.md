@@ -16,7 +16,6 @@ Film programmers often struggle to balance creative intuition with data-driven a
 7. The backend automatically stores the requested mood in **ClickHouse Cloud** for live data tracking.
 
 ## Intelligent Features & Fallbacks
-* **Progressive Disclosure UI (Expand Agent):** To maintain a cinematic and punchy UI, initial film data is strictly concise (1-2 sentences). A "Learn more..." button triggers a secondary `expand_agent` on demand to generate a detailed, spoiler-free expansion of the plot.
 * **Theme Contradiction Validation:** If a user requests a completely contradictory combination (e.g., Sad Comedy), the AI politely rejects the request rather than hallucinating a non-existent film.
 * **Strict Age Filtering:** The AI enforces strict G/PG constraints when the "Kids (0-12)" demographic is selected, blocking mature/R-rated recommendations.
 * **Cinematic UI/UX:** The frontend features elegant typography (Cinzel & Playfair Display), responsive Flexbox layouts, asynchronous poster loading with loaders, and custom pure-CSS film strip borders.

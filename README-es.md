@@ -17,7 +17,6 @@ Los programadores de cine a menudo luchan por equilibrar su intuición creativa 
 7. El backend almacena automáticamente el estado de ánimo solicitado en **ClickHouse Cloud** para el seguimiento de datos en vivo.
 
 ## Funciones Inteligentes y Respaldos (Fallbacks)
-* **Interfaz de Revelación Progresiva (Agente de Expansión):** Para mantener una interfaz cinematográfica y directa, los datos iniciales de la película son estrictamente concisos (1-2 frases). Un botón "See more..." activa un `expand_agent` secundario bajo demanda para generar una expansión detallada de la trama sin spoilers.
 * **Validación de Contradicciones Temáticas:** Si un usuario pide una combinación completamente contradictoria (ej. Comedia Triste), la IA rechaza cortésmente la petición en lugar de alucinar una película inexistente.
 * **Filtrado Estricto de Edad:** La IA impone restricciones estrictas G/PG cuando se selecciona el grupo demográfico "Niños (0-12)", bloqueando recomendaciones maduras/clasificación R.
 * **Interfaz y Experiencia de Usuario (UI/UX) Cinematográfica:** El frontend cuenta con tipografía elegante (Cinzel & Playfair Display), diseños Flexbox responsivos, carga asíncrona de pósters con animaciones de carga y bordes de tira de película en CSS puro.
