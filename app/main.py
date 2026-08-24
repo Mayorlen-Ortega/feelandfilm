@@ -15,7 +15,7 @@ import asyncio
 
 load_dotenv(override=True)
 
-from app.agent import agent, soundtrack_agent
+from app.agent import agent, soundtrack_agent, sommelier_agent
 
 async def query_ollama_fallback(prompt: str, system_prompt: str) -> str:
     def fetch():
@@ -143,9 +143,26 @@ async def get_recommendation(request: MoodRequest):
         # Construct the prompt for the ADK Agent
         prompt = json.dumps(request.dict())
         
+        # Use Ollama locally if enabled via USE_OLLAMA
+        if os.getenv("USE_OLLAMA", "false").lower() == "true":
+            sys_prompt = """You are a film curator. Return exactly 1 film. Provide detailed text.
+CRITICAL: If audience_age_range is 'Kids (0-12)', NEVER recommend R-rated or mature films. Only G or PG.
+Output ONLY valid JSON matching:
+{
+  \"slate\": [{\"title\": \"\", \"director\": \"\", \"runtime\": 0, \"mood_tags\": [], \"intensity\": 0, \"synopsis\": \"a punchy 1-2 sentence introduction\", \"fun_fact\": \"short highly interesting fun fact 1-2 sentences\", \"reasoning\": \"concise 1-2 sentence explanation of why this fits\", \"confidence_score\": 0.0}],
+  \"overall_evidence\": \"\",
+  \"not_found_message\": \"If theme and mood contradict completely, put error message here and make slate []\"
+}"""
+            raw_output = await query_ollama_fallback(prompt, sys_prompt)
+            try:
+                data = json.loads(raw_output.strip())
+            except Exception:
+                data = {"not_found_message": "Technical error in Ollama fallback.", "slate": []}
+            return {"status": "success", "data": data, "agent_audit_trail": ["Ollama Used Directly"]}
+        
+        # Default path uses Gemini via ADK agent
         runner = Runner(agent=agent, session_service=InMemorySessionService(), app_name="film_curator", auto_create_session=True)
         content = Content(role="user", parts=[Part(text=prompt)])
-        
         raw_output = ""
         tool_calls = []
         async for event in runner.run_async(user_id="default", session_id="default", new_message=content):
@@ -252,56 +269,37 @@ async def get_soundtrack(request: SoundtrackRequest):
             return {"status": "success", "data": data}
         raise HTTPException(status_code=500, detail=str(e))
 
-class ExpandRequest(BaseModel):
-    movie_title: str
-    current_synopsis: str
-
-@app.post("/api/expand_synopsis")
-async def expand_synopsis(request: ExpandRequest):
-    try:
-        from app.agent import expand_agent
-        runner = Runner(agent=expand_agent, session_service=InMemorySessionService(), app_name="expand_curator", auto_create_session=True)
-        content = Content(role="user", parts=[Part(text=f"Title: {request.movie_title}\nSynopsis: {request.current_synopsis}")])
-        
-        raw_output = ""
-        async for event in runner.run_async(user_id="default", session_id="default", new_message=content):
-            parts = []
-            if hasattr(event, "content") and event.content:
-                parts = getattr(event.content, "parts", [])
-            elif hasattr(event, "data") and hasattr(event.data, "message"):
-                parts = getattr(event.data.message, "parts", [])
-                
-            for part in parts:
-                if hasattr(part, "text") and part.text:
-                    raw_output += part.text
-                    
-        output_text = raw_output.strip()
-        if output_text.startswith("{") and output_text.endswith("}"):
-            try:
-                import json
-                parsed = json.loads(output_text)
-                if isinstance(parsed, dict) and len(parsed) > 0:
-                    output_text = list(parsed.values())[0]
-            except Exception:
-                pass
-                
-        return {"status": "success", "expanded_text": output_text}
-    except Exception as e:
-        if "429" in str(e) or "quota" in str(e).lower() or "RESOURCE_EXHAUSTED" in str(e):
-            sys_prompt = "You are a film expert. Provide a more detailed synopsis (3-5 sentences) based on the current one. DO NOT output JSON, just plain text."
-            raw_output = await query_ollama_fallback(f"Title: {request.movie_title}\nCurrent Synopsis: {request.current_synopsis}", sys_prompt)
-            if not raw_output or raw_output.strip() == "{}":
-                return {"status": "success", "expanded_text": "The film roll got stuck (Quota limit reached). The director is fixing it, please try again shortly!"}
-            return {"status": "success", "expanded_text": raw_output.strip()}
-        raise HTTPException(status_code=500, detail=str(e))
-
 @app.post("/api/sommelier")
 async def get_sommelier(request: SoundtrackRequest):
+    # If running locally with Ollama, bypass Gemini and use Ollama directly
+    if os.getenv("USE_OLLAMA", "false").lower() == "true":
+        sys_prompt = """You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences. DO NOT output JSON, just plain text."""
+        raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt)
+        if raw_output and raw_output.strip() not in ("{}", ""):
+            def _clean_output(text: str) -> str:
+                txt = text.strip()
+                try:
+                    data = json.loads(txt)
+                    if isinstance(data, dict):
+                        return " ".join(str(v) for v in data.values())
+                    if isinstance(data, list):
+                        return " ".join(str(v) for v in data)
+                except Exception:
+                    pass
+                if txt.startswith("{") and txt.endswith("}"):
+                    txt = txt[1:-1].strip()
+                txt = txt.strip('"')
+                return txt
+            cleaned = _clean_output(raw_output)
+            return {"status": "success", "recommendation": cleaned}
+        # Static fallback if Ollama fails
+        static_fallback = "A classic popcorn and a cold soda always make a perfect movie night pairing."
+        return {"status": "success", "recommendation": static_fallback}
+    # Default path uses Gemini via ADK agent
     try:
         from app.agent import sommelier_agent
         runner = Runner(agent=sommelier_agent, session_service=InMemorySessionService(), app_name="sommelier", auto_create_session=True)
         content = Content(role="user", parts=[Part(text=f"Movie: {request.movie_title}")])
-        
         raw_output = ""
         async for event in runner.run_async(user_id="default", session_id="default", new_message=content):
             parts = []
@@ -309,15 +307,11 @@ async def get_sommelier(request: SoundtrackRequest):
                 parts = getattr(event.content, "parts", [])
             elif hasattr(event, "data") and hasattr(event.data, "message"):
                 parts = getattr(event.data.message, "parts", [])
-                
             for part in parts:
                 if hasattr(part, "text") and part.text:
                     raw_output += part.text
-                    
-        # Process raw_output to plain text (remove possible JSON formatting)
         def _clean_output(text: str) -> str:
             txt = text.strip()
-            # Try to parse as JSON and extract values
             try:
                 data = json.loads(txt)
                 if isinstance(data, dict):
@@ -326,29 +320,23 @@ async def get_sommelier(request: SoundtrackRequest):
                     return " ".join(str(v) for v in data)
             except Exception:
                 pass
-            # Remove surrounding braces if they exist
             if txt.startswith("{") and txt.endswith("}"):
                 txt = txt[1:-1].strip()
-            # Strip surrounding quotes
             txt = txt.strip('"')
             return txt
-
         cleaned = _clean_output(raw_output)
         return {"status": "success", "recommendation": cleaned}
     except Exception as e:
         print("Sommelier Error:", str(e))
-        # If the secret flag is set, always try Ollama as a fallback, regardless of error type.
-        use_ollama = os.getenv("USE_OLLAMA", "false").lower() == "true"
-        if use_ollama:
+        error_detail = str(e)
+        if os.getenv("USE_OLLAMA", "false").lower() == "true":
             sys_prompt = "You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences. DO NOT output JSON, just plain text."
             raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt)
             if raw_output and raw_output.strip() not in ("{}", ""):
-                # Clean possible JSON formatting from Ollama as well
                 cleaned = _clean_output(raw_output)
-                return {"status": "success", "recommendation": cleaned}
-        # Simple static fallback: a universal snack pairing that works for any genre.
+                return {"status": "success", "recommendation": cleaned, "error_detail": error_detail}
         static_fallback = "A classic popcorn and a cold soda always make a perfect movie night pairing."
-        return {"status": "success", "recommendation": static_fallback}
+        return {"status": "success", "recommendation": static_fallback, "error_detail": error_detail}
 
 if __name__ == "__main__":
     import uvicorn

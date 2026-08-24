@@ -126,18 +126,6 @@ soundtrack_agent = Agent(
     """
 )
 
-expand_agent = Agent(
-    name="expand_agent",
-    model="gemini-3.5-flash",
-    description="Expands upon a movie synopsis.",
-    instruction="""
-    You are the Feel & Film Expander.
-    You will receive a movie title and its current short synopsis.
-    Your job is to provide a more detailed, expanded synopsis (roughly 3-5 sentences) that dives deeper into the plot and themes, but does not spoil the ending.
-    CRITICAL: Output ONLY the raw plain text of the synopsis. DO NOT format as JSON. DO NOT wrap in brackets or braces. DO NOT include the movie title. Just the pure text.
-    """
-)
-
 
 # Sommelier Agent – recommends a snack and drink for a movie
 sommelier_agent = Agent(

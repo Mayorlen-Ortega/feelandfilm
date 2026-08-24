@@ -13,7 +13,7 @@ def test_status_endpoint():
 def test_recommendation_empty_theme():
     """Test the recommendation endpoint structure (Note: In a real CI/CD pipeline, you would mock the ADK Runner to avoid hitting the real Gemini API)"""
     
-    # We send a request that intentionally triggers the Ollama fallback 
+
     # (if Gemini hits quota) or runs Gemini normally.
     payload = {
         "initial_mood": "Stressed",
