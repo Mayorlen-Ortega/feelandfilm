@@ -142,7 +142,7 @@ function renderResults(response) {
                         <div class="film-title" style="font-size: 1.8em; margin-bottom: 5px; color: #fff;">${film.title}</div>
                         <div class="film-meta" style="font-size: 0.9em; color: #ccc; margin-bottom: 12px; font-family: 'Playfair Display', serif;">Directed by ${film.director} • ${film.runtime} min • Intensity: ${film.intensity}/10</div>
                         <div class="film-tags" style="margin-bottom: 15px; font-size: 1.05em;">${tagsHtml}</div>
-                        <div class="film-synopsis" style="margin-bottom: 12px; font-style: italic; color: var(--text-secondary); line-height: 1.4;">
+                        <div class="film-synopsis" style="margin-bottom: 12px; font-style: normal; text-align: justify; color: var(--text-secondary); line-height: 1.5; font-size: 1.05em;">
                             <span id="synopsis-text-${index}">${film.synopsis || ''}</span>
                             <button class="expand-btn" data-title="${film.title}" data-index="${index}" style="background: none; border: none; color: var(--accent); text-decoration: underline; cursor: pointer; padding: 0; margin-left: 8px; font-size: 0.9em; display: inline; font-style: normal; font-weight: bold; letter-spacing: 0.5px;">See more...</button>
                         </div>
