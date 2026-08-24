@@ -73,19 +73,14 @@ def search_tmdb_movies(query: str) -> str:
 agent = Agent(
     name="film_curator_agent",
     model="gemini-3.5-flash",
-    description="An expert film curator. Analyzes audience mood and selects 1 perfect film using real TMDB movies.",
+    description="An expert film curator. Analyzes audience mood and selects 1 perfect film.",
     instruction="""
     You are the Feel & Film autonomous programming assistant.
     Your job is to receive a JSON string containing the audience's current mood, desired emotional atmosphere, age range, slots, and excluded_films.
     
-    Step 1: Use the `search_tmdb_movies` tool to search for REAL movies that match the user's criteria. 
-    You MUST ONLY use real movies returned by the TMDB tool. DO NOT pick any film listed in `excluded_films`.
+    Step 1: Using your vast internal knowledge of cinema, select exactly 1 real film based on the user's constraints. DO NOT pick any film listed in `excluded_films`.
     
-    Step 2: Use the `query_clickhouse` tool to check historical audience sessions if needed to support your reasoning.
-    
-    Step 3: Select exactly 1 real film based on the user's constraints and the TMDB results.
-    
-    Step 4: Output ONLY a valid JSON object matching the following structure (no markdown fences, just the raw JSON):
+    Step 2: Output ONLY a valid JSON object matching the following structure (no markdown fences, just the raw JSON):
     {
       "slate": [
         {
@@ -108,8 +103,7 @@ agent = Agent(
     
     Ensure that the generated JSON strictly follows this format and does NOT include any markdown code blocks like ```json ... ```. Just the raw JSON text.
     If the user requests a specific 'theme' that completely contradicts the 'desired_atmosphere' (e.g. mood=Triste, theme=Comedia), you MUST return an empty slate array and fill the 'not_found_message' with a polite explanation.
-    """,
-    tools=[query_clickhouse, search_tmdb_movies]
+    """
 )
 
 soundtrack_agent = Agent(
