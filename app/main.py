@@ -314,15 +314,41 @@ async def get_sommelier(request: SoundtrackRequest):
                 if hasattr(part, "text") and part.text:
                     raw_output += part.text
                     
-        return {"status": "success", "recommendation": raw_output.strip()}
+        # Process raw_output to plain text (remove possible JSON formatting)
+        def _clean_output(text: str) -> str:
+            txt = text.strip()
+            # Try to parse as JSON and extract values
+            try:
+                data = json.loads(txt)
+                if isinstance(data, dict):
+                    return " ".join(str(v) for v in data.values())
+                if isinstance(data, list):
+                    return " ".join(str(v) for v in data)
+            except Exception:
+                pass
+            # Remove surrounding braces if they exist
+            if txt.startswith("{") and txt.endswith("}"):
+                txt = txt[1:-1].strip()
+            # Strip surrounding quotes
+            txt = txt.strip('"')
+            return txt
+
+        cleaned = _clean_output(raw_output)
+        return {"status": "success", "recommendation": cleaned}
     except Exception as e:
         print("Sommelier Error:", str(e))
-        if "429" in str(e) or "quota" in str(e).lower() or "RESOURCE_EXHAUSTED" in str(e):
+        # If the secret flag is set, always try Ollama as a fallback, regardless of error type.
+        use_ollama = os.getenv("USE_OLLAMA", "false").lower() == "true"
+        if use_ollama:
             sys_prompt = "You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences. DO NOT output JSON, just plain text."
             raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt)
-            if raw_output and raw_output.strip() != "{}" and raw_output.strip() != "":
-                return {"status": "success", "recommendation": raw_output.strip()}
-        return {"status": "success", "recommendation": "Our sommelier is currently preparing another order. Try again soon!"}
+            if raw_output and raw_output.strip() not in ("{}", ""):
+                # Clean possible JSON formatting from Ollama as well
+                cleaned = _clean_output(raw_output)
+                return {"status": "success", "recommendation": cleaned}
+        # Simple static fallback: a universal snack pairing that works for any genre.
+        static_fallback = "A classic popcorn and a cold soda always make a perfect movie night pairing."
+        return {"status": "success", "recommendation": static_fallback}
 
 if __name__ == "__main__":
     import uvicorn
