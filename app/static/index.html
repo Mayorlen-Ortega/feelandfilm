@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feel & Film | Autonomous Programming</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <img src="https://media.giphy.com/media/gwffGLhdYHXm5INVOk/giphy.gif" alt="Classic Cinema"
+                style="width: 250px; border-radius: 8px; margin-bottom: 1rem; border: 2px solid var(--accent);">
+            <h1>Feel & Film</h1>
+            <p class="subtitle">Turning human feelings into cinematic experiences.</p>
+            <div class="separator"><i class="fas fa-film"></i>&nbsp;&nbsp;<i class="fas fa-video"></i>&nbsp;&nbsp;<i class="fas fa-ticket-alt"></i></div>
+        </header>
+
+        <main>
+            <section class="card input-section">
+                <h2>Configure Audience Profile</h2>
+                <form id="mood-form">
+                    <div class="form-group">
+                        <label for="initial_mood">Current Audience Mood</label>
+                        <select id="initial_mood" required>
+                            <option value="Stressed">Stressed / After-work</option>
+                            <option value="Bored">Bored / Seeking novelty</option>
+                            <option value="Excited">Excited / Friday night</option>
+                            <option value="Sad">Melancholy / Reflective</option>
+                            <option value="Curious">Curious / Cinephile</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="desired_atmosphere">Desired Atmosphere</label>
+                        <select id="desired_atmosphere" required>
+                            <option value="Relaxing">Relaxing / Escapism</option>
+                            <option value="Thrilling">Thrilling / Edge-of-seat</option>
+                            <option value="Uplifting">Uplifting / Feel-good</option>
+                            <option value="Thought-provoking">Thought-provoking / Challenging</option>
+                        </select>
+                    </div>
+
+                        <div class="form-group">
+                            <label>Audience Age Group</label>
+                            <select id="audience_age_range" class="glass-input">
+                                <option value="Kids (0-12)">Kids (0-12)</option>
+                                <option value="Teens (13-17)">Teens (13-17)</option>
+                                <option value="Adults (18+)">Adults (18+)</option>
+                                <option value="Mixed Family">Mixed Family</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Specific Theme or Director (Optional)</label>
+                            <input type="text" id="theme" class="glass-input" placeholder="e.g. zombies, space, Tarantino">
+                        </div><!-- Intensity removed -->
+
+                    <button type="submit" id="generate-btn">
+                        <span class="btn-text">Generate Slate</span>
+                        <div class="cinematic-spinner hidden">
+                            <span class="reel">🎞️</span>
+                            <span class="sp-text">Agent is searching for the best recommendations...</span>
+                        </div>
+                    </button>
+                </form>
+                <div class="disclaimer">
+                    <small>* Recommendations are creative programming suggestions based on historical performance, not
+                        guaranteed outcomes.</small>
+                </div>
+            </section>
+
+            <section class="results-section hidden" id="results">
+                <h2>Generated Slate</h2>
+                <div id="slate-container" class="slate-grid">
+                    <!-- Films inserted here -->
+                </div>
+
+
+
+                <div class="card chart-card">
+                    <h3>Historical Audience Moods</h3>
+                    <div class="chart-container">
+                        <canvas id="moodChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; color: var(--text-secondary); font-size: 0.8rem; border-top: 1px dashed var(--accent);">
+        <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>

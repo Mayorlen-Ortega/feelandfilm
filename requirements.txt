@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+google-adk
+clickhouse-connect
+python-dotenv
+pydantic
+mcp
