@@ -95,6 +95,8 @@ async def get_status():
     is_mock = not host or host == "mock"
     return {"mock_mode": is_mock}
 
+VALID_MOODS = ["Stressed", "Bored", "Excited", "Sad", "Curious"]
+
 @app.get("/api/stats")
 async def get_stats():
     host = os.getenv("CLICKHOUSE_HOST", "")
@@ -110,9 +112,14 @@ async def get_stats():
         client = clickhouse_connect.get_client(
             host=host, port=port, username=user, password=password, secure=secure
         )
-        result = client.query("SELECT initial_mood, count() as total FROM audience_sessions GROUP BY initial_mood")
-        labels = [row[0] for row in result.result_rows]
-        data = [row[1] for row in result.result_rows]
+        result = client.query(
+            "SELECT initial_mood, count() as total FROM audience_sessions "
+            "WHERE initial_mood IN ('Stressed', 'Bored', 'Excited', 'Sad', 'Curious') "
+            "GROUP BY initial_mood"
+        )
+        counts = {row[0]: row[1] for row in result.result_rows}
+        labels = VALID_MOODS
+        data = [counts.get(m, 0) for m in VALID_MOODS]
         return {"labels": labels, "data": data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
