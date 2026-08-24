@@ -271,7 +271,7 @@ async def get_soundtrack(request: SoundtrackRequest):
 
 @app.post("/api/sommelier")
 async def get_sommelier(request: SoundtrackRequest):
-    # If running locally with Ollama, bypass Gemini and use Ollama directly
+    # If running in a local environment, bypass Gemini and use the local model directly
     if os.getenv("USE_OLLAMA", "false").lower() == "true":
         sys_prompt = """You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences. DO NOT output JSON, just plain text."""
         raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt)
