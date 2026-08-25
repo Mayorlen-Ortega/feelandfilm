@@ -147,15 +147,17 @@ function renderResults(response) {
                         </div>
                         ${film.reasoning ? `<div class="film-reason" style="margin-bottom: 12px; line-height: 1.4;">${film.reasoning}</div>` : ''}
                         <div class="film-fun-fact" style="margin-top: 15px; font-size: 0.9em; border-left: 3px solid var(--accent); padding-left: 12px; color: #bbb;"><strong>🎥 Fun Fact:</strong> ${film.fun_fact || ''}</div>
-                        <div class="film-actions" style="margin-top: 20px; display: flex; gap: 10px;">
-                            <button class="soundtrack-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid var(--accent); color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; transition: all 0.3s;"><i class="fas fa-music"></i> Soundtrack Info</button>
-                            <button class="sommelier-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid #e74c3c; color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; transition: all 0.3s;"><i class="fas fa-wine-glass"></i> Snack Pairing</button>
-                            <button class="another-option-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid var(--accent); color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; transition: all 0.3s;"><i class="fas fa-redo"></i> Search Another</button>
+                        <div class="film-actions" style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px;">
+                            <button class="soundtrack-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid var(--accent); color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; min-width: 140px; transition: all 0.3s;"><i class="fas fa-music"></i> Soundtrack Info</button>
+                            <button class="sommelier-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid #e74c3c; color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; min-width: 140px; transition: all 0.3s;"><i class="fas fa-wine-glass"></i> Snack Pairing</button>
+                            <button class="watch-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid #3498db; color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; min-width: 140px; transition: all 0.3s;"><i class="fas fa-tv"></i> Where to Watch</button>
+                            <button class="another-option-btn" data-title="${film.title}" style="padding: 8px 12px; background: var(--bg-dark); border: 1px solid var(--accent); color: var(--text-light); cursor: pointer; border-radius: 4px; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; text-transform: none; letter-spacing: 0.5px; flex: 1; min-width: 140px; transition: all 0.3s;"><i class="fas fa-redo"></i> Search Another</button>
                         </div>
                     </div>
                 </div>
                 <div class="soundtrack-info hidden" style="margin-top: 15px; padding: 10px; border: 1px dashed var(--accent); border-radius: 4px; font-size: 0.9em;"></div>
                 <div class="sommelier-info hidden" style="margin-top: 15px; padding: 10px; border: 1px dashed #e74c3c; border-radius: 4px; font-size: 0.9em; color: #ffcccc;"></div>
+                <div class="watch-info hidden" style="margin-top: 15px; padding: 12px; border: 1px dashed #3498db; border-radius: 4px; font-size: 0.9em; color: #d0e7ff; background: rgba(52, 152, 219, 0.08);"></div>
             `;
             container.appendChild(card);
 
@@ -177,7 +179,7 @@ function renderResults(response) {
                 })
                 .catch(err => console.error("Failed to load poster", err));
 
-            // Add event listeners for the new buttons
+            // Add event listeners for the action buttons
             const stBtn = card.querySelector('.soundtrack-btn');
             const anotherBtn = card.querySelector('.another-option-btn');
             
@@ -226,6 +228,73 @@ function renderResults(response) {
                 } finally {
                     stBtn.disabled = false;
                     stBtn.innerHTML = '<i class="fas fa-music"></i> Soundtrack Info';
+                }
+            });
+
+            // Where to Watch Handler with auto-detected country
+            const watchBtn = card.querySelector('.watch-btn');
+            const watchInfo = card.querySelector('.watch-info');
+
+            function detectUserCountry() {
+                try {
+                    if (navigator.language && navigator.language.includes('-')) {
+                        const c = navigator.language.split('-')[1].toUpperCase();
+                        if (c.length === 2) return c;
+                    }
+                    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+                    if (tz.includes('Santiago')) return 'CL';
+                    if (tz.includes('Buenos_Aires')) return 'AR';
+                    if (tz.includes('Bogota')) return 'CO';
+                    if (tz.includes('Lima')) return 'PE';
+                    if (tz.includes('Mexico')) return 'MX';
+                    if (tz.includes('Madrid')) return 'ES';
+                    if (tz.includes('London')) return 'GB';
+                    return 'US';
+                } catch (e) {
+                    return 'US';
+                }
+            }
+
+            watchBtn.addEventListener('click', async () => {
+                watchBtn.disabled = true;
+                watchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+                const userCountry = detectUserCountry();
+                try {
+                    const res = await fetch(`/api/watch-providers?title=${encodeURIComponent(film.title)}&country=${userCountry}`);
+                    const wData = await res.json();
+                    
+                    let html = `<div style="font-weight: bold; margin-bottom: 6px; color: #60a5fa;"><i class="fas fa-tv"></i> Where to Watch (${wData.country || userCountry})</div>`;
+                    
+                    let hasOptions = false;
+                    if (wData.streaming && wData.streaming.length > 0) {
+                        hasOptions = true;
+                        html += `<div style="margin-bottom: 4px;"><strong>📺 Subscription:</strong> ${wData.streaming.join(', ')}</div>`;
+                    }
+                    if (wData.rent && wData.rent.length > 0) {
+                        hasOptions = true;
+                        html += `<div style="margin-bottom: 4px;"><strong>🎟️ Rent:</strong> ${wData.rent.join(', ')}</div>`;
+                    }
+                    if (wData.buy && wData.buy.length > 0) {
+                        hasOptions = true;
+                        html += `<div style="margin-bottom: 4px;"><strong>🛒 Buy:</strong> ${wData.buy.join(', ')}</div>`;
+                    }
+                    
+                    if (!hasOptions) {
+                        html += `<div style="color: #94a3b8;">No direct subscription streaming currently detected in this region.</div>`;
+                    }
+                    
+                    if (wData.link) {
+                        html += `<div style="margin-top: 8px;"><a href="${wData.link}" target="_blank" rel="noopener noreferrer" style="color: #93c5fd; text-decoration: underline; font-size: 0.85em;"><i class="fas fa-external-link-alt"></i> View full availability on TMDB / JustWatch</a></div>`;
+                    }
+                    
+                    watchInfo.innerHTML = html;
+                    watchInfo.classList.remove('hidden');
+                } catch (e) {
+                    watchInfo.innerHTML = '<span style="color: #f87171;">Failed to load streaming providers.</span>';
+                    watchInfo.classList.remove('hidden');
+                } finally {
+                    watchBtn.disabled = false;
+                    watchBtn.innerHTML = '<i class="fas fa-tv"></i> Where to Watch';
                 }
             });
 

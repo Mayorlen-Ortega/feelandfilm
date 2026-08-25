@@ -1,0 +1,330 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0d11"/>
+      <stop offset="50%" stop-color="#12161f"/>
+      <stop offset="100%" stop-color="#08090c"/>
+    </linearGradient>
+
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c59b27"/>
+      <stop offset="50%" stop-color="#f3d069"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a202c" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#12161f" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <linearGradient id="agentGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#242b3d"/>
+      <stop offset="100%" stop-color="#171c28"/>
+    </linearGradient>
+
+    <filter id="glowGold" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#d4af37"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#60a5fa"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#34d399"/>
+    </marker>
+    <marker id="arrowPink" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#f472b6"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-family: 'Cinzel', 'Playfair Display', 'Georgia', serif; font-weight: 700; fill: #f3d069; letter-spacing: 2px; }
+    .subtitle { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; letter-spacing: 1px; }
+    .tier-title { font-family: 'Cinzel', 'Playfair Display', serif; font-size: 15px; font-weight: bold; fill: #e2e8f0; letter-spacing: 1.5px; }
+    .box-title { font-family: 'Inter', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+    .box-desc { font-family: 'Inter', system-ui, sans-serif; font-size: 12px; fill: #94a3b8; line-height: 1.4; }
+    .badge { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 600; fill: #d4af37; }
+    .code-txt { font-family: 'Courier New', monospace; font-size: 11px; font-weight: 600; }
+  </style>
+
+  <!-- Background Canvas -->
+  <rect width="1400" height="900" fill="url(#bgGrad)" rx="16"/>
+  <rect x="15" y="15" width="1370" height="870" fill="none" stroke="#2a3346" stroke-width="1.5" rx="12" stroke-dasharray="6,6"/>
+
+  <!-- Header Section -->
+  <g transform="translate(60, 40)">
+    <text x="0" y="28" class="title" font-size="28">FEEL &amp; FILM</text>
+    <text x="185" y="28" class="title" font-size="28" fill="#ffffff">— ARCHITECTURE DIAGRAM</text>
+    <text x="0" y="52" class="subtitle">Exact 1:1 System Architecture of the Autonomous Multi-Agent Cinema Platform</text>
+    <line x1="0" y1="65" x2="1280" y2="65" stroke="url(#goldGrad)" stroke-width="2"/>
+  </g>
+
+  <!-- ================= TIER 1: FRONTEND LAYER ================= -->
+  <g transform="translate(60, 130)">
+    <rect width="300" height="710" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="300" height="42" fill="#1e293b" rx="12"/>
+    <rect x="0" y="30" width="300" height="12" fill="#1e293b"/>
+    <text x="20" y="27" class="tier-title">1. CLIENT UI (app/static)</text>
+
+    <!-- index.html Form -->
+    <g transform="translate(15, 60)">
+      <rect width="270" height="145" fill="#0f172a" stroke="#d4af37" stroke-width="1.2" rx="8"/>
+      <text x="14" y="24" class="box-title">🎬 Audience Input Form</text>
+      <text x="14" y="46" class="box-desc">• select #initial_mood</text>
+      <text x="14" y="66" class="box-desc">• select #desired_atmosphere</text>
+      <text x="14" y="86" class="box-desc">• select #audience_age_range</text>
+      <text x="14" y="106" class="box-desc">• input #theme (keyword)</text>
+      <rect x="14" y="118" width="242" height="18" fill="#c59b27" fill-opacity="0.2" rx="4"/>
+      <text x="20" y="132" class="code-txt" fill="#facc15">POST /api/recommend</text>
+    </g>
+
+    <!-- Slate Card & Actions -->
+    <g transform="translate(15, 220)">
+      <rect width="270" height="215" fill="#0f172a" stroke="#475569" stroke-width="1" rx="8"/>
+      <text x="14" y="24" class="box-title">🎞️ Film Card &amp; Interactive Triggers</text>
+      <text x="14" y="46" class="box-desc">• Title, Director, Runtime, Synopsis</text>
+      <text x="14" y="66" class="box-desc">• Reasoning &amp; Fun Fact</text>
+      <text x="14" y="86" class="box-desc">• Async Poster img &lt;img id=poster&gt;</text>
+      <line x1="14" y1="100" x2="256" y2="100" stroke="#334155" stroke-width="1"/>
+      <text x="14" y="118" class="box-desc" font-weight="bold" fill="#e2e8f0">Interactive Action Buttons:</text>
+      <text x="14" y="134" class="code-txt" fill="#818cf8">• btn.soundtrack-btn (/api/soundtrack)</text>
+      <text x="14" y="150" class="code-txt" fill="#f472b6">• btn.sommelier-btn (/api/sommelier)</text>
+      <text x="14" y="166" class="code-txt" fill="#60a5fa">• btn.watch-btn (/api/watch-providers)</text>
+      <text x="14" y="182" class="code-txt" fill="#facc15">• btn.another-option-btn (retry)</text>
+      <text x="14" y="200" class="code-txt" fill="#38bdf8">GET /api/poster?title=...</text>
+    </g>
+
+    <!-- Chart.js Canvas -->
+    <g transform="translate(15, 450)">
+      <rect width="270" height="130" fill="#0f172a" stroke="#475569" stroke-width="1" rx="8"/>
+      <text x="14" y="24" class="box-title">📊 Audience Chart (Chart.js)</text>
+      <text x="14" y="46" class="box-desc">• canvas #moodChart</text>
+      <text x="14" y="66" class="box-desc">• Real-time bar chart of initial_mood</text>
+      <text x="14" y="86" class="box-desc">• Filtered to canonical form moods</text>
+      <rect x="14" y="98" width="242" height="18" fill="#34d399" fill-opacity="0.15" rx="4"/>
+      <text x="20" y="112" class="code-txt" fill="#34d399">GET /api/stats</text>
+    </g>
+  </g>
+
+  <!-- ================= TIER 2: BACKEND ROUTER ================= -->
+  <g transform="translate(390, 130)">
+    <rect width="320" height="710" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="320" height="42" fill="#1e293b" rx="12"/>
+    <rect x="0" y="30" width="320" height="12" fill="#1e293b"/>
+    <text x="20" y="27" class="tier-title">2. FASTAPI BACKEND (app/main.py)</text>
+
+    <!-- Endpoints -->
+    <g transform="translate(15, 55)">
+      
+      <!-- /api/recommend -->
+      <g transform="translate(0, 0)">
+        <rect width="290" height="85" fill="#0f172a" stroke="#d4af37" stroke-width="1.2" rx="8"/>
+        <text x="14" y="20" class="code-txt" fill="#facc15">POST /api/recommend (MoodRequest)</text>
+        <text x="14" y="38" class="box-desc">1. Inserts session into ClickHouse</text>
+        <text x="14" y="54" class="box-desc">2. Executes Runner(film_curator_agent)</text>
+        <text x="14" y="70" class="box-desc">3. Returns curated 1-film slate JSON</text>
+      </g>
+
+      <!-- /api/soundtrack -->
+      <g transform="translate(0, 95)">
+        <rect width="290" height="68" fill="#0f172a" stroke="#818cf8" stroke-width="1.2" rx="8"/>
+        <text x="14" y="20" class="code-txt" fill="#a5b4fc">POST /api/soundtrack (SoundtrackRequest)</text>
+        <text x="14" y="38" class="box-desc">• Executes Runner(soundtrack_agent)</text>
+        <text x="14" y="54" class="box-desc">• Returns composer, vibe &amp; standout track</text>
+      </g>
+
+      <!-- /api/sommelier -->
+      <g transform="translate(0, 170)">
+        <rect width="290" height="68" fill="#0f172a" stroke="#f472b6" stroke-width="1.2" rx="8"/>
+        <text x="14" y="20" class="code-txt" fill="#fbcfe8">POST /api/sommelier (SoundtrackRequest)</text>
+        <text x="14" y="38" class="box-desc">• Executes Runner(sommelier_agent)</text>
+        <text x="14" y="54" class="box-desc">• Returns snack &amp; drink pairing text</text>
+      </g>
+
+      <!-- /api/watch-providers -->
+      <g transform="translate(0, 245)">
+        <rect width="290" height="70" fill="#0f172a" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
+        <text x="14" y="20" class="code-txt" fill="#60a5fa">GET/POST /api/watch-providers</text>
+        <text x="14" y="38" class="box-desc">• Queries TMDB JustWatch for user region</text>
+        <text x="14" y="54" class="box-desc">• Returns streaming, rent &amp; buy options</text>
+      </g>
+
+      <!-- /api/poster -->
+      <g transform="translate(0, 322)">
+        <rect width="290" height="58" fill="#0f172a" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
+        <text x="14" y="20" class="code-txt" fill="#7dd3fc">GET /api/poster?title=...</text>
+        <text x="14" y="38" class="box-desc">• TMDB /3/search/movie poster lookup</text>
+      </g>
+
+      <!-- /api/stats -->
+      <g transform="translate(0, 388)">
+        <rect width="290" height="65" fill="#0f172a" stroke="#34d399" stroke-width="1.2" rx="8"/>
+        <text x="14" y="20" class="code-txt" fill="#6ee7b7">GET /api/stats</text>
+        <text x="14" y="38" class="box-desc">• Queries ClickHouse audience_sessions</text>
+        <text x="14" y="54" class="box-desc">• Groups canonical moods &amp; returns counts</text>
+      </g>
+
+      <!-- /api/status -->
+      <g transform="translate(0, 440)">
+        <rect width="290" height="50" fill="#0f172a" stroke="#475569" stroke-width="1" rx="8"/>
+        <text x="14" y="22" class="code-txt" fill="#94a3b8">GET /api/status</text>
+        <text x="14" y="40" class="box-desc">• Returns ClickHouse connection status</text>
+      </g>
+    </g>
+
+    <!-- Session Service Note -->
+    <g transform="translate(15, 560)">
+      <rect width="290" height="75" fill="#1e293b" stroke="#334155" stroke-width="1" rx="6"/>
+      <text x="12" y="22" class="box-title" font-size="12">Runner Session Engine</text>
+      <text x="12" y="42" class="box-desc">• InMemorySessionService()</text>
+      <text x="12" y="60" class="box-desc">• Dual mode: Gemini Cloud / query_ollama_fallback()</text>
+    </g>
+  </g>
+
+  <!-- ================= TIER 3: GOOGLE ADK AGENTS ================= -->
+  <g transform="translate(740, 130)">
+    <rect width="310" height="710" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="310" height="42" fill="#1e293b" rx="12"/>
+    <rect x="0" y="30" width="310" height="12" fill="#1e293b"/>
+    <text x="20" y="27" class="tier-title">3. GOOGLE ADK AGENTS (app/agent.py)</text>
+
+    <!-- Agent 1: film_curator_agent -->
+    <g transform="translate(15, 60)">
+      <rect width="280" height="170" fill="url(#agentGrad)" stroke="#d4af37" stroke-width="1.5" rx="10" filter="url(#glowGold)"/>
+      <text x="14" y="26" class="box-title" fill="#fde047">🎥 agent (film_curator_agent)</text>
+      <text x="14" y="48" class="box-desc">• Model: gemini-3.5-flash</text>
+      <text x="14" y="68" class="box-desc">• Input: MoodRequest JSON</text>
+      <text x="14" y="88" class="box-desc">• Output: JSON Slate (title, director,</text>
+      <text x="14" y="106" class="box-desc">  runtime, synopsis, tags, reasoning, fun_fact)</text>
+      <text x="14" y="126" class="box-desc">• Constraint: Strict Kids (0-12) age filter</text>
+      <rect x="14" y="136" width="252" height="22" fill="#d4af37" fill-opacity="0.15" rx="4"/>
+      <text x="20" y="152" class="code-txt" fill="#fde047">ADK Agent (name="film_curator_agent")</text>
+    </g>
+
+    <!-- Agent 2: soundtrack_agent -->
+    <g transform="translate(15, 245)">
+      <rect width="280" height="145" fill="url(#agentGrad)" stroke="#818cf8" stroke-width="1.5" rx="10"/>
+      <text x="14" y="26" class="box-title" fill="#c7d2fe">🎵 soundtrack_agent</text>
+      <text x="14" y="48" class="box-desc">• Model: gemini-3.5-flash</text>
+      <text x="14" y="68" class="box-desc">• Input: movie_title</text>
+      <text x="14" y="88" class="box-desc">• Output: JSON (composer, vibe,</text>
+      <text x="14" y="106" class="box-desc">  standout_track)</text>
+      <rect x="14" y="116" width="252" height="20" fill="#818cf8" fill-opacity="0.15" rx="4"/>
+      <text x="20" y="130" class="code-txt" fill="#a5b4fc">ADK Agent (name="soundtrack_agent")</text>
+    </g>
+
+    <!-- Agent 3: sommelier_agent -->
+    <g transform="translate(15, 405)">
+      <rect width="280" height="145" fill="url(#agentGrad)" stroke="#f472b6" stroke-width="1.5" rx="10"/>
+      <text x="14" y="26" class="box-title" fill="#fbcfe8">🍿 sommelier_agent</text>
+      <text x="14" y="48" class="box-desc">• Model: gemini-3.5-flash</text>
+      <text x="14" y="68" class="box-desc">• Input: "Movie: {movie_title}"</text>
+      <text x="14" y="88" class="box-desc">• Output: Plain text 1-2 sentence</text>
+      <text x="14" y="106" class="box-desc">  concession pairing (snack &amp; drink)</text>
+      <rect x="14" y="116" width="252" height="20" fill="#f472b6" fill-opacity="0.15" rx="4"/>
+      <text x="20" y="130" class="code-txt" fill="#fbcfe8">ADK Agent (name="sommelier_agent")</text>
+    </g>
+
+    <!-- Google Cloud Gemini Engine -->
+    <g transform="translate(15, 565)">
+      <rect width="280" height="75" fill="#0f172a" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
+      <text x="14" y="26" class="box-title" fill="#7dd3fc">☁️ Google Cloud Gemini</text>
+      <text x="14" y="46" class="box-desc">• google-adk &amp; google-genai</text>
+      <text x="14" y="64" class="box-desc">• Model: gemini-3.5-flash</text>
+    </g>
+  </g>
+
+  <!-- ================= TIER 4: PERSISTENCE & APIS ================= -->
+  <g transform="translate(1080, 130)">
+    <rect width="260" height="710" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="260" height="42" fill="#1e293b" rx="12"/>
+    <rect x="0" y="30" width="260" height="12" fill="#1e293b"/>
+    <text x="20" y="27" class="tier-title">4. PERSISTENCE &amp; APIS</text>
+
+    <!-- ClickHouse Cloud -->
+    <g transform="translate(15, 60)">
+      <rect width="230" height="260" fill="#0f172a" stroke="#eab308" stroke-width="1.5" rx="8"/>
+      <text x="14" y="26" class="box-title" fill="#fde047">🗄️ ClickHouse Cloud</text>
+      <text x="14" y="46" class="box-desc">• Driver: clickhouse-connect</text>
+      <text x="14" y="64" class="box-desc">• Port: 8123 (HTTPS / Secure)</text>
+      
+      <!-- Table audience_sessions -->
+      <g transform="translate(10, 75)">
+        <rect width="210" height="80" fill="#1e293b" rx="6" stroke="#475569" stroke-width="1"/>
+        <text x="10" y="20" class="code-txt" fill="#facc15">audience_sessions</text>
+        <text x="10" y="38" class="box-desc">• session_id: UUID</text>
+        <text x="10" y="54" class="box-desc">• initial_mood, desired_atmosphere</text>
+        <text x="10" y="70" class="box-desc">• audience_age_range, timestamp</text>
+      </g>
+
+      <!-- Table film_catalog -->
+      <g transform="translate(10, 165)">
+        <rect width="210" height="80" fill="#1e293b" rx="6" stroke="#475569" stroke-width="1"/>
+        <text x="10" y="20" class="code-txt" fill="#facc15">film_catalog</text>
+        <text x="10" y="38" class="box-desc">• id, title, director, runtime</text>
+        <text x="10" y="54" class="box-desc">• genre, mood_tags, intensity</text>
+        <text x="10" y="70" class="box-desc">• age_suitability, synopsis</text>
+      </g>
+    </g>
+
+    <!-- TMDB API -->
+    <g transform="translate(15, 340)">
+      <rect width="230" height="150" fill="#0f172a" stroke="#06b6d4" stroke-width="1.5" rx="8"/>
+      <text x="14" y="26" class="box-title" fill="#67e8f9">🌐 TMDB REST API</text>
+      <text x="14" y="48" class="box-desc">• Auth: Bearer TMDB_API_KEY</text>
+      <text x="14" y="68" class="box-desc">• Base: api.themoviedb.org</text>
+      
+      <g transform="translate(10, 80)">
+        <rect width="210" height="55" fill="#1e293b" rx="6" stroke="#0891b2" stroke-width="1"/>
+        <text x="10" y="22" class="code-txt" fill="#a5f3fc">/3/search/movie?query=...</text>
+        <text x="10" y="42" class="box-desc">Returns poster_path &amp; metadata</text>
+      </g>
+    </g>
+
+    <!-- Environment Variables -->
+    <g transform="translate(15, 510)">
+      <rect width="230" height="130" fill="#0f172a" stroke="#475569" stroke-width="1" rx="8"/>
+      <text x="14" y="24" class="box-title" fill="#cbd5e1">⚙️ Environment (.env)</text>
+      <text x="14" y="44" class="code-txt" fill="#94a3b8">• GEMINI_API_KEY</text>
+      <text x="14" y="62" class="code-txt" fill="#94a3b8">• CLICKHOUSE_HOST / PORT</text>
+      <text x="14" y="80" class="code-txt" fill="#94a3b8">• CLICKHOUSE_USER / PASS</text>
+      <text x="14" y="98" class="code-txt" fill="#94a3b8">• TMDB_API_KEY</text>
+      <text x="14" y="116" class="code-txt" fill="#94a3b8">• USE_OLLAMA (true/false)</text>
+    </g>
+  </g>
+
+  <!-- ================= ACCURATE FLOW CONNECTORS ================= -->
+  
+  <!-- 1. Form -> POST /api/recommend -->
+  <path d="M 360 200 L 390 200" fill="none" stroke="#d4af37" stroke-width="2" marker-end="url(#arrowGold)"/>
+
+  <!-- 2. /api/recommend -> audience_sessions ClickHouse insert -->
+  <path d="M 680 200 Q 880 170 1080 200" fill="none" stroke="#eab308" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
+
+  <!-- 3. /api/recommend -> Film Curator Agent -->
+  <path d="M 680 225 L 740 225" fill="none" stroke="#d4af37" stroke-width="2" marker-end="url(#arrowGold)"/>
+
+  <!-- 4. btn.soundtrack-btn -> POST /api/soundtrack -> soundtrack_agent -->
+  <path d="M 360 290 L 390 290" fill="none" stroke="#818cf8" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
+  <path d="M 680 290 L 740 290" fill="none" stroke="#818cf8" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
+
+  <!-- 5. btn.sommelier-btn -> POST /api/sommelier -> sommelier_agent -->
+  <path d="M 360 375 L 390 375" fill="none" stroke="#f472b6" stroke-width="1.8" marker-end="url(#arrowPink)"/>
+  <path d="M 680 375 L 740 440" fill="none" stroke="#f472b6" stroke-width="1.8" marker-end="url(#arrowPink)"/>
+
+  <!-- 6. GET /api/poster -> TMDB API -->
+  <path d="M 680 435 L 1080 435" fill="none" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
+
+  <!-- 7. GET /api/stats -> ClickHouse audience_sessions query -->
+  <path d="M 360 560 L 390 530" fill="none" stroke="#34d399" stroke-width="1.8" marker-end="url(#arrowGreen)"/>
+  <path d="M 680 530 Q 880 490 1080 260" fill="none" stroke="#34d399" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arrowGreen)"/>
+
+</svg>

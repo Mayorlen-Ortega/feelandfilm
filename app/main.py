@@ -65,6 +65,90 @@ async def fetch_poster_url_internal(title: str) -> str:
         return ""
     return await asyncio.to_thread(fetch)
 
+async def fetch_watch_providers_internal(title: str, country: str = "US") -> dict:
+    tmdb_key = os.getenv("TMDB_API_KEY")
+    if not tmdb_key:
+        return {"status": "error", "message": "TMDB_API_KEY not configured", "streaming": [], "rent": [], "buy": []}
+
+    def fetch():
+        import urllib.parse
+        query = urllib.parse.quote(title)
+        search_url = f"https://api.themoviedb.org/3/search/movie?query={query}"
+        headers = {"Authorization": f"Bearer {tmdb_key}", "accept": "application/json"}
+        req = urllib.request.Request(search_url, headers=headers)
+        try:
+            with urllib.request.urlopen(req) as response:
+                search_data = json.loads(response.read().decode("utf-8"))
+                results = search_data.get("results", [])
+                if not results:
+                    return {"status": "not_found", "message": f"Movie '{title}' not found on TMDB.", "streaming": [], "rent": [], "buy": []}
+                
+                movie = results[0]
+                movie_id = movie.get("id")
+                movie_title = movie.get("title", title)
+                
+                providers_url = f"https://api.themoviedb.org/3/movie/{movie_id}/watch/providers"
+                req_prov = urllib.request.Request(providers_url, headers=headers)
+                with urllib.request.urlopen(req_prov) as p_resp:
+                    p_data = json.loads(p_resp.read().decode("utf-8"))
+                    results_map = p_data.get("results", {})
+                    
+                    target_country = country.strip().upper() if country else "US"
+                    c_data = results_map.get(target_country)
+                    used_fallback = False
+                    
+                    if not c_data and target_country != "US" and "US" in results_map:
+                        c_data = results_map.get("US")
+                        used_fallback = True
+                    
+                    if not c_data:
+                        return {
+                            "status": "success",
+                            "movie_title": movie_title,
+                            "country": target_country,
+                            "streaming": [],
+                            "rent": [],
+                            "buy": [],
+                            "link": f"https://www.themoviedb.org/movie/{movie_id}/watch",
+                            "message": f"No specific streaming data found for region {target_country}."
+                        }
+                    
+                    def extract_names(items):
+                        return [item.get("provider_name") for item in items if item.get("provider_name")]
+                    
+                    streaming = extract_names(c_data.get("flatrate", []))
+                    rent = extract_names(c_data.get("rent", []))
+                    buy = extract_names(c_data.get("buy", []))
+                    link = c_data.get("link", f"https://www.themoviedb.org/movie/{movie_id}/watch")
+                    
+                    return {
+                        "status": "success",
+                        "movie_title": movie_title,
+                        "country": "US (Global Reference)" if used_fallback else target_country,
+                        "is_fallback_country": used_fallback,
+                        "streaming": streaming,
+                        "rent": rent,
+                        "buy": buy,
+                        "link": link
+                    }
+        except Exception as e:
+            print("TMDB Watch Providers Error:", e)
+            return {"status": "error", "message": str(e), "streaming": [], "rent": [], "buy": []}
+
+    return await asyncio.to_thread(fetch)
+
+@app.get("/api/watch-providers")
+async def get_watch_providers(title: str, country: str = "US"):
+    return await fetch_watch_providers_internal(title, country)
+
+class WatchProvidersRequest(BaseModel):
+    movie_title: str
+    country: str = "US"
+
+@app.post("/api/watch-providers")
+async def post_watch_providers(request: WatchProvidersRequest):
+    return await fetch_watch_providers_internal(request.movie_title, request.country)
+
 @app.get("/api/poster")
 async def get_poster(title: str):
     url = await fetch_poster_url_internal(title)
