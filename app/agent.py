@@ -101,6 +101,12 @@ agent = Agent(
     
     CRITICAL AGE CONSTRAINT: Pay strict attention to the 'audience_age_range'. If it is 'Kids (0-12)', you MUST ONLY recommend G or PG rated, family-friendly movies. NEVER recommend R-rated, violent, or mature content to kids.
     
+    CATALOG DIVERSITY & DISCOVERY:
+    - Avoid repeatedly defaulting to the exact same predictable blockbusters or clichés (such as Inception, Amélie, or The Dark Knight).
+    - Actively explore varied eras (70s, 80s, 90s, 2000s, 2010s, 2020s), international world cinema (European, Asian, Latin American, etc.), indie gems, and underappreciated classics that match the requested mood and atmosphere.
+    - Each recommendation should surprise and delight the user with high curation value.
+    - STRICT EXCLUSION: You MUST NEVER recommend any film that appears in the `excluded_films` list, nor any variations of its title with or without release years (e.g. if 'Amélie' is in `excluded_films`, you must NEVER recommend 'Amélie (2001)' or 'Le Fabuleux Destin d'Amélie Poulain'). Choose a completely different movie.
+    
     Ensure that the generated JSON strictly follows this format and does NOT include any markdown code blocks like ```json ... ```. Just the raw JSON text.
     If the user requests a specific 'theme' that completely contradicts the 'desired_atmosphere' (e.g. mood=Triste, theme=Comedia), you MUST return an empty slate array and fill the 'not_found_message' with a polite explanation.
     """

@@ -60,13 +60,16 @@ document.getElementById('mood-form').addEventListener('submit', async (e) => {
     spinner.classList.remove('hidden');
     resultsSection.classList.add('hidden');
     
+    window.sessionRecommendedFilms = window.sessionRecommendedFilms || [];
+    const allExcluded = Array.from(new Set([...(window.excludedFilms || []), ...(window.sessionRecommendedFilms || [])]));
+
     const requestData = {
         initial_mood: document.getElementById('initial_mood').value,
         desired_atmosphere: document.getElementById('desired_atmosphere').value,
         audience_age_range: document.getElementById('audience_age_range').value,
         theme: document.getElementById('theme') ? document.getElementById('theme').value : "",
         slots: 1,
-        excluded_films: window.excludedFilms || []
+        excluded_films: allExcluded
     };
 
     try {
@@ -121,6 +124,14 @@ function renderResults(response) {
     }
 
     if (data.slate && Array.isArray(data.slate)) {
+        // Automatically remember all recommended films to guarantee zero repeats in the session
+        window.sessionRecommendedFilms = window.sessionRecommendedFilms || [];
+        data.slate.forEach(f => {
+            if (f.title && !window.sessionRecommendedFilms.includes(f.title)) {
+                window.sessionRecommendedFilms.push(f.title);
+            }
+        });
+
         data.slate.forEach((film, index) => {
             const card = document.createElement('div');
             card.className = 'film-card';
@@ -187,6 +198,12 @@ function renderResults(response) {
             const sommInfo = card.querySelector('.sommelier-info');
 
             sommBtn.addEventListener('click', async () => {
+                // If already fetched for this movie, just toggle visibility without new API cost
+                if (sommBtn.dataset.loaded === "true") {
+                    sommInfo.classList.toggle('hidden');
+                    return;
+                }
+
                 sommBtn.disabled = true;
                 sommBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Pairing...';
                 try {
@@ -198,17 +215,25 @@ function renderResults(response) {
                     const data = await res.json();
                     sommInfo.classList.remove('hidden');
                     sommInfo.innerHTML = `<strong>🍿 Sommelier:</strong> ${data.recommendation}`;
+                    sommBtn.dataset.loaded = "true";
                 } catch (e) {
                     sommInfo.classList.remove('hidden');
                     sommInfo.innerHTML = "<strong>🍿 Sommelier:</strong> Sorry, out of popcorn!";
+                } finally {
+                    sommBtn.innerHTML = '<i class="fas fa-wine-glass"></i> Snack Pairing';
+                    sommBtn.disabled = false;
                 }
-                sommBtn.innerHTML = '<i class="fas fa-wine-glass"></i> Snack Pairing';
-                sommBtn.disabled = false;
             });
 
             const stInfo = card.querySelector('.soundtrack-info');
 
             stBtn.addEventListener('click', async () => {
+                // If already fetched for this movie, just toggle visibility without new API cost
+                if (stBtn.dataset.loaded === "true") {
+                    stInfo.classList.toggle('hidden');
+                    return;
+                }
+
                 stBtn.disabled = true;
                 stBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
                 try {
@@ -221,6 +246,7 @@ function renderResults(response) {
                     if(stData.data) {
                         stInfo.innerHTML = `<strong>Composer:</strong> ${stData.data.composer}<br><strong>Vibe:</strong> ${stData.data.vibe}<br><strong>Standout Track:</strong> ${stData.data.standout_track || 'N/A'}`;
                         stInfo.classList.remove('hidden');
+                        stBtn.dataset.loaded = "true";
                     }
                 } catch(e) {
                     stInfo.innerHTML = "Failed to load soundtrack info.";
@@ -256,6 +282,12 @@ function renderResults(response) {
             }
 
             watchBtn.addEventListener('click', async () => {
+                // If already fetched for this movie, just toggle visibility without new API cost
+                if (watchBtn.dataset.loaded === "true") {
+                    watchInfo.classList.toggle('hidden');
+                    return;
+                }
+
                 watchBtn.disabled = true;
                 watchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
                 const userCountry = detectUserCountry();
@@ -289,6 +321,7 @@ function renderResults(response) {
                     
                     watchInfo.innerHTML = html;
                     watchInfo.classList.remove('hidden');
+                    watchBtn.dataset.loaded = "true";
                 } catch (e) {
                     watchInfo.innerHTML = '<span style="color: #f87171;">Failed to load streaming providers.</span>';
                     watchInfo.classList.remove('hidden');
