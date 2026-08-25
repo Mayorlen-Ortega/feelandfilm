@@ -1,48 +1,218 @@
 // Mock status check removed - Real connection is now active
 
 let moodChartInstance = null;
+let currentAnalyticsData = null;
+let activeAnalyticsTab = 'matrix';
 
 async function loadStats() {
     try {
         const response = await fetch('/api/stats');
         const stats = await response.json();
-        
-        if (stats.labels && stats.labels.length > 0) {
-            const ctx = document.getElementById('moodChart').getContext('2d');
-            if (moodChartInstance) moodChartInstance.destroy();
+        currentAnalyticsData = stats;
+
+        // Update Executive KPI Badges
+        if (stats.kpis) {
+            const moodEl = document.getElementById('kpi-mood');
+            const atmEl = document.getElementById('kpi-atm');
+            const demoEl = document.getElementById('kpi-demo');
+            const totalEl = document.getElementById('kpi-total');
             
-            moodChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: stats.labels,
-                    datasets: [{
-                        label: 'Historical Audience Requests',
-                        data: stats.data,
-                        backgroundColor: 'rgba(212, 175, 55, 0.6)',
-                        borderColor: '#d4af37',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: '#a69882' } },
-                        x: { ticks: { color: '#a69882' } }
-                    },
-                    plugins: {
-                        legend: { labels: { color: '#e8dcc5', font: { family: 'Courier Prime' } } }
-                    }
-                }
-            });
+            if (moodEl) moodEl.innerText = stats.kpis.top_mood || 'N/A';
+            if (atmEl) atmEl.innerText = stats.kpis.top_atmosphere || 'N/A';
+            if (demoEl) demoEl.innerText = stats.kpis.top_demographic || 'N/A';
+            if (totalEl) totalEl.innerText = stats.kpis.total_sessions || 0;
         }
+
+        renderActiveChart();
     } catch (e) {
         console.error("Failed to load stats", e);
     }
 }
 
+function renderActiveChart() {
+    if (!currentAnalyticsData) return;
+    const canvas = document.getElementById('moodChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (moodChartInstance) moodChartInstance.destroy();
+
+    const stats = currentAnalyticsData;
+
+    if (activeAnalyticsTab === 'matrix') {
+        // 1. Emotional Transition Matrix (Stacked Bar Chart: Initial Mood -> Desired Atmosphere)
+        const moods = stats.labels || ["Stressed", "Bored", "Excited", "Sad", "Curious"];
+        const matrix = stats.matrix || {};
+        const atmospheres = ["Relaxing", "Thrilling", "Uplifting", "Thought-provoking"];
+        const colors = {
+            "Relaxing": { bg: 'rgba(16, 185, 129, 0.75)', border: '#10b981' },
+            "Thrilling": { bg: 'rgba(239, 68, 68, 0.75)', border: '#ef4444' },
+            "Uplifting": { bg: 'rgba(245, 158, 11, 0.75)', border: '#f59e0b' },
+            "Thought-provoking": { bg: 'rgba(139, 92, 246, 0.75)', border: '#8b5cf6' }
+        };
+
+        const datasets = atmospheres.map(atm => ({
+            label: atm,
+            data: moods.map(m => (matrix[m] && matrix[m][atm]) ? matrix[m][atm] : 0),
+            backgroundColor: colors[atm].bg,
+            borderColor: colors[atm].border,
+            borderWidth: 1.5,
+            borderRadius: 4
+        }));
+
+        moodChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: moods, datasets: datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true, ticks: { color: '#e8dcc5', font: { family: 'Cinzel', size: 12 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: { stacked: true, beginAtZero: true, ticks: { color: '#a69882' }, grid: { color: 'rgba(255,255,255,0.08)' } }
+                },
+                plugins: {
+                    legend: { labels: { color: '#e8dcc5', font: { family: 'Playfair Display', size: 11 } } },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        borderColor: '#d4af37',
+                        borderWidth: 1,
+                        titleFont: { family: 'Cinzel' },
+                        bodyFont: { family: 'Playfair Display' }
+                    }
+                }
+            }
+        });
+
+    } else if (activeAnalyticsTab === 'moods') {
+        // 2. Initial Mood Distribution
+        const moodData = stats.moods || { labels: stats.labels, data: stats.data };
+        const moodColors = [
+            'rgba(249, 115, 22, 0.75)',  // Stressed (Orange)
+            'rgba(100, 116, 139, 0.75)', // Bored (Slate)
+            'rgba(234, 179, 8, 0.75)',   // Excited (Yellow)
+            'rgba(59, 130, 246, 0.75)',   // Sad (Blue)
+            'rgba(168, 85, 247, 0.75)'   // Curious (Purple)
+        ];
+        const borderColors = ['#f97316', '#64748b', '#eab308', '#3b82f6', '#a855f7'];
+
+        moodChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: moodData.labels,
+                datasets: [{
+                    label: 'Audience Requests',
+                    data: moodData.data,
+                    backgroundColor: moodColors,
+                    borderColor: borderColors,
+                    borderWidth: 1.5,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#a69882' }, grid: { color: 'rgba(255,255,255,0.08)' } },
+                    x: { ticks: { color: '#e8dcc5', font: { family: 'Cinzel', size: 12 } }, grid: { display: false } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        borderColor: '#d4af37',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+
+    } else if (activeAnalyticsTab === 'atmospheres') {
+        // 3. Desired Atmospheres (Doughnut Wheel)
+        const atmData = stats.atmospheres || { labels: ["Relaxing", "Thrilling", "Uplifting", "Thought-provoking"], data: [0, 0, 0, 0] };
+        moodChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: atmData.labels,
+                datasets: [{
+                    data: atmData.data,
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(139, 92, 246, 0.8)'
+                    ],
+                    borderColor: '#1a1714',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#e8dcc5', font: { family: 'Playfair Display', size: 12 } } },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        borderColor: '#d4af37',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+
+    } else if (activeAnalyticsTab === 'demographics') {
+        // 4. Age Demographics (Horizontal Bars)
+        const demoData = stats.demographics || { labels: ["Kids (0-12)", "Teens (13-17)", "Adults (18+)", "Mixed Family"], data: [0, 0, 0, 0] };
+        moodChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: demoData.labels,
+                datasets: [{
+                    label: 'Audience Sessions',
+                    data: demoData.data,
+                    backgroundColor: [
+                        'rgba(6, 182, 212, 0.75)',
+                        'rgba(236, 72, 153, 0.75)',
+                        'rgba(234, 179, 8, 0.75)',
+                        'rgba(132, 204, 22, 0.75)'
+                    ],
+                    borderColor: ['#06b6d4', '#ec4899', '#eab308', '#84cc16'],
+                    borderWidth: 1.5,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { beginAtZero: true, ticks: { color: '#a69882' }, grid: { color: 'rgba(255,255,255,0.08)' } },
+                    y: { ticks: { color: '#e8dcc5', font: { family: 'Playfair Display', size: 12 } }, grid: { display: false } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        borderColor: '#d4af37',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     loadStats();
+
+    // Tab switcher events
+    const tabBtns = document.querySelectorAll('.analytics-tab-btn');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeAnalyticsTab = btn.dataset.tab;
+            renderActiveChart();
+        });
+    });
 });
 
 document.getElementById('mood-form').addEventListener('submit', async (e) => {

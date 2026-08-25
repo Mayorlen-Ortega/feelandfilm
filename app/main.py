@@ -180,6 +180,8 @@ async def get_status():
     return {"mock_mode": is_mock}
 
 VALID_MOODS = ["Stressed", "Bored", "Excited", "Sad", "Curious"]
+VALID_ATMOSPHERES = ["Relaxing", "Thrilling", "Uplifting", "Thought-provoking"]
+VALID_AGES = ["Kids (0-12)", "Teens (13-17)", "Adults (18+)", "Mixed Family"]
 
 @app.get("/api/stats")
 async def get_stats():
@@ -190,21 +192,87 @@ async def get_stats():
     secure = os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
 
     if not host or host == "mock":
-        return {"labels": [], "data": []}
+        return {
+            "labels": VALID_MOODS,
+            "data": [0] * len(VALID_MOODS),
+            "moods": {"labels": VALID_MOODS, "data": [0] * len(VALID_MOODS)},
+            "atmospheres": {"labels": VALID_ATMOSPHERES, "data": [0] * len(VALID_ATMOSPHERES)},
+            "demographics": {"labels": VALID_AGES, "data": [0] * len(VALID_AGES)},
+            "matrix": {},
+            "kpis": {"top_mood": "N/A", "top_atmosphere": "N/A", "top_demographic": "N/A", "total_sessions": 0}
+        }
     
     try:
         client = clickhouse_connect.get_client(
             host=host, port=port, username=user, password=password, secure=secure
         )
-        result = client.query(
+        
+        # 1. Initial Mood Distribution
+        m_res = client.query(
             "SELECT initial_mood, count() as total FROM audience_sessions "
             "WHERE initial_mood IN ('Stressed', 'Bored', 'Excited', 'Sad', 'Curious') "
             "GROUP BY initial_mood"
         )
-        counts = {row[0]: row[1] for row in result.result_rows}
-        labels = VALID_MOODS
-        data = [counts.get(m, 0) for m in VALID_MOODS]
-        return {"labels": labels, "data": data}
+        m_counts = {row[0]: row[1] for row in m_res.result_rows}
+        mood_data = [m_counts.get(m, 0) for m in VALID_MOODS]
+        total_sessions = sum(mood_data)
+        
+        # 2. Desired Atmosphere Distribution
+        a_res = client.query(
+            "SELECT desired_atmosphere, count() as total FROM audience_sessions "
+            "WHERE desired_atmosphere IN ('Relaxing', 'Thrilling', 'Uplifting', 'Thought-provoking') "
+            "GROUP BY desired_atmosphere"
+        )
+        a_counts = {row[0]: row[1] for row in a_res.result_rows}
+        atm_data = [a_counts.get(a, 0) for a in VALID_ATMOSPHERES]
+        
+        # 3. Audience Demographics
+        d_res = client.query("SELECT audience_age_range, count() as total FROM audience_sessions GROUP BY audience_age_range")
+        d_raw = {row[0]: row[1] for row in d_res.result_rows}
+        d_counts = {
+            "Kids (0-12)": d_raw.get("Kids (0-12)", 0),
+            "Teens (13-17)": d_raw.get("Teens (13-17)", 0) + d_raw.get("Teen", 0),
+            "Adults (18+)": d_raw.get("Adults (18+)", 0) + d_raw.get("Adult", 0),
+            "Mixed Family": d_raw.get("Mixed Family", 0) + d_raw.get("Family", 0),
+        }
+        demo_data = [d_counts.get(k, 0) for k in VALID_AGES]
+        
+        # 4. Emotional Transition Matrix (Initial Mood -> Desired Atmosphere)
+        t_res = client.query(
+            "SELECT initial_mood, desired_atmosphere, count() FROM audience_sessions "
+            "WHERE initial_mood IN ('Stressed', 'Bored', 'Excited', 'Sad', 'Curious') "
+            "AND desired_atmosphere IN ('Relaxing', 'Thrilling', 'Uplifting', 'Thought-provoking') "
+            "GROUP BY initial_mood, desired_atmosphere"
+        )
+        matrix = {m: {a: 0 for a in VALID_ATMOSPHERES} for m in VALID_MOODS}
+        for m, a, c in t_res.result_rows:
+            if m in matrix and a in matrix[m]:
+                matrix[m][a] = c
+                
+        # 5. Executive KPIs
+        top_m = max(m_counts.items(), key=lambda x: x[1])[0] if m_counts else "Stressed"
+        top_m_pct = round((m_counts.get(top_m, 0) / total_sessions * 100)) if total_sessions else 0
+        
+        tot_atm = sum(atm_data)
+        top_a = max(a_counts.items(), key=lambda x: x[1])[0] if a_counts else "Relaxing"
+        top_a_pct = round((a_counts.get(top_a, 0) / tot_atm * 100)) if tot_atm else 0
+        
+        top_d = max(d_counts.items(), key=lambda x: x[1])[0] if d_counts else "Adults (18+)"
+        
+        return {
+            "labels": VALID_MOODS,
+            "data": mood_data,
+            "moods": {"labels": VALID_MOODS, "data": mood_data},
+            "atmospheres": {"labels": VALID_ATMOSPHERES, "data": atm_data},
+            "demographics": {"labels": VALID_AGES, "data": demo_data},
+            "matrix": matrix,
+            "kpis": {
+                "top_mood": f"{top_m} ({top_m_pct}%)",
+                "top_atmosphere": f"{top_a} ({top_a_pct}%)",
+                "top_demographic": top_d,
+                "total_sessions": total_sessions
+            }
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

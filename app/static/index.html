@@ -84,7 +84,43 @@
 
 
                 <div class="card chart-card">
-                    <h3>Historical Audience Moods</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <h3 style="margin-bottom: 0; border-bottom: none;"><i class="fas fa-chart-pie"></i> Audience Emotional Intelligence (ClickHouse OLAP)</h3>
+                        <span style="font-size: 0.8rem; color: var(--accent);"><i class="fas fa-bolt"></i> Real-time Analytics</span>
+                    </div>
+
+                    <!-- Executive KPI Badges -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-icon"><i class="fas fa-theater-masks"></i></div>
+                            <div class="kpi-value" id="kpi-mood">Loading...</div>
+                            <div class="kpi-label">Top Initial Mood</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon"><i class="fas fa-compass"></i></div>
+                            <div class="kpi-value" id="kpi-atm">Loading...</div>
+                            <div class="kpi-label">Target Atmosphere</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon"><i class="fas fa-users"></i></div>
+                            <div class="kpi-value" id="kpi-demo">Loading...</div>
+                            <div class="kpi-label">Core Demographic</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon"><i class="fas fa-film"></i></div>
+                            <div class="kpi-value" id="kpi-total">0</div>
+                            <div class="kpi-label">Total Curations</div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Metric Tab Switcher -->
+                    <div class="analytics-tabs">
+                        <button class="analytics-tab-btn active" data-tab="matrix"><i class="fas fa-random"></i> Emotional Transition Matrix</button>
+                        <button class="analytics-tab-btn" data-tab="moods"><i class="fas fa-smile"></i> Initial Moods</button>
+                        <button class="analytics-tab-btn" data-tab="atmospheres"><i class="fas fa-cloud-sun"></i> Desired Atmospheres</button>
+                        <button class="analytics-tab-btn" data-tab="demographics"><i class="fas fa-user-friends"></i> Age Demographics</button>
+                    </div>
+
                     <div class="chart-container">
                         <canvas id="moodChart"></canvas>
                     </div>
