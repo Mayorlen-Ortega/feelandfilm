@@ -19,7 +19,7 @@
     - **`sommelier-btn`**: Calls `POST /api/sommelier` to load custom snack and drink pairings.
     - **`watch-btn`**: Calls `GET /api/watch-providers` to load location-based streaming & rental platforms.
     - **`another-option-btn`**: Appends the current title to `excluded_films` and requests a new recommendation.
-  - **Audience Metrics Chart (`#moodChart`)**: Real-time **Chart.js** bar chart populated from `GET /api/stats`.
+  - **Audience Emotional Intelligence Dashboard (`#moodChart`)**: Real-time **Chart.js** multi-metric visualizer with Executive KPI Badges and a 4-tab perspective switcher (*Emotional Transition Matrix*, *Initial Moods*, *Desired Atmospheres*, *Age Demographics*).
 
 ### 2. Backend Gateway (`app/main.py`)
 - **`POST /api/recommend`**:
