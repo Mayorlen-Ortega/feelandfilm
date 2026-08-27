@@ -158,6 +158,38 @@ async def get_poster(title: str):
 # Serve static files for the frontend
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
+import base64
+
+class GoogleAuthRequest(BaseModel):
+    credential: str
+
+@app.get("/api/auth/config")
+async def get_auth_config():
+    return {
+        "google_client_id": os.getenv("GOOGLE_CLIENT_ID", "")
+    }
+
+@app.post("/api/auth/google")
+async def auth_google(request: GoogleAuthRequest):
+    try:
+        parts = request.credential.split(".")
+        if len(parts) >= 2:
+            padded = parts[1] + "=" * ((4 - len(parts[1]) % 4) % 4)
+            payload_json = base64.urlsafe_b64decode(padded).decode("utf-8")
+            payload = json.loads(payload_json)
+            return {
+                "status": "success",
+                "user": {
+                    "email": payload.get("email", ""),
+                    "name": payload.get("name", "Cinephile"),
+                    "picture": payload.get("picture", ""),
+                    "sub": payload.get("sub", "")
+                }
+            }
+        raise ValueError("Invalid credential format")
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 class MoodRequest(BaseModel):
     initial_mood: str
     desired_atmosphere: str
@@ -165,6 +197,8 @@ class MoodRequest(BaseModel):
     theme: str = ""
     slots: int
     excluded_films: list[str] = []
+    user_email: Optional[str] = None
+    user_name: Optional[str] = None
 
 class SoundtrackRequest(BaseModel):
     movie_title: str
@@ -325,8 +359,8 @@ async def get_recommendation(request: MoodRequest):
 
             client.insert(
                 'audience_sessions',
-                [[session_id, db_mood, db_atm, request.audience_age_range]],
-                column_names=['session_id', 'initial_mood', 'desired_atmosphere', 'audience_age_range']
+                [[session_id, db_mood, db_atm, request.audience_age_range, request.user_email or '']],
+                column_names=['session_id', 'initial_mood', 'desired_atmosphere', 'audience_age_range', 'user_email']
             )
 
         # Construct the prompt for the ADK Agent (passes the full free-form user thoughts)

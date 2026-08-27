@@ -38,6 +38,108 @@ body {
     padding: 2rem;
 }
 
+.auth-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 100;
+}
+
+.auth-logged-in {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(43, 33, 28, 0.95);
+    border: 1px solid var(--accent);
+    padding: 6px 14px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    object-fit: cover;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.user-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.user-email {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    line-height: 1.1;
+}
+
+.sign-out-btn {
+    background: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-family: 'Playfair Display', serif;
+    cursor: pointer;
+    margin: 0;
+    width: auto;
+    text-transform: none;
+    letter-spacing: 0;
+    transition: all 0.2s ease;
+}
+
+.sign-out-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    color: #fca5a5;
+    transform: none;
+    box-shadow: none;
+}
+
+.custom-google-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(43, 33, 28, 0.9);
+    border: 1px solid var(--accent);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 0;
+    width: auto;
+    text-transform: none;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.custom-google-btn:hover {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--accent);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(212, 175, 55, 0.25);
+}
+
 header {
     text-align: center;
     margin-bottom: 3rem;

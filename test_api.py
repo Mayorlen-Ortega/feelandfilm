@@ -65,10 +65,19 @@ def test_recommendation_empty_theme():
     else:
         assert "not_found_message" in data["data"]
 
+def test_auth_config_endpoint():
+    """Test the Google auth config endpoint"""
+    response = client.get("/api/auth/config")
+    assert response.status_code == 200
+    data = response.json()
+    assert "google_client_id" in data
+
 if __name__ == "__main__":
     print("Running tests...")
     test_status_endpoint()
     print("[OK] test_status_endpoint passed")
+    test_auth_config_endpoint()
+    print("[OK] test_auth_config_endpoint passed")
     test_stats_endpoint()
     print("[OK] test_stats_endpoint passed")
     test_watch_providers_endpoint()

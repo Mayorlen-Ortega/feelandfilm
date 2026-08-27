@@ -8,11 +8,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=2">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="/static/style.css?v=3">
 </head>
 
 <body>
     <div class="container">
+        <!-- Google Federated Auth Bar -->
+        <div class="auth-bar" id="auth-bar">
+            <div id="logged-out-view" class="auth-logged-out">
+                <div id="google-btn-wrapper">
+                    <button type="button" id="custom-google-btn" class="custom-google-btn">
+                        <i class="fab fa-google"></i> Sign in with Google
+                    </button>
+                </div>
+            </div>
+            <div id="logged-in-view" class="auth-logged-in hidden">
+                <img id="user-avatar" class="user-avatar" src="https://lh3.googleusercontent.com/a/default-user" alt="Avatar">
+                <div class="user-details">
+                    <span id="user-name" class="user-name">Cinephile</span>
+                    <span id="user-email" class="user-email">user@gmail.com</span>
+                </div>
+                <button type="button" id="sign-out-btn" class="sign-out-btn" title="Sign Out">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </button>
+            </div>
+        </div>
+
         <header>
             <img src="https://media.giphy.com/media/gwffGLhdYHXm5INVOk/giphy.gif" alt="Classic Cinema"
                 style="width: 250px; border-radius: 8px; margin-bottom: 1rem; border: 2px solid var(--accent);">

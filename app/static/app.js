@@ -200,7 +200,146 @@ function renderActiveChart() {
     }
 }
 
+// --- Authentication & User State Management ---
+let currentUser = null;
+
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        return null;
+    }
+}
+
+function updateAuthUI() {
+    const loggedOutView = document.getElementById('logged-out-view');
+    const loggedInView = document.getElementById('logged-in-view');
+    const avatar = document.getElementById('user-avatar');
+    const userName = document.getElementById('user-name');
+    const userEmail = document.getElementById('user-email');
+
+    if (currentUser && currentUser.email) {
+        loggedOutView.classList.add('hidden');
+        loggedInView.classList.remove('hidden');
+        if (avatar) avatar.src = currentUser.picture || 'https://lh3.googleusercontent.com/a/default-user';
+        if (userName) userName.innerText = currentUser.name || 'Cinephile';
+        if (userEmail) userEmail.innerText = currentUser.email;
+    } else {
+        loggedOutView.classList.remove('hidden');
+        loggedInView.classList.add('hidden');
+    }
+}
+
+async function handleGoogleCredentialResponse(response) {
+    if (!response || !response.credential) return;
+    try {
+        const res = await fetch('/api/auth/google', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ credential: response.credential })
+        });
+        const data = await res.json();
+        if (data.status === 'success' && data.user) {
+            currentUser = data.user;
+            localStorage.setItem('feelandfilm_user', JSON.stringify(currentUser));
+            updateAuthUI();
+        } else {
+            // Fallback JWT parse on client
+            const payload = parseJwt(response.credential);
+            if (payload) {
+                currentUser = {
+                    email: payload.email,
+                    name: payload.name || 'Cinephile',
+                    picture: payload.picture || '',
+                    sub: payload.sub
+                };
+                localStorage.setItem('feelandfilm_user', JSON.stringify(currentUser));
+                updateAuthUI();
+            }
+        }
+    } catch (e) {
+        console.error("Google Auth verification failed:", e);
+    }
+}
+
+window.handleGoogleCredentialResponse = handleGoogleCredentialResponse;
+
+function signOut() {
+    currentUser = null;
+    localStorage.removeItem('feelandfilm_user');
+    if (window.google && google.accounts && google.accounts.id) {
+        google.accounts.id.disableAutoSelect();
+    }
+    updateAuthUI();
+}
+
+async function initAuth() {
+    // Restore session from localStorage
+    try {
+        const stored = localStorage.getItem('feelandfilm_user');
+        if (stored) {
+            currentUser = JSON.parse(stored);
+            updateAuthUI();
+        }
+    } catch (e) {}
+
+    const signOutBtn = document.getElementById('sign-out-btn');
+    if (signOutBtn) {
+        signOutBtn.addEventListener('click', signOut);
+    }
+
+    const customGoogleBtn = document.getElementById('custom-google-btn');
+
+    try {
+        const res = await fetch('/api/auth/config');
+        const config = await res.json();
+        const clientId = config.google_client_id;
+
+        if (clientId && window.google && google.accounts && google.accounts.id) {
+            google.accounts.id.initialize({
+                client_id: clientId,
+                callback: handleGoogleCredentialResponse,
+                auto_select: false
+            });
+
+            if (customGoogleBtn) {
+                customGoogleBtn.addEventListener('click', () => {
+                    google.accounts.id.prompt();
+                });
+            }
+        } else {
+            // Fallback demo sign in if no client_id is set yet
+            if (customGoogleBtn) {
+                customGoogleBtn.addEventListener('click', () => {
+                    if (window.google && google.accounts && google.accounts.id && clientId) {
+                        google.accounts.id.prompt();
+                    } else {
+                        const email = prompt("Enter your Google Account email for demo session (or configure GOOGLE_CLIENT_ID in .env):", "cinephile@gmail.com");
+                        if (email) {
+                            currentUser = {
+                                email: email.trim(),
+                                name: email.split('@')[0].toUpperCase(),
+                                picture: "https://lh3.googleusercontent.com/a/default-user"
+                            };
+                            localStorage.setItem('feelandfilm_user', JSON.stringify(currentUser));
+                            updateAuthUI();
+                        }
+                    }
+                });
+            }
+        }
+    } catch (e) {
+        console.error("Failed to load auth config", e);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    initAuth();
     loadStats();
 
     // Tab switcher events
@@ -239,7 +378,8 @@ document.getElementById('mood-form').addEventListener('submit', async (e) => {
         audience_age_range: document.getElementById('audience_age_range').value,
         theme: document.getElementById('theme') ? document.getElementById('theme').value : "",
         slots: 1,
-        excluded_films: allExcluded
+        excluded_films: allExcluded,
+        user_email: currentUser ? currentUser.email : ""
     };
 
     try {
