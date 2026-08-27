@@ -165,6 +165,7 @@ class GoogleAuthRequest(BaseModel):
 
 @app.get("/api/auth/config")
 async def get_auth_config():
+    load_dotenv(override=True)
     return {
         "google_client_id": os.getenv("GOOGLE_CLIENT_ID", "")
     }

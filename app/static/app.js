@@ -367,7 +367,19 @@ async function initAuth() {
                 auto_select: false
             });
 
-            // Render standard Google button into modal wrapper
+            // Render official Google button into header
+            const headerGsiWrapper = document.getElementById('google-btn-wrapper');
+            if (headerGsiWrapper) {
+                headerGsiWrapper.innerHTML = '';
+                google.accounts.id.renderButton(headerGsiWrapper, {
+                    theme: 'filled_black',
+                    size: 'medium',
+                    shape: 'pill',
+                    text: 'signin_with'
+                });
+            }
+
+            // Also render into modal wrapper
             const modalGsiWrapper = document.getElementById('modal-gsi-wrapper');
             if (modalGsiWrapper) {
                 google.accounts.id.renderButton(modalGsiWrapper, {
@@ -377,6 +389,9 @@ async function initAuth() {
                     text: 'signin_with'
                 });
             }
+
+            // Optional One Tap prompt
+            google.accounts.id.prompt();
         }
     } catch (e) {
         console.error("Failed to load auth config", e);
