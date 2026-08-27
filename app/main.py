@@ -17,24 +17,25 @@ load_dotenv(override=True)
 
 from app.agent import agent, soundtrack_agent, sommelier_agent
 
-async def query_ollama_fallback(prompt: str, system_prompt: str) -> str:
+async def query_ollama_fallback(prompt: str, system_prompt: str, format_json: bool = True) -> str:
     def fetch():
         url = "http://localhost:11434/api/generate"
         data = {
             "model": "llama3.2:3b",
             "prompt": prompt,
             "system": system_prompt,
-            "stream": False,
-            "format": "json"
+            "stream": False
         }
+        if format_json:
+            data["format"] = "json"
         req = urllib.request.Request(url, data=json.dumps(data).encode("utf-8"), headers={"Content-Type": "application/json"})
         try:
             with urllib.request.urlopen(req) as response:
                 result = json.loads(response.read().decode("utf-8"))
-                return result.get("response", "{}")
+                return result.get("response", "{}" if format_json else "")
         except Exception as e:
             print("Ollama Error:", e)
-            return "{}"
+            return "{}" if format_json else ""
     return await asyncio.to_thread(fetch)
 
 app = FastAPI(title="Feel & Film")
@@ -461,8 +462,8 @@ async def get_soundtrack(request: SoundtrackRequest):
 async def get_sommelier(request: SoundtrackRequest):
     # If running in a local environment, bypass Gemini and use the local model directly
     if os.getenv("USE_OLLAMA", "false").lower() == "true":
-        sys_prompt = """You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences. DO NOT output JSON, just plain text."""
-        raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt)
+        sys_prompt = """You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences. If recommending a specific regional beverage or food, add a brief clarification in parentheses like (cocktail) or (snack). DO NOT output JSON, just plain text."""
+        raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt, format_json=False)
         if raw_output and raw_output.strip() not in ("{}", ""):
             def _clean_output(text: str) -> str:
                 txt = text.strip()
