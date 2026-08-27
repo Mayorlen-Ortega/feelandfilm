@@ -26,40 +26,29 @@
                 <h2>Configure Audience Profile</h2>
                 <form id="mood-form">
                     <div class="form-group">
-                        <label for="initial_mood">Current Audience Mood</label>
-                        <select id="initial_mood" required>
-                            <option value="Stressed">Stressed / After-work</option>
-                            <option value="Bored">Bored / Seeking novelty</option>
-                            <option value="Excited">Excited / Friday night</option>
-                            <option value="Sad">Melancholy / Reflective</option>
-                            <option value="Curious">Curious / Cinephile</option>
-                        </select>
+                        <label for="initial_mood">How are you feeling?</label>
+                        <textarea id="initial_mood" class="glass-input" rows="3" placeholder="Tell me what's on your mind..." required></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="desired_atmosphere">Desired Atmosphere</label>
-                        <select id="desired_atmosphere" required>
-                            <option value="Relaxing">Relaxing / Escapism</option>
-                            <option value="Thrilling">Thrilling / Edge-of-seat</option>
-                            <option value="Uplifting">Uplifting / Feel-good</option>
-                            <option value="Thought-provoking">Thought-provoking / Challenging</option>
-                        </select>
+                        <label for="desired_atmosphere">What kind of cinematic experience are you looking for?</label>
+                        <textarea id="desired_atmosphere" class="glass-input" rows="3" placeholder="Describe the experience you're looking for..." required></textarea>
                     </div>
 
-                        <div class="form-group">
-                            <label>Audience Age Group</label>
-                            <select id="audience_age_range" class="glass-input">
-                                <option value="Kids (0-12)">Kids (0-12)</option>
-                                <option value="Teens (13-17)">Teens (13-17)</option>
-                                <option value="Adults (18+)">Adults (18+)</option>
-                                <option value="Mixed Family">Mixed Family</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label for="theme">Anything else? (optional)</label>
+                        <textarea id="theme" class="glass-input" rows="2" placeholder="Tell me anything else that might help..."></textarea>
+                    </div>
 
-                        <div class="form-group">
-                            <label>Specific Theme or Director (Optional)</label>
-                            <input type="text" id="theme" class="glass-input" placeholder="e.g. zombies, space, Tarantino">
-                        </div><!-- Intensity removed -->
+                    <div class="form-group">
+                        <label for="audience_age_range">Audience Age Group</label>
+                        <select id="audience_age_range" class="glass-input">
+                            <option value="Adults (18+)" selected>Adults (18+)</option>
+                            <option value="Kids (0-12)">Kids (0-12)</option>
+                            <option value="Teens (13-17)">Teens (13-17)</option>
+                            <option value="Mixed Family">Mixed Family</option>
+                        </select>
+                    </div>
 
                     <button type="submit" id="generate-btn">
                         <span class="btn-text">Generate Slate</span>

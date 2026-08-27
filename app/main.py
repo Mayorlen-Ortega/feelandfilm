@@ -278,6 +278,32 @@ async def get_stats():
 
 from fastapi.responses import HTMLResponse, StreamingResponse
 
+def map_to_canonical_mood(text: str) -> str:
+    t = text.lower()
+    if any(k in t for k in ["stress", "exhaust", "tired", "burn", "work", "overwhelm", "busy", "ansio", "estrés", "cansad"]):
+        return "Stressed"
+    if any(k in t for k in ["bore", "dull", "nothing", "routine", "monoton", "aburr"]):
+        return "Bored"
+    if any(k in t for k in ["excit", "happy", "party", "energy", "hype", "friday", "fun", "alegr", "emocion", "feliz"]):
+        return "Excited"
+    if any(k in t for k in ["sad", "cry", "depress", "melanchol", "blue", "down", "heartbreak", "trist", "llor"]):
+        return "Sad"
+    if any(k in t for k in ["curio", "cinephil", "weird", "art", "intellect", "interest", "indie", "cult", "aprender"]):
+        return "Curious"
+    return "Curious"
+
+def map_to_canonical_atmosphere(text: str) -> str:
+    t = text.lower()
+    if any(k in t for k in ["relax", "calm", "cozy", "peace", "chill", "unwind", "escap", "tranquil", "desconec"]):
+        return "Relaxing"
+    if any(k in t for k in ["thrill", "action", "suspense", "scary", "horror", "edge", "adrenalin", "shock", "intense", "misterio"]):
+        return "Thrilling"
+    if any(k in t for k in ["uplift", "feel-good", "happy", "laugh", "comedy", "inspire", "optimis", "warm", "joy", "reir", "alegr"]):
+        return "Uplifting"
+    if any(k in t for k in ["thought", "deep", "mind", "twist", "drama", "philosoph", "complex", "mystery", "reflex", "pensar"]):
+        return "Thought-provoking"
+    return "Relaxing"
+
 @app.post("/api/recommend")
 async def get_recommendation(request: MoodRequest):
     try:
@@ -293,13 +319,16 @@ async def get_recommendation(request: MoodRequest):
                 secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
             )
             session_id = str(uuid.uuid4())
+            db_mood = request.initial_mood if request.initial_mood in VALID_MOODS else map_to_canonical_mood(request.initial_mood)
+            db_atm = request.desired_atmosphere if request.desired_atmosphere in VALID_ATMOSPHERES else map_to_canonical_atmosphere(request.desired_atmosphere)
+
             client.insert(
                 'audience_sessions',
-                [[session_id, request.initial_mood, request.desired_atmosphere, request.audience_age_range]],
+                [[session_id, db_mood, db_atm, request.audience_age_range]],
                 column_names=['session_id', 'initial_mood', 'desired_atmosphere', 'audience_age_range']
             )
 
-        # Construct the prompt for the ADK Agent
+        # Construct the prompt for the ADK Agent (passes the full free-form user thoughts)
         prompt = json.dumps(request.dict())
         
         # Use Ollama locally if enabled via USE_OLLAMA
