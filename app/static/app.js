@@ -235,6 +235,16 @@ function updateAuthUI() {
     }
 }
 
+function openAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
 async function handleGoogleCredentialResponse(response) {
     if (!response || !response.credential) return;
     try {
@@ -248,8 +258,8 @@ async function handleGoogleCredentialResponse(response) {
             currentUser = data.user;
             localStorage.setItem('feelandfilm_user', JSON.stringify(currentUser));
             updateAuthUI();
+            closeAuthModal();
         } else {
-            // Fallback JWT parse on client
             const payload = parseJwt(response.credential);
             if (payload) {
                 currentUser = {
@@ -260,6 +270,7 @@ async function handleGoogleCredentialResponse(response) {
                 };
                 localStorage.setItem('feelandfilm_user', JSON.stringify(currentUser));
                 updateAuthUI();
+                closeAuthModal();
             }
         }
     } catch (e) {
@@ -294,6 +305,42 @@ async function initAuth() {
     }
 
     const customGoogleBtn = document.getElementById('custom-google-btn');
+    if (customGoogleBtn) {
+        customGoogleBtn.addEventListener('click', openAuthModal);
+    }
+
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeAuthModal);
+    }
+
+    const modalOverlay = document.getElementById('auth-modal');
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeAuthModal();
+        });
+    }
+
+    const quickForm = document.getElementById('quick-login-form');
+    if (quickForm) {
+        quickForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('login-email');
+            const nameInput = document.getElementById('login-name');
+            if (emailInput && emailInput.value) {
+                const email = emailInput.value.trim();
+                const name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : email.split('@')[0].toUpperCase();
+                currentUser = {
+                    email: email,
+                    name: name,
+                    picture: "https://lh3.googleusercontent.com/a/default-user"
+                };
+                localStorage.setItem('feelandfilm_user', JSON.stringify(currentUser));
+                updateAuthUI();
+                closeAuthModal();
+            }
+        });
+    }
 
     try {
         const res = await fetch('/api/auth/config');
@@ -307,29 +354,14 @@ async function initAuth() {
                 auto_select: false
             });
 
-            if (customGoogleBtn) {
-                customGoogleBtn.addEventListener('click', () => {
-                    google.accounts.id.prompt();
-                });
-            }
-        } else {
-            // Fallback demo sign in if no client_id is set yet
-            if (customGoogleBtn) {
-                customGoogleBtn.addEventListener('click', () => {
-                    if (window.google && google.accounts && google.accounts.id && clientId) {
-                        google.accounts.id.prompt();
-                    } else {
-                        const email = prompt("Enter your Google Account email for demo session (or configure GOOGLE_CLIENT_ID in .env):", "cinephile@gmail.com");
-                        if (email) {
-                            currentUser = {
-                                email: email.trim(),
-                                name: email.split('@')[0].toUpperCase(),
-                                picture: "https://lh3.googleusercontent.com/a/default-user"
-                            };
-                            localStorage.setItem('feelandfilm_user', JSON.stringify(currentUser));
-                            updateAuthUI();
-                        }
-                    }
+            // Render standard Google button into modal wrapper
+            const modalGsiWrapper = document.getElementById('modal-gsi-wrapper');
+            if (modalGsiWrapper) {
+                google.accounts.id.renderButton(modalGsiWrapper, {
+                    theme: 'filled_black',
+                    size: 'large',
+                    shape: 'pill',
+                    text: 'signin_with'
                 });
             }
         }
