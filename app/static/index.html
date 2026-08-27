@@ -27,12 +27,12 @@
                 <form id="mood-form">
                     <div class="form-group">
                         <label for="initial_mood">How are you feeling?</label>
-                        <textarea id="initial_mood" class="glass-input" rows="3" placeholder="Tell me what's on your mind..." required></textarea>
+                        <textarea id="initial_mood" class="glass-input" rows="3" placeholder="Tell me what's on your mind..." required oninvalid="this.setCustomValidity('Please fill out this field.')" oninput="this.setCustomValidity('')"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="desired_atmosphere">What kind of cinematic experience are you looking for?</label>
-                        <textarea id="desired_atmosphere" class="glass-input" rows="3" placeholder="Describe the experience you're looking for..." required></textarea>
+                        <textarea id="desired_atmosphere" class="glass-input" rows="3" placeholder="Describe the experience you're looking for..." required oninvalid="this.setCustomValidity('Please fill out this field.')" oninput="this.setCustomValidity('')"></textarea>
                     </div>
 
                     <div class="form-group">
