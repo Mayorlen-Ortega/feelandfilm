@@ -216,6 +216,14 @@ function parseJwt(token) {
     }
 }
 
+function getAvatarUrl(user) {
+    if (user && user.picture && user.picture.startsWith('http') && !user.picture.includes('default-user')) {
+        return user.picture;
+    }
+    const name = (user && user.name) ? user.name : 'C';
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=d4af37&color=1a1714&bold=true&rounded=true`;
+}
+
 function updateAuthUI() {
     const loggedOutView = document.getElementById('logged-out-view');
     const loggedInView = document.getElementById('logged-in-view');
@@ -226,7 +234,12 @@ function updateAuthUI() {
     if (currentUser && currentUser.email) {
         loggedOutView.classList.add('hidden');
         loggedInView.classList.remove('hidden');
-        if (avatar) avatar.src = currentUser.picture || 'https://lh3.googleusercontent.com/a/default-user';
+        if (avatar) {
+            avatar.onerror = () => {
+                avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'C')}&background=d4af37&color=1a1714&bold=true&rounded=true`;
+            };
+            avatar.src = getAvatarUrl(currentUser);
+        }
         if (userName) userName.innerText = currentUser.name || 'Cinephile';
         if (userEmail) userEmail.innerText = currentUser.email;
     } else {
