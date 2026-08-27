@@ -462,7 +462,7 @@ async def get_soundtrack(request: SoundtrackRequest):
 async def get_sommelier(request: SoundtrackRequest):
     # If running in a local environment, bypass Gemini and use the local model directly
     if os.getenv("USE_OLLAMA", "false").lower() == "true":
-        sys_prompt = """You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences. If recommending a specific regional beverage or food, add a brief clarification in parentheses like (cocktail) or (snack). DO NOT output JSON, just plain text."""
+        sys_prompt = """You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences in English. If recommending a specific regional beverage or food, add a brief clarification in parentheses strictly in English like (cocktail) or (Cuban rum drink). DO NOT output JSON, just plain text in English."""
         raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt, format_json=False)
         if raw_output and raw_output.strip() not in ("{}", ""):
             def _clean_output(text: str) -> str:
