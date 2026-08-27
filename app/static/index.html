@@ -17,6 +17,7 @@
         <!-- Google Federated Auth Bar -->
         <div class="auth-bar" id="auth-bar">
             <div id="logged-out-view" class="auth-logged-out">
+                <span class="guest-notice" id="guest-notice"><i class="fas fa-info-circle"></i> Guest Mode &bull; History not saved</span>
                 <div id="google-btn-wrapper">
                     <button type="button" id="custom-google-btn" class="custom-google-btn">
                         <i class="fab fa-google"></i> Sign in with Google
@@ -105,6 +106,12 @@
                             <span class="badge-dot"></span>
                             <span id="archive-records-count">0 Curations Preserved</span>
                         </div>
+                    </div>
+
+                    <!-- Guest Mode Warning Banner -->
+                    <div id="archive-guest-banner" class="archive-guest-banner">
+                        <i class="fas fa-user-lock"></i>
+                        <span><strong>Guest Mode Active:</strong> Your curated films are not stored in your archive. <a href="javascript:void(0)" class="guest-signin-link" onclick="openAuthModal()">Sign in with Google</a> to preserve your personal film journal.</span>
                     </div>
 
                     <!-- Filing Cabinet Drawer Tabs (Vintage Brass Tag Style) -->

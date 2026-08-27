@@ -136,10 +136,12 @@ function updateAuthUI() {
     const avatar = document.getElementById('user-avatar');
     const userName = document.getElementById('user-name');
     const userEmail = document.getElementById('user-email');
+    const archiveGuestBanner = document.getElementById('archive-guest-banner');
 
     if (currentUser && currentUser.email) {
         loggedOutView.classList.add('hidden');
         loggedInView.classList.remove('hidden');
+        if (archiveGuestBanner) archiveGuestBanner.classList.add('hidden');
         if (avatar) {
             avatar.onerror = () => {
                 avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'C')}&background=d4af37&color=1a1714&bold=true&rounded=true`;
@@ -151,6 +153,7 @@ function updateAuthUI() {
     } else {
         loggedOutView.classList.remove('hidden');
         loggedInView.classList.add('hidden');
+        if (archiveGuestBanner) archiveGuestBanner.classList.remove('hidden');
     }
 
     loadCinematheque();
