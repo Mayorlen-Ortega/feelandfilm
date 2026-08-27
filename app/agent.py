@@ -82,6 +82,9 @@ agent = Agent(
     
     Step 2: Output ONLY a valid JSON object matching the following structure (no markdown fences, just the raw JSON):
     {
+      "detected_mood_tags": ["Tired", "Sad", "Stressed"],
+      "primary_mood": "Stressed",
+      "target_shift": "Uplifting & Comfort",
       "slate": [
         {
           "title": "Exact movie title",

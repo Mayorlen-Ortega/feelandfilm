@@ -343,9 +343,59 @@ def map_to_canonical_atmosphere(text: str) -> str:
 @app.post("/api/recommend")
 async def get_recommendation(request: MoodRequest):
     try:
-        # Save historical request to ClickHouse
+        # Construct the prompt for the ADK Agent (passes the full free-form user thoughts)
+        prompt = json.dumps(request.dict())
+        data = None
+        tool_calls = []
+        
+        # Use Ollama locally if enabled via USE_OLLAMA
+        if os.getenv("USE_OLLAMA", "false").lower() == "true":
+            sys_prompt = """You are a film curator. Return exactly 1 film. Provide detailed text.
+CRITICAL: If audience_age_range is 'Kids (0-12)', NEVER recommend R-rated or mature films. Only G or PG.
+Output ONLY valid JSON matching:
+{
+  \"detected_mood_tags\": [\"Tag1\", \"Tag2\"],
+  \"primary_mood\": \"Mood\",
+  \"target_shift\": \"Atmosphere\",
+  \"slate\": [{\"title\": \"\", \"director\": \"\", \"runtime\": 0, \"mood_tags\": [], \"intensity\": 0, \"synopsis\": \"a punchy 1-2 sentence introduction\", \"fun_fact\": \"short highly interesting fun fact 1-2 sentences\", \"reasoning\": \"concise 1-2 sentence explanation of why this fits\", \"confidence_score\": 0.0}],
+  \"overall_evidence\": \"\",
+  \"not_found_message\": \"If theme and mood contradict completely, put error message here and make slate []\"
+}"""
+            raw_output = await query_ollama_fallback(prompt, sys_prompt)
+            try:
+                data = json.loads(raw_output.strip())
+            except Exception:
+                data = {"not_found_message": "Technical error in Ollama fallback.", "slate": []}
+            tool_calls = ["Ollama Used Directly"]
+        else:
+            # Default path uses Gemini via ADK agent
+            runner = Runner(agent=agent, session_service=InMemorySessionService(), app_name="film_curator", auto_create_session=True)
+            content = Content(role="user", parts=[Part(text=prompt)])
+            raw_output = ""
+            async for event in runner.run_async(user_id="default", session_id="default", new_message=content):
+                parts = []
+                if hasattr(event, "content") and event.content:
+                    parts = getattr(event.content, "parts", [])
+                elif hasattr(event, "data") and hasattr(event.data, "message"):
+                    parts = getattr(event.data.message, "parts", [])
+                    
+                for part in parts:
+                    if hasattr(part, "text") and part.text:
+                        raw_output += part.text
+                    if hasattr(part, "function_call") and part.function_call:
+                        tool_calls.append(str(part.function_call))
+                        
+            # Extract JSON block robustly
+            start_idx = raw_output.find('{')
+            end_idx = raw_output.rfind('}') + 1
+            if start_idx != -1 and end_idx != 0 and end_idx > start_idx:
+                raw_output = raw_output[start_idx:end_idx]
+                
+            data = json.loads(raw_output.strip())
+
+        # Save historical curation with multi-label emotional tags into ClickHouse
         host = os.getenv("CLICKHOUSE_HOST", "")
-        if host and host != "mock":
+        if host and host != "mock" and data:
             import uuid
             client = clickhouse_connect.get_client(
                 host=host, 
@@ -358,59 +408,54 @@ async def get_recommendation(request: MoodRequest):
             db_mood = request.initial_mood if request.initial_mood in VALID_MOODS else map_to_canonical_mood(request.initial_mood)
             db_atm = request.desired_atmosphere if request.desired_atmosphere in VALID_ATMOSPHERES else map_to_canonical_atmosphere(request.desired_atmosphere)
 
+            film_title = ""
+            film_director = ""
+            film_reasoning = ""
+            if "slate" in data and len(data["slate"]) > 0:
+                film = data["slate"][0]
+                film_title = film.get("title", "")
+                film_director = film.get("director", "")
+                film_reasoning = film.get("reasoning", "")
+
+            # Extract detected emotional tags from agent
+            detected_tags = data.get("detected_mood_tags", [])
+            if not isinstance(detected_tags, list) or len(detected_tags) == 0:
+                detected_tags = [db_mood]
+
+            primary_mood = data.get("primary_mood", db_mood) or db_mood
+
+            # Fetch poster to preserve in archive
+            poster_url = await fetch_poster_url_internal(film_title) if film_title else ""
+
             client.insert(
                 'audience_sessions',
-                [[session_id, db_mood, db_atm, request.audience_age_range, request.user_email or '']],
-                column_names=['session_id', 'initial_mood', 'desired_atmosphere', 'audience_age_range', 'user_email']
+                [[
+                    session_id, 
+                    db_mood, 
+                    db_atm, 
+                    request.audience_age_range, 
+                    request.user_email or '',
+                    film_title,
+                    film_director,
+                    poster_url,
+                    film_reasoning,
+                    detected_tags,
+                    primary_mood
+                ]],
+                column_names=[
+                    'session_id', 
+                    'initial_mood', 
+                    'desired_atmosphere', 
+                    'audience_age_range', 
+                    'user_email',
+                    'film_title',
+                    'film_director',
+                    'poster_url',
+                    'reasoning',
+                    'detected_tags',
+                    'primary_mood'
+                ]
             )
-
-        # Construct the prompt for the ADK Agent (passes the full free-form user thoughts)
-        prompt = json.dumps(request.dict())
-        
-        # Use Ollama locally if enabled via USE_OLLAMA
-        if os.getenv("USE_OLLAMA", "false").lower() == "true":
-            sys_prompt = """You are a film curator. Return exactly 1 film. Provide detailed text.
-CRITICAL: If audience_age_range is 'Kids (0-12)', NEVER recommend R-rated or mature films. Only G or PG.
-Output ONLY valid JSON matching:
-{
-  \"slate\": [{\"title\": \"\", \"director\": \"\", \"runtime\": 0, \"mood_tags\": [], \"intensity\": 0, \"synopsis\": \"a punchy 1-2 sentence introduction\", \"fun_fact\": \"short highly interesting fun fact 1-2 sentences\", \"reasoning\": \"concise 1-2 sentence explanation of why this fits\", \"confidence_score\": 0.0}],
-  \"overall_evidence\": \"\",
-  \"not_found_message\": \"If theme and mood contradict completely, put error message here and make slate []\"
-}"""
-            raw_output = await query_ollama_fallback(prompt, sys_prompt)
-            try:
-                data = json.loads(raw_output.strip())
-            except Exception:
-                data = {"not_found_message": "Technical error in Ollama fallback.", "slate": []}
-            return {"status": "success", "data": data, "agent_audit_trail": ["Ollama Used Directly"]}
-        
-        # Default path uses Gemini via ADK agent
-        runner = Runner(agent=agent, session_service=InMemorySessionService(), app_name="film_curator", auto_create_session=True)
-        content = Content(role="user", parts=[Part(text=prompt)])
-        raw_output = ""
-        tool_calls = []
-        async for event in runner.run_async(user_id="default", session_id="default", new_message=content):
-            parts = []
-            if hasattr(event, "content") and event.content:
-                parts = getattr(event.content, "parts", [])
-            elif hasattr(event, "data") and hasattr(event.data, "message"):
-                parts = getattr(event.data.message, "parts", [])
-                
-            for part in parts:
-                if hasattr(part, "text") and part.text:
-                    raw_output += part.text
-                if hasattr(part, "function_call") and part.function_call:
-                    tool_calls.append(str(part.function_call))
-                    
-        # Extract JSON block robustly
-        start_idx = raw_output.find('{')
-        end_idx = raw_output.rfind('}') + 1
-        if start_idx != -1 and end_idx != 0 and end_idx > start_idx:
-            raw_output = raw_output[start_idx:end_idx]
-            
-        data = json.loads(raw_output.strip())
-        
-        # Poster fetching is now handled asynchronously by the frontend via /api/poster
         
         return {
             "status": "success",
@@ -442,6 +487,85 @@ Output ONLY valid JSON matching:
                         
             return {"status": "success", "data": data, "agent_audit_trail": ["Ollama Fallback Failed - Cinematic Error"]}
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/cinematheque")
+async def get_cinematheque(user_email: str = ""):
+    host = os.getenv("CLICKHOUSE_HOST", "")
+    port = int(os.getenv("CLICKHOUSE_PORT", "8123"))
+    user = os.getenv("CLICKHOUSE_USER", "default")
+    password = os.getenv("CLICKHOUSE_PASSWORD", "")
+    secure = os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
+
+    if not host or host == "mock":
+        return {"status": "success", "count": 0, "records": []}
+
+    try:
+        client = clickhouse_connect.get_client(
+            host=host, port=port, username=user, password=password, secure=secure
+        )
+        
+        where_clauses = ["film_title != ''"]
+        params = {}
+        if user_email and user_email.strip():
+            where_clauses.append("user_email = %(user_email)s")
+            params["user_email"] = user_email.strip()
+        
+        where_str = " AND ".join(where_clauses)
+        
+        query = f"""
+            SELECT 
+                session_id, 
+                timestamp, 
+                film_title, 
+                film_director, 
+                poster_url, 
+                reasoning, 
+                detected_tags, 
+                primary_mood, 
+                initial_mood, 
+                desired_atmosphere,
+                user_email
+            FROM audience_sessions 
+            WHERE {where_str}
+            ORDER BY timestamp DESC 
+            LIMIT 60
+        """
+        
+        res = client.query(query, parameters=params)
+        
+        records = []
+        for row in res.result_rows:
+            dt = row[1]
+            formatted_date = dt.strftime("%b %d, %Y - %H:%M") if hasattr(dt, 'strftime') else str(dt)
+            
+            tags = row[6] if isinstance(row[6], (list, tuple)) else []
+            if not tags and row[7]:
+                tags = [row[7]]
+            elif not tags and row[8]:
+                tags = [row[8]]
+                
+            records.append({
+                "session_id": row[0],
+                "timestamp": formatted_date,
+                "title": row[2],
+                "director": row[3],
+                "poster_url": row[4],
+                "reasoning": row[5],
+                "detected_tags": tags,
+                "primary_mood": row[7] or "Curated",
+                "user_input": row[8],
+                "desired_shift": row[9],
+                "user_email": row[10]
+            })
+            
+        return {
+            "status": "success",
+            "count": len(records),
+            "records": records
+        }
+    except Exception as e:
+        print("Cinematheque query error:", e)
+        return {"status": "error", "message": str(e), "records": []}
 
 @app.post("/api/soundtrack")
 async def get_soundtrack(request: SoundtrackRequest):

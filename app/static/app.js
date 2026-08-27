@@ -1,203 +1,109 @@
-// Mock status check removed - Real connection is now active
+// --- The Cinémathèque Archive Engine ---
+let allArchiveRecords = [];
+let activeArchiveDrawer = 'ALL';
 
-let moodChartInstance = null;
-let currentAnalyticsData = null;
-let activeAnalyticsTab = 'matrix';
-
-async function loadStats() {
+async function loadCinematheque() {
     try {
-        const response = await fetch('/api/stats');
-        const stats = await response.json();
-        currentAnalyticsData = stats;
-
-        // Update Executive KPI Badges
-        if (stats.kpis) {
-            const moodEl = document.getElementById('kpi-mood');
-            const atmEl = document.getElementById('kpi-atm');
-            const demoEl = document.getElementById('kpi-demo');
-            const totalEl = document.getElementById('kpi-total');
-            
-            if (moodEl) moodEl.innerText = stats.kpis.top_mood || 'N/A';
-            if (atmEl) atmEl.innerText = stats.kpis.top_atmosphere || 'N/A';
-            if (demoEl) demoEl.innerText = stats.kpis.top_demographic || 'N/A';
-            if (totalEl) totalEl.innerText = stats.kpis.total_sessions || 0;
+        const userEmail = (currentUser && currentUser.email) ? encodeURIComponent(currentUser.email) : '';
+        const response = await fetch(`/api/cinematheque?user_email=${userEmail}`);
+        const data = await response.json();
+        
+        allArchiveRecords = (data.status === 'success' && data.records) ? data.records : [];
+        
+        // Update count badge
+        const countBadge = document.getElementById('archive-records-count');
+        if (countBadge) {
+            countBadge.innerText = `${allArchiveRecords.length} Curation${allArchiveRecords.length === 1 ? '' : 's'} Preserved`;
         }
-
-        renderActiveChart();
+        
+        renderCinematheque();
     } catch (e) {
-        console.error("Failed to load stats", e);
+        console.error("Failed to load Cinémathèque archive", e);
     }
 }
 
-function renderActiveChart() {
-    if (!currentAnalyticsData) return;
-    const canvas = document.getElementById('moodChart');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (moodChartInstance) moodChartInstance.destroy();
-
-    const stats = currentAnalyticsData;
-
-    if (activeAnalyticsTab === 'matrix') {
-        // 1. Emotional Transition Matrix (Stacked Bar Chart: Initial Mood -> Desired Atmosphere)
-        const moods = stats.labels || ["Stressed", "Bored", "Excited", "Sad", "Curious"];
-        const matrix = stats.matrix || {};
-        const atmospheres = ["Relaxing", "Thrilling", "Uplifting", "Thought-provoking"];
-        const colors = {
-            "Relaxing": { bg: 'rgba(16, 185, 129, 0.75)', border: '#10b981' },
-            "Thrilling": { bg: 'rgba(239, 68, 68, 0.75)', border: '#ef4444' },
-            "Uplifting": { bg: 'rgba(245, 158, 11, 0.75)', border: '#f59e0b' },
-            "Thought-provoking": { bg: 'rgba(139, 92, 246, 0.75)', border: '#8b5cf6' }
-        };
-
-        const datasets = atmospheres.map(atm => ({
-            label: atm,
-            data: moods.map(m => (matrix[m] && matrix[m][atm]) ? matrix[m][atm] : 0),
-            backgroundColor: colors[atm].bg,
-            borderColor: colors[atm].border,
-            borderWidth: 1.5,
-            borderRadius: 4
-        }));
-
-        moodChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: { labels: moods, datasets: datasets },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { stacked: true, ticks: { color: '#e8dcc5', font: { family: 'Cinzel', size: 12 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                    y: { stacked: true, beginAtZero: true, ticks: { color: '#a69882' }, grid: { color: 'rgba(255,255,255,0.08)' } }
-                },
-                plugins: {
-                    legend: { labels: { color: '#e8dcc5', font: { family: 'Playfair Display', size: 11 } } },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                        borderColor: '#d4af37',
-                        borderWidth: 1,
-                        titleFont: { family: 'Cinzel' },
-                        bodyFont: { family: 'Playfair Display' }
-                    }
-                }
-            }
-        });
-
-    } else if (activeAnalyticsTab === 'moods') {
-        // 2. Initial Mood Distribution
-        const moodData = stats.moods || { labels: stats.labels, data: stats.data };
-        const moodColors = [
-            'rgba(249, 115, 22, 0.75)',  // Stressed (Orange)
-            'rgba(100, 116, 139, 0.75)', // Bored (Slate)
-            'rgba(234, 179, 8, 0.75)',   // Excited (Yellow)
-            'rgba(59, 130, 246, 0.75)',   // Sad (Blue)
-            'rgba(168, 85, 247, 0.75)'   // Curious (Purple)
-        ];
-        const borderColors = ['#f97316', '#64748b', '#eab308', '#3b82f6', '#a855f7'];
-
-        moodChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: moodData.labels,
-                datasets: [{
-                    label: 'Audience Requests',
-                    data: moodData.data,
-                    backgroundColor: moodColors,
-                    borderColor: borderColors,
-                    borderWidth: 1.5,
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true, ticks: { color: '#a69882' }, grid: { color: 'rgba(255,255,255,0.08)' } },
-                    x: { ticks: { color: '#e8dcc5', font: { family: 'Cinzel', size: 12 } }, grid: { display: false } }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                        borderColor: '#d4af37',
-                        borderWidth: 1
-                    }
-                }
-            }
-        });
-
-    } else if (activeAnalyticsTab === 'atmospheres') {
-        // 3. Desired Atmospheres (Doughnut Wheel)
-        const atmData = stats.atmospheres || { labels: ["Relaxing", "Thrilling", "Uplifting", "Thought-provoking"], data: [0, 0, 0, 0] };
-        moodChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: atmData.labels,
-                datasets: [{
-                    data: atmData.data,
-                    backgroundColor: [
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(239, 68, 68, 0.8)',
-                        'rgba(245, 158, 11, 0.8)',
-                        'rgba(139, 92, 246, 0.8)'
-                    ],
-                    borderColor: '#1a1714',
-                    borderWidth: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'right', labels: { color: '#e8dcc5', font: { family: 'Playfair Display', size: 12 } } },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                        borderColor: '#d4af37',
-                        borderWidth: 1
-                    }
-                }
-            }
-        });
-
-    } else if (activeAnalyticsTab === 'demographics') {
-        // 4. Age Demographics (Horizontal Bars)
-        const demoData = stats.demographics || { labels: ["Kids (0-12)", "Teens (13-17)", "Adults (18+)", "Mixed Family"], data: [0, 0, 0, 0] };
-        moodChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: demoData.labels,
-                datasets: [{
-                    label: 'Audience Sessions',
-                    data: demoData.data,
-                    backgroundColor: [
-                        'rgba(6, 182, 212, 0.75)',
-                        'rgba(236, 72, 153, 0.75)',
-                        'rgba(234, 179, 8, 0.75)',
-                        'rgba(132, 204, 22, 0.75)'
-                    ],
-                    borderColor: ['#06b6d4', '#ec4899', '#eab308', '#84cc16'],
-                    borderWidth: 1.5,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { beginAtZero: true, ticks: { color: '#a69882' }, grid: { color: 'rgba(255,255,255,0.08)' } },
-                    y: { ticks: { color: '#e8dcc5', font: { family: 'Playfair Display', size: 12 } }, grid: { display: false } }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                        borderColor: '#d4af37',
-                        borderWidth: 1
-                    }
-                }
-            }
-        });
+function matchesDrawer(record, drawer) {
+    if (drawer === 'ALL') return true;
+    const target = drawer.toLowerCase();
+    
+    // Check primary mood
+    if (record.primary_mood && record.primary_mood.toLowerCase().includes(target)) return true;
+    
+    // Check detected tags
+    if (record.detected_tags && Array.isArray(record.detected_tags)) {
+        if (record.detected_tags.some(tag => tag.toLowerCase().includes(target))) return true;
     }
+    
+    // Check user emotional note
+    if (record.user_input && record.user_input.toLowerCase().includes(target)) return true;
+    
+    return false;
+}
+
+function renderCinematheque() {
+    const grid = document.getElementById('archive-grid');
+    const emptyState = document.getElementById('archive-empty-state');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    const filtered = allArchiveRecords.filter(r => matchesDrawer(r, activeArchiveDrawer));
+    
+    if (filtered.length === 0) {
+        if (emptyState) {
+            emptyState.classList.remove('hidden');
+            const emptyTitle = document.getElementById('empty-title');
+            const emptyDesc = document.getElementById('empty-desc');
+            if (activeArchiveDrawer === 'ALL') {
+                if (emptyTitle) emptyTitle.innerText = "Your Film Vault is Empty";
+                if (emptyDesc) emptyDesc.innerText = "Discover your first film using the emotional curator above to begin filing your personal cinémathèque records.";
+            } else {
+                if (emptyTitle) emptyTitle.innerText = `No Films in [${activeArchiveDrawer}] Drawer`;
+                if (emptyDesc) emptyDesc.innerText = `You haven't archived any films matching "${activeArchiveDrawer}" yet. Describe how you feel above to file one here!`;
+            }
+        }
+        return;
+    }
+    
+    if (emptyState) emptyState.classList.add('hidden');
+    
+    filtered.forEach(record => {
+        const card = document.createElement('div');
+        card.className = 'archive-record-card';
+        
+        const posterSrc = record.poster_url || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80';
+        
+        const tagsHtml = (record.detected_tags && record.detected_tags.length > 0)
+            ? record.detected_tags.map(t => `<span class="tag-pill">#${t}</span>`).join('')
+            : `<span class="tag-pill">#${record.primary_mood || 'Curated'}</span>`;
+            
+        const userQuoteHtml = record.user_input 
+            ? `<div class="archive-quote-box">
+                <span class="archive-quote-label"><i class="fas fa-quote-left"></i> Emotional State</span>
+                "${record.user_input}"
+               </div>`
+            : '';
+            
+        card.innerHTML = `
+            <div class="archive-card-top">
+                <img class="archive-poster" src="${posterSrc}" alt="${record.title}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80'">
+                <div class="archive-meta">
+                    <div>
+                        <h4 class="archive-title">${record.title}</h4>
+                        <div class="archive-director">${record.director ? 'Dir. ' + record.director : ''}</div>
+                    </div>
+                    <div>
+                        <div class="archive-date"><i class="far fa-clock"></i> ${record.timestamp}</div>
+                        <div class="archive-tags">${tagsHtml}</div>
+                    </div>
+                </div>
+            </div>
+            ${userQuoteHtml}
+            <div class="archive-reasoning">${record.reasoning || ''}</div>
+        `;
+        
+        grid.appendChild(card);
+    });
 }
 
 // --- Authentication & User State Management ---
@@ -246,6 +152,8 @@ function updateAuthUI() {
         loggedOutView.classList.remove('hidden');
         loggedInView.classList.add('hidden');
     }
+
+    loadCinematheque();
 }
 
 function openAuthModal() {
@@ -400,16 +308,16 @@ async function initAuth() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initAuth();
-    loadStats();
+    loadCinematheque();
 
-    // Tab switcher events
-    const tabBtns = document.querySelectorAll('.analytics-tab-btn');
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            activeAnalyticsTab = btn.dataset.tab;
-            renderActiveChart();
+    // Drawer tabs switcher events
+    const drawerTabs = document.querySelectorAll('.drawer-tab');
+    drawerTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            drawerTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            activeArchiveDrawer = tab.dataset.drawer || 'ALL';
+            renderCinematheque();
         });
     });
 });
@@ -458,8 +366,8 @@ document.getElementById('mood-form').addEventListener('submit', async (e) => {
         const json = await response.json();
         renderResults(json);
         
-        // Refresh the chart to include the potentially new historical query
-        loadStats();
+        // Refresh the Cinémathèque archive with the newly preserved film record
+        loadCinematheque();
         
         resultsSection.classList.remove('hidden');
         resultsSection.scrollIntoView({ behavior: 'smooth' });

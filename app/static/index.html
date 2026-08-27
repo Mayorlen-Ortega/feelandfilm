@@ -94,46 +94,51 @@
 
 
 
-                <div class="card chart-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
-                        <h3 style="margin-bottom: 0; border-bottom: none;"><i class="fas fa-chart-pie"></i> Audience Emotional Intelligence (ClickHouse OLAP)</h3>
-                        <span style="font-size: 0.8rem; color: var(--accent);"><i class="fas fa-bolt"></i> Real-time Analytics</span>
-                    </div>
-
-                    <!-- Executive KPI Badges -->
-                    <div class="kpi-grid">
-                        <div class="kpi-card">
-                            <div class="kpi-icon"><i class="fas fa-theater-masks"></i></div>
-                            <div class="kpi-value" id="kpi-mood">Loading...</div>
-                            <div class="kpi-label">Top Initial Mood</div>
+                <!-- The Cinémathèque Archive (Personal Film Vault & Emotional Filing Cabinet) -->
+                <div class="card archive-card" id="cinematheque-section">
+                    <div class="archive-header">
+                        <div class="archive-title-group">
+                            <h3><i class="fas fa-archive"></i> The Cinémathèque Archive</h3>
+                            <p class="archive-subtitle">Preserved cinematic discoveries cataloged by human emotion.</p>
                         </div>
-                        <div class="kpi-card">
-                            <div class="kpi-icon"><i class="fas fa-compass"></i></div>
-                            <div class="kpi-value" id="kpi-atm">Loading...</div>
-                            <div class="kpi-label">Target Atmosphere</div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-icon"><i class="fas fa-users"></i></div>
-                            <div class="kpi-value" id="kpi-demo">Loading...</div>
-                            <div class="kpi-label">Core Demographic</div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-icon"><i class="fas fa-film"></i></div>
-                            <div class="kpi-value" id="kpi-total">0</div>
-                            <div class="kpi-label">Total Curations</div>
+                        <div class="archive-status-badge" id="archive-status-badge">
+                            <span class="badge-dot"></span>
+                            <span id="archive-records-count">0 Curations Preserved</span>
                         </div>
                     </div>
 
-                    <!-- Multi-Metric Tab Switcher -->
-                    <div class="analytics-tabs">
-                        <button class="analytics-tab-btn active" data-tab="matrix"><i class="fas fa-random"></i> Emotional Transition Matrix</button>
-                        <button class="analytics-tab-btn" data-tab="moods"><i class="fas fa-smile"></i> Initial Moods</button>
-                        <button class="analytics-tab-btn" data-tab="atmospheres"><i class="fas fa-cloud-sun"></i> Desired Atmospheres</button>
-                        <button class="analytics-tab-btn" data-tab="demographics"><i class="fas fa-user-friends"></i> Age Demographics</button>
+                    <!-- Filing Cabinet Drawer Tabs (Vintage Brass Tag Style) -->
+                    <div class="drawer-cabinet" id="drawer-cabinet">
+                        <button class="drawer-tab active" data-drawer="ALL">
+                            <i class="fas fa-folder-open"></i> All Records
+                        </button>
+                        <button class="drawer-tab" data-drawer="Stressed">
+                            <i class="fas fa-coffee"></i> Stressed & Overworked
+                        </button>
+                        <button class="drawer-tab" data-drawer="Sad">
+                            <i class="fas fa-cloud-rain"></i> Melancholic & Sad
+                        </button>
+                        <button class="drawer-tab" data-drawer="Tired">
+                            <i class="fas fa-bed"></i> Tired & Seeking Rest
+                        </button>
+                        <button class="drawer-tab" data-drawer="Excited">
+                            <i class="fas fa-bolt"></i> Excited & Energetic
+                        </button>
+                        <button class="drawer-tab" data-drawer="Curious">
+                            <i class="fas fa-compass"></i> Curious & Cinephile
+                        </button>
                     </div>
 
-                    <div class="chart-container">
-                        <canvas id="moodChart"></canvas>
+                    <!-- Archive Cards Grid -->
+                    <div id="archive-grid" class="archive-grid">
+                        <!-- Populated dynamically via app.js -->
+                    </div>
+
+                    <!-- Empty / Locked State Message -->
+                    <div id="archive-empty-state" class="archive-empty-state hidden">
+                        <div class="empty-icon"><i class="fas fa-film"></i></div>
+                        <h4 id="empty-title">Your Film Vault is Empty</h4>
+                        <p id="empty-desc">Discover your first film using the emotional curator above to begin filing your personal cinémathèque records.</p>
                     </div>
                 </div>
             </section>
