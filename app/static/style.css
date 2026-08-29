@@ -2354,6 +2354,345 @@ button:disabled {
    Interactive Emotional Constellation & Google Lyria Soundscape
    ========================================================================== */
 
+/* ==========================================================================
+   Behind the Scenes: AI Crew Pipeline & Developer Trace Terminal
+   ========================================================================== */
+
+.trace-main-section {
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.trace-card {
+    background: rgba(14, 18, 27, 0.95);
+    border: 1.5px solid rgba(212, 175, 55, 0.35);
+    border-radius: 14px;
+    padding: 1.8rem;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.12);
+    position: relative;
+    overflow: hidden;
+}
+
+.trace-main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    margin-bottom: 1.5rem;
+}
+
+.trace-title-group h3 {
+    margin: 0 0 4px 0;
+    font-family: 'Cinzel', serif;
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+.trace-subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.trace-badge {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* 4-Card Crew Grid */
+.crew-pipeline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 1.5rem;
+}
+
+.crew-step-card {
+    background: rgba(20, 26, 38, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.crew-step-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.crew-step-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.crew-step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #111;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.crew-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.crew-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.crew-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.crew-role {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    font-family: 'Outfit', sans-serif;
+}
+
+.crew-duty-desc {
+    font-size: 0.78rem;
+    color: #cbd5e1;
+    line-height: 1.45;
+    margin: 0;
+    flex: 1;
+}
+
+.crew-live-action-box {
+    background: rgba(0, 0, 0, 0.45);
+    border-left: 2px solid var(--accent);
+    padding: 6px 10px;
+    border-radius: 0 4px 4px 0;
+    margin-top: 4px;
+}
+
+.crew-live-action-box .action-label {
+    font-size: 0.68rem;
+    color: var(--accent);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.crew-live-action-box .crew-action {
+    font-size: 0.74rem;
+    color: #e2e8f0;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.crew-status {
+    font-size: 0.72rem;
+    color: #34d399;
+    font-family: 'Fira Code', monospace;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.badge-dot.green {
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+
+/* Terminal Drawer Toggle */
+.trace-dev-toggle {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.trace-terminal-btn {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: #7dd3fc;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.25s ease;
+    width: auto;
+    margin: 0;
+}
+
+.trace-terminal-btn:hover {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+}
+
+.trace-arrow-icon {
+    font-size: 0.75rem;
+    transition: transform 0.3s ease;
+}
+
+.trace-arrow-icon.rotated {
+    transform: rotate(180deg);
+}
+
+/* Terminal Log Output Window */
+.trace-body {
+    margin-top: 14px;
+    animation: fadeIn 0.3s ease;
+}
+
+.terminal-log {
+    background: #07090e;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.78rem;
+    color: #e2e8f0;
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.85);
+}
+
+.terminal-entry {
+    border-left: 2px solid #475569;
+    padding-left: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.terminal-entry.masterorchestrator {
+    border-left-color: #d4af37;
+}
+
+.terminal-entry.filmcuratoragent {
+    border-left-color: #38bdf8;
+}
+
+.terminal-entry.soundtrackagent {
+    border-left-color: #818cf8;
+}
+
+.terminal-entry.sommelieragent {
+    border-left-color: #f472b6;
+}
+
+.terminal-entry.cinémathèquearchive,
+.terminal-entry.cinemathequearchive {
+    border-left-color: #34d399;
+}
+
+.term-header-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.term-time {
+    color: #64748b;
+    font-size: 0.72rem;
+}
+
+.term-agent {
+    font-weight: 700;
+    font-size: 0.74rem;
+}
+
+.term-agent.masterorchestrator { color: #facc15; }
+.term-agent.filmcuratoragent { color: #38bdf8; }
+.term-agent.soundtrackagent { color: #a5b4fc; }
+.term-agent.sommelieragent { color: #fbcfe8; }
+.term-agent.cinémathèquearchive,
+.term-agent.cinemathequearchive { color: #6ee7b7; }
+.term-agent.system { color: #10b981; }
+
+.term-step {
+    background: rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.68rem;
+}
+
+.term-action {
+    color: #f8fafc;
+}
+
+.term-details-box {
+    margin-top: 3px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    padding: 6px 10px;
+    overflow-x: auto;
+}
+
+.term-json {
+    margin: 0;
+    color: #93c5fd;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.term-text {
+    color: #cbd5e1;
+    font-size: 0.74rem;
+}
+
+/* ==========================================================================
+   Interactive Emotional Constellation & Google Lyria Soundscape
+   ========================================================================== */
+
 .constellation-overlay {
     background: rgba(4, 3, 6, 0.94);
     backdrop-filter: blur(14px);
@@ -2361,17 +2700,20 @@ button:disabled {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 15px;
+    padding: 35px 20px;
+    overflow-y: auto;
 }
 
 .constellation-modal-wrapper {
-    max-width: 1040px;
+    max-width: 960px;
     width: 100%;
+    max-height: 88vh;
+    margin: auto;
     background: #06050a;
-    border: 1.5px solid rgba(212, 175, 55, 0.4);
-    border-radius: 12px;
-    box-shadow: 0 0 60px rgba(56, 189, 248, 0.15), 0 20px 50px rgba(0, 0, 0, 0.9);
-    overflow: hidden;
+    border: 1.5px solid rgba(212, 175, 55, 0.5);
+    border-radius: 14px;
+    box-shadow: 0 0 50px rgba(56, 189, 248, 0.2), 0 25px 60px rgba(0, 0, 0, 0.95);
+    overflow-y: auto;
     animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -2381,6 +2723,32 @@ button:disabled {
     flex-direction: column;
     gap: 14px;
     background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.08) 0%, rgba(212, 175, 55, 0.04) 40%, transparent 80%);
+}
+
+/* Prominent Close Button */
+.constellation-close-btn {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1.5px solid #ef4444;
+    color: #fca5a5;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.35);
+    transition: all 0.25s ease;
+    margin: 0;
+}
+
+.constellation-close-btn:hover {
+    background: #ef4444;
+    color: #fff !important;
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.7);
+    transform: scale(1.05);
 }
 
 /* Constellation Header */
@@ -2527,7 +2895,8 @@ button:disabled {
 .constellation-map-viewport {
     position: relative;
     width: 100%;
-    min-height: 420px;
+    min-height: 330px;
+    height: 340px;
     background: radial-gradient(circle at center, #0c0a14 0%, #040306 100%);
     border: 1.5px solid rgba(56, 189, 248, 0.3);
     border-radius: 10px;

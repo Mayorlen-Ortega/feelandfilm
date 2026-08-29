@@ -994,6 +994,96 @@ function renderCinemaNightPackage(response) {
 }
 
 // ---------------------------------------------------------------------------
+// Behind the Scenes: Agent Crew & Terminal Trace Logger
+// ---------------------------------------------------------------------------
+
+function toggleTraceLogs() {
+    const traceBody = document.getElementById('trace-body');
+    const arrowIcon = document.getElementById('trace-arrow-icon');
+    const toggleText = document.getElementById('trace-toggle-text');
+    if (!traceBody) return;
+
+    const isHidden = traceBody.classList.contains('hidden');
+    if (isHidden) {
+        traceBody.classList.remove('hidden');
+        if (arrowIcon) arrowIcon.classList.add('rotated');
+        if (toggleText) toggleText.innerText = "Hide Multi-Agent Execution Logs";
+    } else {
+        traceBody.classList.add('hidden');
+        if (arrowIcon) arrowIcon.classList.remove('rotated');
+        if (toggleText) toggleText.innerText = "Inspect Raw Multi-Agent Execution Logs";
+    }
+}
+
+window.toggleTraceLogs = toggleTraceLogs;
+
+function scrollToTrace() {
+    const traceSection = document.getElementById('agent-trace-section');
+    const traceBody = document.getElementById('trace-body');
+    const arrowIcon = document.getElementById('trace-arrow-icon');
+    const toggleText = document.getElementById('trace-toggle-text');
+
+    if (traceBody && traceBody.classList.contains('hidden')) {
+        traceBody.classList.remove('hidden');
+        if (arrowIcon) arrowIcon.classList.add('rotated');
+        if (toggleText) toggleText.innerText = "Hide Multi-Agent Execution Logs";
+    }
+
+    if (traceSection) {
+        traceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+window.scrollToTrace = scrollToTrace;
+
+function renderAgentTrace(traces) {
+    const terminal = document.getElementById('terminal-log');
+    if (!terminal) return;
+
+    if (!traces || traces.length === 0) {
+        terminal.innerHTML = `
+            <div class="terminal-entry system">
+                <div class="term-header-line">
+                    <span class="term-time">[${new Date().toLocaleTimeString()}]</span>
+                    <span class="term-agent system">[Google ADK Core]</span>
+                    <strong class="term-action">Autonomous Multi-Agent Runner Active</strong>
+                </div>
+                <div class="term-details-box">
+                    <span class="term-text">All 4 specialist agents (Master Orchestrator, Film Curator, Soundtrack Maestro, Cinema Sommelier) synchronized in a single execution cycle.</span>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    terminal.innerHTML = traces.map(t => {
+        const agentName = t.agent || 'MasterOrchestrator';
+        const agentClass = agentName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        let formattedDetails = "";
+
+        if (t.details && typeof t.details === 'object') {
+            formattedDetails = `<pre class="term-json">${JSON.stringify(t.details, null, 2)}</pre>`;
+        } else if (t.details) {
+            formattedDetails = `<span class="term-text">${t.details}</span>`;
+        }
+
+        return `
+            <div class="terminal-entry ${agentClass}">
+                <div class="term-header-line">
+                    <span class="term-time">[${t.timestamp || new Date().toLocaleTimeString()}]</span>
+                    <span class="term-agent ${agentClass}">[${agentName}]</span>
+                    ${t.step ? `<span class="term-step">&lt;${t.step}&gt;</span>` : ''}
+                    <strong class="term-action">${t.action || 'Executed Action'}</strong>
+                </div>
+                ${formattedDetails ? `<div class="term-details-box">${formattedDetails}</div>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+window.renderAgentTrace = renderAgentTrace;
+
+// ---------------------------------------------------------------------------
 // Re-roll Another Recommendation (Keep Same Mood)
 // ---------------------------------------------------------------------------
 

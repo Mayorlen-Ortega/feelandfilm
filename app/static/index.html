@@ -427,73 +427,93 @@
             </section>
 
             <!-- Behind the Scenes: Visual AI Crew Pipeline (User Friendly & Judge Transparency) -->
-            <section class="trace-main-section" style="margin-top: 2rem;">
+            <section class="trace-main-section" style="margin-top: 2.5rem;">
                 <div class="card trace-card" id="agent-trace-section">
                     <div class="trace-main-header">
                         <div class="trace-title-group">
                             <h3><i class="fas fa-clapperboard" style="color: var(--accent);"></i> Behind the Scenes: How Your AI Crew Created Tonight</h3>
-                            <p class="trace-subtitle">Real-time collaborative synthesis across 4 autonomous agents powered by Google ADK & Gemini.</p>
+                            <p class="trace-subtitle">Collaborative intelligence across 4 specialist autonomous agents powered by <strong>Google ADK &amp; Gemini 3.5 Flash</strong> in a single cycle.</p>
                         </div>
                         <span class="trace-badge"><i class="fas fa-microchip"></i> Google ADK &bull; Gemini Multi-Agent</span>
                     </div>
 
                     <!-- 4 Visual Agent Crew Cards -->
                     <div class="crew-pipeline-grid" id="crew-pipeline-grid">
+                        <!-- Agent 1: Master Orchestrator -->
                         <div class="crew-step-card">
                             <div class="crew-step-header">
                                 <span class="crew-step-num">1</span>
                                 <div class="crew-icon"><i class="fas fa-brain"></i></div>
                                 <div class="crew-info">
                                     <span class="crew-name">Master Orchestrator</span>
-                                    <span class="crew-role">Memory & Session Brain</span>
+                                    <span class="crew-role">Cognitive Brain &amp; Session Memory (Google ADK)</span>
                                 </div>
                             </div>
-                            <p class="crew-action" id="crew-step-1-desc">Consulted your historical taste memory & dietary boundaries.</p>
-                            <div class="crew-status"><span class="badge-dot green"></span> Memory Loaded</div>
+                            <p class="crew-duty-desc">Coordinates the autonomous multi-agent pipeline in a single cycle. It retrieves your long-term taste profile and dietary rules from ClickHouse Cloud, excludes films already in your Cinémathèque to prevent repeats, and synthesizes the collaborative partner learning note.</p>
+                            <div class="crew-live-action-box">
+                                <span class="action-label"><i class="fas fa-bolt"></i> Live Action:</span>
+                                <p class="crew-action" id="crew-step-1-desc">Consulted taste memory &amp; dietary restrictions from ClickHouse.</p>
+                            </div>
+                            <div class="crew-status"><span class="badge-dot green"></span> Memory Synchronized</div>
                         </div>
 
+                        <!-- Agent 2: Film Curator Agent -->
                         <div class="crew-step-card">
                             <div class="crew-step-header">
                                 <span class="crew-step-num">2</span>
                                 <div class="crew-icon"><i class="fas fa-film"></i></div>
                                 <div class="crew-info">
                                     <span class="crew-name">Film Curator Agent</span>
-                                    <span class="crew-role">Psychological Cinema Expert</span>
+                                    <span class="crew-role">Psychological Curation &amp; Live TMDB Explorer</span>
                                 </div>
                             </div>
-                            <p class="crew-action" id="crew-step-2-desc">Discovered matching film live from TMDB global database.</p>
+                            <p class="crew-duty-desc">Translates your emotional feelings into deep psychological search vectors. It autonomously queries the 800,000+ live TMDB database across 4 intelligent routes (Directors, Studios like A24/Ghibli, Decades, Themes) enforcing strict age ratings and anti-cliché filters.</p>
+                            <div class="crew-live-action-box">
+                                <span class="action-label"><i class="fas fa-bolt"></i> Live Action:</span>
+                                <p class="crew-action" id="crew-step-2-desc">Discovered matching film live from TMDB global catalog.</p>
+                            </div>
                             <div class="crew-status"><span class="badge-dot green"></span> Film Selected</div>
                         </div>
 
+                        <!-- Agent 3: Soundtrack Maestro -->
                         <div class="crew-step-card">
                             <div class="crew-step-header">
                                 <span class="crew-step-num">3</span>
                                 <div class="crew-icon"><i class="fas fa-music"></i></div>
                                 <div class="crew-info">
                                     <span class="crew-name">Soundtrack Maestro</span>
-                                    <span class="crew-role">Musicology & Score Analyst</span>
+                                    <span class="crew-role">Musicology &amp; Acoustic Score Analyst</span>
                                 </div>
                             </div>
-                            <p class="crew-action" id="crew-step-3-desc">Identified emotional score, composer and standout track.</p>
+                            <p class="crew-duty-desc">Analyzes the film's official score and sonic landscape. It identifies the master composer, classifies acoustic instruments and emotional motifs, and selects the standout standout track to create the perfect pre-screening musical atmosphere.</p>
+                            <div class="crew-live-action-box">
+                                <span class="action-label"><i class="fas fa-bolt"></i> Live Action:</span>
+                                <p class="crew-action" id="crew-step-3-desc">Extracted composer, acoustic orchestration and key motif.</p>
+                            </div>
                             <div class="crew-status"><span class="badge-dot green"></span> Music Synthesized</div>
                         </div>
 
+                        <!-- Agent 4: Cinema Sommelier -->
                         <div class="crew-step-card">
                             <div class="crew-step-header">
                                 <span class="crew-step-num">4</span>
                                 <div class="crew-icon"><i class="fas fa-martini-glass-citrus"></i></div>
                                 <div class="crew-info">
                                     <span class="crew-name">Cinema Sommelier</span>
-                                    <span class="crew-role">Concession & Pairing Artist</span>
+                                    <span class="crew-role">Gastronomic Concession &amp; Pairing Artist</span>
                                 </div>
                             </div>
-                            <p class="crew-action" id="crew-step-4-desc">Crafted artisanal drink & snack tailored to your dietary rules.</p>
+                            <p class="crew-duty-desc">Designs an artisanal concession pairing (1 beverage + 1 snack) that harmonizes with the movie's cultural setting and mood, strictly respecting your learned dietary boundaries (100% non-alcoholic mocktails/craft sodas, vegan options, or gluten-free).</p>
+                            <div class="crew-live-action-box">
+                                <span class="action-label"><i class="fas fa-bolt"></i> Live Action:</span>
+                                <p class="crew-action" id="crew-step-4-desc">Formulated dietary-safe artisanal drink &amp; snack pairing.</p>
+                            </div>
                             <div class="crew-status"><span class="badge-dot green"></span> Pairing Ready</div>
                         </div>
                     </div>
 
                     <!-- Developer / Judge Terminal Drawer Toggle -->
-                    <div class="trace-dev-toggle" id="trace-toggle-btn">
+                    <div class="trace-dev-toggle" id="trace-toggle-btn" onclick="toggleTraceLogs()">
                         <button type="button" class="trace-terminal-btn">
                             <i class="fas fa-terminal"></i> <span id="trace-toggle-text">Inspect Raw Multi-Agent Execution Logs</span>
                             <i class="fas fa-chevron-down trace-arrow-icon" id="trace-arrow-icon"></i>
@@ -537,7 +557,10 @@
                             <span id="ambient-audio-text">Lyria Soundscape: Playing (D Minor &bull; 64 BPM)</span>
                         </button>
 
-                        <button type="button" id="close-biopic-btn" class="modal-close-btn" title="Close Constellation">&times;</button>
+                        <!-- Prominent & Stylish Constellation Close Button -->
+                        <button type="button" id="close-biopic-btn" class="constellation-close-btn" title="Cerrar Constelación" onclick="closeEmotionalConstellation()">
+                            <i class="fas fa-times"></i> <span>Close</span>
+                        </button>
                     </div>
                 </div>
 
