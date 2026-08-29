@@ -1,100 +1,109 @@
 *Leer en [Inglés](README.md).*
 
-# Feel & Film
-Feel & Film es una plataforma autónoma multi-agente de curaduría cinematográfica emocional y cineteca personal, desarrollada para la hackathon **Agentic Cinema: The Blockbuster Hackathon**.
+# Feel & Film — Autonomous Multi-Agent Cinema & Collaborative Partner
+
+**Feel & Film** es un sistema autónomo de orquestación multi-agente y cineteca personal desarrollado para la hackathon **Agentic Cinema: The Blockbuster Hackathon** (Track: **Collaborative Partner**).
 
 ---
 
-## El Problema y los Usuarios Objetivo
-Los programadores de cine y cinéfilos suelen enfrentarse al desafío de equilibrar la intuición creativa con las emociones de la audiencia. Feel & Film resuelve esto orquestando agentes de IA autónomos impulsados por **Google ADK** y **Gemini 3.5 Flash** para transformar estados de ánimo expresivos en recomendaciones cinematográficas personalizadas, enriquecidas con maridajes de concesión, análisis musicológico, plataformas de streaming regionales y una **Cinémathèque Archive (Cineteca Personal Vintage)** respaldada por **ClickHouse Cloud**.
+## 🎬 El Problema y la Solución Agentic
+En lugar de ser un simple formulario de recomendaciones paso a paso, **Feel & Film** actúa como un **Socio Colaborativo Inteligente (*Collaborative Partner*)**. Un **Master Orchestrator Agent** coordinado con **Google ADK** y **Gemini 3.5 Flash** genera en un **solo ciclo autónomo** un *Plan Completo de Noche de Cine* (Película + Banda Sonora + Maridaje Gastronómico + Disponibilidad de Streaming) y **aprende activamente** del feedback del usuario para recordar gustos, preferencias de duración y restricciones dietéticas en futuras sesiones.
 
 ---
 
-## Flujo de Trabajo Autónomo Multi-Agente
-1. **Autenticación Federada con Google:** Los usuarios inician sesión con Google Identity Services (GIS) para desbloquear su cineteca personal y preservar su historial emocional.
-2. **Entrada de Audiencia Expresiva:** El usuario escribe con total libertad sobre cómo se siente (`initial_mood`), la experiencia cinematográfica deseada (`desired_atmosphere`), notas temáticas opcionales (`theme`) y rango demográfico de edad (`audience_age_range`).
-3. **Agente Curador de Películas (`film_curator_agent`):**
-   - Analiza en profundidad los matices emocionales usando **Gemini 3.5 Flash** (vía Google ADK).
-   - Extrae etiquetas multi-emocionales (`detected_mood_tags`), estado principal y giro de atmósfera.
-   - Aplica filtros estrictos de edad (G/PG para Niños 0-12) y directivas anti-cliché para descubrir joyas ocultas.
-   - Sintetiza una recomendación con sinopsis, razonamiento del curador y dato curioso cinematográfico.
-4. **Agente de Banda Sonora (`soundtrack_agent`):**
-   - Analiza la musicología del film y extrae el compositor de la BSO, la vibra musical y la pista destacada.
-5. **Agente Sommelier (`sommelier_agent`):**
-   - Curaduria de maridaje de snacks y bebidas que complementan el tono de la película, con aclaraciones descriptivas en inglés.
-6. **Integración "Where to Watch" (TMDB / JustWatch):**
-   - Detecta la región del usuario y consulta plataformas de streaming disponibles, alquiler digital y enlaces directos con caché en el cliente.
-7. **Persistencia en The Cinémathèque Archive (ClickHouse Cloud):**
-   - Archiva automáticamente la ficha completa, póster, etiquetas de humor y notas del usuario en **ClickHouse Cloud** para su consulta en cajones vintage.
+## 🤖 Arquitectura Multi-Agente Autónoma (Google ADK)
+
+1. **Master Orchestrator Agent (`master_orchestrator_agent`):**
+   - Recupera el perfil y memoria colaborativa del usuario (`user_memory_profile`).
+   - Delega concurrentemente las tareas a los sub-agentes especializados.
+   - Sintetiza la **Nota Colaborativa** (*"He recordado que prefieres maridajes sin alcohol y películas de menos de 110 min..."*).
+   - Genera la **Traza de Ejecución en Tiempo Real (`agent_trace`)** demostrando cada paso del backend.
+2. **Agente Curador de Cine (`film_curator_agent`):**
+   - Analiza el estado emocional profundo y atmósfera deseada.
+   - Aplica filtros de edad (G/PG para niños) y directivas anti-cliché para descubrir joyas ocultas.
+3. **Agente Musicólogo de Banda Sonora (`soundtrack_agent`):**
+   - Analiza la BSO original, compositor, vibra musical e identifica el tema destacado.
+4. **Agente Sommelier Cinematográfico (`sommelier_agent`):**
+   - Curaduría de maridaje de bebida y snack adaptado a las restricciones dietéticas aprendidas (mocktails sin alcohol, vegano, etc.).
+5. **Integración Streaming Regional (TMDB / JustWatch):**
+   - Detecta la región del espectador y entrega opciones de suscripción, alquiler y compra digital.
+6. **The Cinémathèque Archive (ClickHouse Cloud):**
+   - Persiste cada experiencia completa catalogada por gaveta emocional en ClickHouse Cloud.
 
 ---
 
-## Características Principales
-* **Trío Multi-Agente de Google ADK:** 3 agentes especializados (`film_curator_agent`, `soundtrack_agent`, `sommelier_agent`) colaborando de forma autónoma.
-* **The Cinémathèque Archive:** Cajones archivadores de bronce vintage (`[Todos los Registros]`, `[Estresado]`, `[Triste]`, `[Cansado]`, `[Emocionado]`, `[Curioso]`) que preservan las películas y notas emocionales en ClickHouse Cloud.
-* **Autenticación Federada con Google:** Inicio de sesión con Google (GIS / One-Tap), verificación JWT y alertas de Modo Invitado.
-* **Buscador de Streaming "Where to Watch":** Consulta de disponibilidad regional (Netflix, Prime Video, Max, Apple TV, etc.) sin llamadas API redundantes gracias a la caché en el navegador.
-* **Campos de Texto Expresivos:** Textareas flexibles para expresar estados de ánimo complejos y multidimensionales.
-* **Motor de Descubrimiento Anti-Cliché:** Directivas de diversidad y memoria de sesión (`excluded_films`) que evitan recomendaciones repetitivas.
-* **Diseño Cinema-Noir:** Estética refinada con Glassmorphism, tipografías elegantes (Cinzel y Playfair Display) y tarjetas de archivo estilo biblioteca clásica.
+## 🌟 Características Principales
+
+* **Orquestación en 1 Solo Clic:** Paquete completo de noche de cine generado autónomamente sin interacciones fragmentadas.
+* **Memoria Activa y Aprendizaje Continuo (*Collaborative Partner*):** El agente recuerda feedbacks previos y adapta activamente la música, duración y maridajes futuros.
+* **Consola de Trazabilidad en Vivo (*Live Agent Trace*):** Terminal cinema-noir interactivo que muestra las llamadas inter-agente, tools y decisiones en tiempo real (ideal para la demo técnica en video).
+* **The Cinémathèque Archive:** Cajones archivadores de bronce vintage (`[Todos los Registros]`, `[Estresado]`, `[Triste]`, `[Cansado]`, `[Emocionado]`, `[Curioso]`) en ClickHouse Cloud.
+* **Autenticación Federada con Google (GIS):** Inicio de sesión con Google OAuth 2.0 y verificación JWT para sincronizar la memoria del usuario.
+* **Buscador de Streaming Regional:** Consulta directa de plataformas (Netflix, Prime Video, Max, Apple TV, etc.).
 
 ---
 
-## Diagrama de Arquitectura
+## 📐 Diagrama de Arquitectura
 
 ![Diagrama de Arquitectura Feel & Film](app/static/architecture_diagram.svg)
 
-Para ver el mapeo detallado de componentes, consulta [ARCHITECTURE.md](ARCHITECTURE.md).
+Para el mapeo detallado de componentes, consulta [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
-## Stack Tecnológico y Créditos
-* **Framework de Agentes:** Google ADK (`google-adk`)
-* **Motor LLM:** Google Gemini 3.5 Flash (vía Google Cloud / ADK)
-* **Autenticación:** Google Identity Services (GIS / OAuth 2.0)
-* **Backend:** FastAPI (Python 3.11+)
-* **Base de Datos:** ClickHouse Cloud (Analítica OLAP y Archivo Histórico)
-* **Fuentes de Datos:** The Movie Database (TMDB API) y datos de JustWatch. *(Este producto utiliza la API de TMDB pero no está avalado ni certificado por TMDB).*
-* **Frontend:** HTML5, CSS3, JavaScript Vanilla
+## 🚀 Configuración y Ejecución Local
+
+### 1. Clonar el repositorio y configurar entorno:
+```bash
+git clone https://github.com/Mayorlen-Ortega/feelandfilm.git
+cd feelandfilm
+```
+
+### 2. Configurar variables de entorno:
+Crea un archivo `.env` basado en `.env.example`:
+```ini
+GEMINI_API_KEY=tu_clave_gemini
+TMDB_API_KEY=tu_clave_tmdb
+GOOGLE_CLIENT_ID=tu_google_client_id
+# ClickHouse Cloud (opcional para analítica histórica)
+CLICKHOUSE_HOST=...
+CLICKHOUSE_PORT=8443
+CLICKHOUSE_USER=...
+CLICKHOUSE_PASSWORD=...
+```
+
+### 3. Instalar dependencias:
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Iniciar la aplicación:
+```bash
+uvicorn app.main:app --reload
+```
+Abre en tu navegador: **http://localhost:8000**
 
 ---
 
-## Configuración Local
-1. Clonar el repositorio:
-   ```bash
-   git clone https://github.com/Mayorlen-Ortega/feelandfilm.git
-   cd feelandfilm
-   ```
-2. Instalar dependencias:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Configurar variables de entorno:
-   ```bash
-   cp .env.example .env
-   ```
-   Añade tu `GEMINI_API_KEY`, `TMDB_API_KEY`, `GOOGLE_CLIENT_ID` y credenciales de ClickHouse.
-4. Iniciar la aplicación:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-5. Abrir [http://localhost:8000](http://localhost:8000) en el navegador.
+## 🧪 Pruebas Automatizadas
 
----
+Ejecuta la suite de pruebas del orquestador autónomo y memoria colaborativa:
+```bash
+python test_orchestrator.py
+```
 
-## Ejecución de Pruebas
-Ejecuta la suite de pruebas automatizadas:
+Ejecuta las pruebas de endpoints de API:
 ```bash
 python test_api.py
 ```
 
 ---
 
-## Despliegue en Google Cloud Run
+## ☁️ Despliegue en Google Cloud Run
+
 Este proyecto está completamente dockerizado para despliegue con 1 clic en **Google Cloud Run**:
 1. En [Google Cloud Console](https://console.cloud.google.com/run), ve a **Cloud Run** y haz clic en **Crear servicio**.
-2. Selecciona **Implementar una revisión desde un repositorio existente** y conecta tu repositorio de GitHub.
+2. Conecta tu repositorio de GitHub y selecciona el branch `feature/agentic-orchestrator`.
 3. Selecciona **Dockerfile** (ruta: `/Dockerfile`).
-4. En Autenticación, marca **Permitir invocaciones no autenticadas**.
-5. En **Variables y Secretos**, configura las variables de entorno de tu `.env`.
-6. Haz clic en **Crear** para desplegar.
+4. Configura las variables de entorno en **Variables y Secretos**.
+5. Haz clic en **Crear** para desplegar.
