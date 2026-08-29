@@ -778,6 +778,7 @@ async def send_cinema_email(request: SendCinemaEmailRequest):
     epistle_result = await generate_cinema_epistle(request.package_data, request.user_name)
     epistle = epistle_result.get("epistle", {})
 
+    load_dotenv(override=True)
     smtp_host = os.getenv("SMTP_HOST", "")
     smtp_port = int(os.getenv("SMTP_PORT", "587"))
     smtp_user = os.getenv("SMTP_USER", "")
