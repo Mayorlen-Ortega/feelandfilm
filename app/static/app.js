@@ -1057,14 +1057,24 @@ function renderAgentTrace(traces) {
     if (!traces || traces.length === 0) {
         const timeStr = new Date().toLocaleTimeString();
         terminal.innerHTML = `
-            <div class="terminal-entry system">
+            <div class="terminal-entry system" style="border-left-color: #facc15;">
                 <div class="term-header-line">
                     <span class="term-time">[${timeStr}]</span>
-                    <span class="term-agent system">[Google ADK Core]</span>
-                    <strong class="term-action">Autonomous Multi-Agent Runner Active &amp; Ready</strong>
+                    <span class="term-agent system" style="color: #facc15;">[Google ADK &bull; Gemini Multi-Agent Core]</span>
+                    <strong class="term-action" style="color: #fef08a;">Tripulación en Modo de Espera / Crew on Standby</strong>
                 </div>
-                <div class="term-details-box">
-                    <span class="term-text">All 4 specialist agents (Master Orchestrator, Film Curator, Soundtrack Maestro, Cinema Sommelier) are active and synchronized. Curate a recommendation above to view live single-cycle JSON decision traces.</span>
+                <div class="term-details-box" style="line-height: 1.5;">
+                    <p style="margin: 0 0 6px 0; color: #e2e8f0; font-size: 0.8rem;">
+                        <strong>ℹ️ Aún no hay trazas de ejecución registradas:</strong>
+                    </p>
+                    <p style="margin: 0 0 8px 0; color: #cbd5e1; font-size: 0.76rem;">
+                        Para activar y observar los logs de ejecución en vivo de los 4 agentes autónomos (<em>Master Orchestrator</em>, <em>Film Curator Agent</em>, <em>Soundtrack Maestro</em> y <em>Cinema Sommelier</em>), primero realiza una búsqueda seleccionando tu estado de ánimo arriba o revive una película guardada desde tu Cineteca.
+                    </p>
+                    <div style="margin-top: 8px;">
+                        <button type="button" class="btn" style="width: auto; padding: 5px 14px; font-size: 0.74rem; font-family: 'Cinzel', serif;" onclick="document.getElementById('form-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });">
+                            <i class="fas fa-sparkles"></i> Ir al Formulario y Curar Película
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -1297,71 +1307,6 @@ function copyEpistleToClipboard() {
 }
 
 window.copyEpistleToClipboard = copyEpistleToClipboard;
-
-// ---------------------------------------------------------------------------
-// Behind the Scenes & Live Agent Trace Renderer
-// ---------------------------------------------------------------------------
-
-window.scrollToTrace = function() {
-    const section = document.getElementById('agent-trace-section');
-    if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        section.style.borderColor = 'var(--accent)';
-        section.style.boxShadow = '0 0 25px rgba(212, 175, 55, 0.6)';
-        setTimeout(() => {
-            section.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.5)';
-        }, 2000);
-    }
-};
-
-function renderAgentTrace(traces) {
-    const term = document.getElementById('terminal-log');
-    if (!term) return;
-    term.innerHTML = '';
-
-    if (!traces || traces.length === 0) {
-        term.innerHTML = '<div class="trace-line">No execution traces recorded.</div>';
-        return;
-    }
-
-    traces.forEach((t, i) => {
-        const line = document.createElement('div');
-        line.className = 'trace-line';
-        
-        const detailsStr = (typeof t.details === 'object') ? JSON.stringify(t.details) : String(t.details || '');
-        line.innerHTML = `
-            <span class="trace-ts">[${t.timestamp || '00:00:00'}]</span>
-            <span class="trace-agent ${t.agent || 'MasterOrchestrator'}">[${t.agent}]</span>
-            <span class="trace-action">${t.action}:</span>
-            <span class="trace-details" style="color: #cbd5e1;">${detailsStr}</span>
-        `;
-        term.appendChild(line);
-    });
-
-    // Auto-scroll terminal to bottom
-    const body = document.getElementById('trace-body');
-    if (body) body.scrollTop = body.scrollHeight;
-}
-
-// Trace terminal toggle
-const traceToggleBtn = document.getElementById('trace-toggle-btn');
-if (traceToggleBtn) {
-    traceToggleBtn.addEventListener('click', () => {
-        const body = document.getElementById('trace-body');
-        const arrow = document.getElementById('trace-arrow-icon');
-        const text = document.getElementById('trace-toggle-text');
-        if (body) {
-            body.classList.toggle('hidden');
-            const isHidden = body.classList.contains('hidden');
-            if (arrow) {
-                arrow.className = isHidden ? 'fas fa-chevron-down trace-arrow-icon' : 'fas fa-chevron-up trace-arrow-icon';
-            }
-            if (text) {
-                text.innerText = isHidden ? 'Inspect Raw Multi-Agent Execution Logs' : 'Hide Multi-Agent Execution Logs';
-            }
-        }
-    });
-}
 
 // ---------------------------------------------------------------------------
 // Continuous Learning & Feedback Loop
