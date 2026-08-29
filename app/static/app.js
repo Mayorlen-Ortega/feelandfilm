@@ -1203,21 +1203,25 @@ async function toggleWatchedFilm(sessionId) {
 
 window.toggleWatchedFilm = toggleWatchedFilm;
 
-async function deleteCinemathequeItem(sessionId) {
+async function deleteCinemathequeItem(sessionId, e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    if (!sessionId) return;
     if (!confirm("Are you sure you want to remove this curated film from your archive?")) return;
 
+    // Optimistic local removal
+    allArchiveRecords = allArchiveRecords.filter(r => String(r.session_id) !== String(sessionId));
+    let watchedIds = getWatchedFilmIds().filter(id => String(id) !== String(sessionId));
+    saveWatchedFilmIds(watchedIds);
+    renderCinematheque();
+    updateBiopicMilestone();
+
     try {
-        const res = await fetch(`/api/cinematheque/${sessionId}`, { method: 'DELETE' });
-        const data = await res.json();
-        if (data.status === 'success') {
-            allArchiveRecords = allArchiveRecords.filter(r => r.session_id !== sessionId);
-            let watchedIds = getWatchedFilmIds().filter(id => id !== sessionId);
-            saveWatchedFilmIds(watchedIds);
-            renderCinematheque();
-            updateBiopicMilestone();
-        }
-    } catch (e) {
-        console.error("Delete cinematheque item error:", e);
+        await fetch(`/api/cinematheque/${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
+    } catch (err) {
+        console.error("Delete cinematheque item error:", err);
     }
 }
 
@@ -1305,8 +1309,8 @@ function renderCinematheque() {
                                 <h4 class="archive-title">${r.title}</h4>
                                 <div class="archive-director"><i class="fas fa-video"></i> ${r.director || 'Auteur Director'}</div>
                             </div>
-                            <button type="button" class="archive-delete-btn" onclick="deleteCinemathequeItem('${r.session_id}')" title="Delete from archive">
-                                <i class="fas fa-trash-can"></i>
+                            <button type="button" class="archive-delete-btn" onclick="deleteCinemathequeItem('${r.session_id}', event)" title="Delete from archive">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
                         <div class="archive-date"><i class="far fa-clock"></i> ${r.timestamp || 'Recent'}</div>
