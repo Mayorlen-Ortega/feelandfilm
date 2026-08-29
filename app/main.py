@@ -284,6 +284,11 @@ async def get_status():
 # Responsible AI & Safety Guardrail Filter
 # ---------------------------------------------------------------------------
 
+CINEMA_SAFETY_WHITELIST = [
+    "hitchcock", "alfred hitchcock", "hitkosh", "cocktail", "peacock", "analysis", 
+    "analisis", "canal", "documental", "laboral", "temporal", "sussex", "classic"
+]
+
 UNSAFE_PATTERNS = [
     # Explicit Sexual, Adult & NSFW Multilingual Roots (EN, ES, FR, PT, IT, DE, JA)
     "sex", "sexe", "sesso", "sexual", "oral", "anal", "porno", "porn", "xxx", "erotic", "erotico", "érot", 
@@ -302,9 +307,21 @@ UNSAFE_PATTERNS = [
 
 def check_content_safety(*texts: str) -> bool:
     combined = " ".join([str(t).lower() for t in texts if t])
+    
+    # 1. Neutralize whitelisted cinema words (prevents Scunthorpe false positives like Alfred Hitchcock)
+    cleaned = combined
+    for allowed in CINEMA_SAFETY_WHITELIST:
+        cleaned = cleaned.replace(allowed, " ")
+
+    # 2. Check for unsafe patterns with word boundary protection for short words
     for bad in UNSAFE_PATTERNS:
-        if bad in combined:
-            return False
+        if len(bad) <= 5:
+            # Word boundary regex prevents "skill" -> "kill", "Hitchcock" -> "cock", etc.
+            if re.search(r'\b' + re.escape(bad) + r'\b', cleaned):
+                return False
+        else:
+            if bad in cleaned:
+                return False
     return True
 
 

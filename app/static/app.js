@@ -653,10 +653,14 @@ function openScreeningModal() {
     goToScene(0);
 }
 
+window.openScreeningModal = openScreeningModal;
+
 function closeScreeningModal() {
     const modal = document.getElementById('screening-modal');
     if (modal) modal.classList.add('hidden');
 }
+
+window.closeScreeningModal = closeScreeningModal;
 
 function goToScene(index) {
     if (index < 0 || index >= totalScenes) return;
@@ -819,11 +823,11 @@ function renderCinemaNightPackage(response) {
         container.innerHTML = `
             <div class="card" style="text-align: center; border: 1.5px solid #f59e0b; background: rgba(245, 158, 11, 0.08); padding: 35px 25px; border-radius: 12px;">
                 <div style="font-size: 2.8rem; color: #f59e0b; margin-bottom: 14px;"><i class="fas fa-shield-halved"></i></div>
-                <h3 style="font-family: 'Cinzel', serif; color: #fef3c7; margin-bottom: 10px; font-size: 1.4rem;">Responsible AI & Content Safety Guardrail</h3>
+                <h3 style="font-family: 'Cinzel', serif; color: #fef3c7; margin-bottom: 10px; font-size: 1.4rem;">Responsible AI &amp; Content Safety Guardrail</h3>
                 <p style="color: #cbd5e1; max-width: 580px; margin: 0 auto 20px; font-size: 0.95rem; line-height: 1.5;">${response.message}</p>
                 <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <button type="button" class="btn" style="width: auto; padding: 10px 22px; font-size: 0.9rem;" onclick="document.getElementById('theme').value=''; document.getElementById('initial_mood').value='Seeking inspiration'; document.getElementById('desired_atmosphere').value='Uplifting comfort'; document.getElementById('generate-btn').click();">
-                        <i class="fas fa-sparkles"></i> Try Inspiring & Uplifting Mood
+                    <button type="button" class="btn" style="width: auto; padding: 10px 22px; font-size: 0.9rem;" onclick="openScreeningModal();">
+                        <i class="fas fa-sparkles"></i> Elegir otra atmósfera / Try Inspiring Mood
                     </button>
                 </div>
             </div>
