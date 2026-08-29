@@ -48,17 +48,16 @@
         </header>
 
         <main>
-        <main>
-            <!-- Hero Screening Room Banner (Click to launch or re-open ethereal interview) -->
+            <!-- Compact Hero Screening Room Banner -->
             <section class="card hero-screening-card">
                 <div class="hero-projector-glow"></div>
                 <div class="hero-content">
                     <div class="hero-badge"><i class="fas fa-clapperboard"></i> The Private Screening Room</div>
                     <h2>What does your soul crave tonight?</h2>
-                    <p class="hero-subtitle">Step into our cinema projection booth. Your autonomous 4-agent crew will interview your mood, music taste, and dietary preferences to craft tonight's bespoke experience.</p>
+                    <p class="hero-subtitle">Our autonomous 4-agent crew transforms your mood, soundtrack taste, and dietary preferences into a complete cinema night.</p>
                     <div class="hero-actions">
                         <button type="button" id="start-screening-btn" class="btn btn-hero">
-                            <span class="btn-text"><i class="fas fa-ticket"></i> Begin Curated Screening Interview</span>
+                            <span class="btn-text"><i class="fas fa-ticket"></i> Open Screening Interview</span>
                         </button>
                         <button type="button" id="browse-vault-btn" class="btn btn-secondary">
                             <i class="fas fa-box-archive"></i> Explore Cinémathèque Vault
@@ -84,7 +83,7 @@
                                 <span class="stepper-line"></span>
                                 <span class="stepper-dot" data-step="2"><span class="dot-num">III</span> Audience</span>
                                 <span class="stepper-line"></span>
-                                <span class="stepper-dot" data-step="3"><span class="dot-num">IV</span> Nuance</span>
+                                <span class="stepper-dot" data-step="3"><span class="dot-num">IV</span> Nuance & Launch</span>
                             </div>
                         </div>
                         <button type="button" id="close-screening-btn" class="modal-close-btn" title="Skip to dashboard">&times;</button>
@@ -159,22 +158,27 @@
                             </div>
                         </div>
 
-                        <!-- Scene 4: Specific Directors, Studios, or Eras -->
+                        <!-- Scene 4: Specific Directors, Studios, or Eras + Identity Dispatch -->
                         <div class="scene-step hidden" id="scene-3">
-                            <div class="scene-meta">SCENE IV &bull; CINEMATIC NUANCES (OPTIONAL)</div>
+                            <div class="scene-meta">SCENE IV &bull; CINEMATIC NUANCES & LAUNCH</div>
                             <h3 class="scene-question">Any favorite director, studio, decade, or country?</h3>
                             <p class="scene-hint">Leave blank for full AI freedom, or specify your cinematic tastes...</p>
                             <input type="text" id="theme" class="glass-input scene-input" placeholder="e.g. Studio Ghibli, 80s cinema, Alfonso Cuarón, A24, Latin American cinema...">
                             
                             <div class="scene-suggestions">
-                                <span class="suggestion-label"><i class="fas fa-film"></i> Popular filters:</span>
+                                <span class="suggestion-label"><i class="fas fa-film"></i> Quick filters:</span>
                                 <button type="button" class="scene-pill" data-target="theme" data-val="Studio Ghibli">🌸 Studio Ghibli</button>
                                 <button type="button" class="scene-pill" data-target="theme" data-val="años 80">📼 80s Cinema</button>
                                 <button type="button" class="scene-pill" data-target="theme" data-val="años 90">🎞️ 90s Classics</button>
                                 <button type="button" class="scene-pill" data-target="theme" data-val="Alfonso Cuarón">🎬 Alfonso Cuarón</button>
                                 <button type="button" class="scene-pill" data-target="theme" data-val="Quentin Tarantino">📽️ Quentin Tarantino</button>
                                 <button type="button" class="scene-pill" data-target="theme" data-val="A24">⚡ A24 Indie</button>
-                                <button type="button" class="scene-pill" data-target="theme" data-val="cine latinoamericano">🌎 Latin American Cinema</button>
+                                <button type="button" class="scene-pill" data-target="theme" data-val="cine latinoamericano">🌎 Latin American</button>
+                            </div>
+
+                            <!-- Final Dispatch & Identity Box -->
+                            <div id="scene-auth-box" class="scene-auth-box">
+                                <!-- Populated dynamically by updateSceneAuthBox() -->
                             </div>
                         </div>
 
@@ -190,14 +194,6 @@
 
                             <button type="button" id="next-scene-btn" class="btn btn-scene-next">
                                 <span id="next-scene-text">Next Scene <i class="fas fa-chevron-right"></i></span>
-                            </button>
-
-                            <button type="submit" id="submit-screening-btn" class="btn btn-scene-submit hidden">
-                                <span class="btn-text"><i class="fas fa-wand-magic-sparkles"></i> Orchestrate Cinema Night</span>
-                                <div class="cinematic-spinner hidden">
-                                    <span class="reel">🎞️</span>
-                                    <span class="sp-text">Coordinating 4 agents...</span>
-                                </div>
                             </button>
                         </div>
                     </form>

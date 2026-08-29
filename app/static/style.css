@@ -178,25 +178,25 @@ h1 {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-/* Hero Screening Room Banner */
+/* Hero Screening Room Banner (Compact & Sleek) */
 .hero-screening-card {
     position: relative;
     overflow: hidden;
     background: radial-gradient(circle at 50% 0%, rgba(45, 36, 25, 0.95), rgba(16, 13, 10, 0.95));
     border: 1.5px solid rgba(212, 175, 55, 0.4);
-    border-radius: 14px;
-    padding: 3rem 2rem;
+    border-radius: 12px;
+    padding: 1.5rem 1.8rem;
     text-align: center;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
 }
 
 .hero-projector-glow {
     position: absolute;
-    top: -80px;
+    top: -60px;
     left: 50%;
     transform: translateX(-50%);
-    width: 320px;
-    height: 180px;
+    width: 260px;
+    height: 140px;
     background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0) 70%);
     pointer-events: none;
 }
@@ -204,79 +204,79 @@ h1 {
 .hero-content {
     position: relative;
     z-index: 2;
-    max-width: 760px;
+    max-width: 700px;
     margin: 0 auto;
 }
 
 .hero-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     background: rgba(212, 175, 55, 0.15);
     border: 1px solid var(--accent);
-    padding: 5px 16px;
-    border-radius: 20px;
+    padding: 3px 12px;
+    border-radius: 16px;
     color: var(--accent);
     font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    margin-bottom: 1.2rem;
+    font-size: 0.78rem;
+    margin-bottom: 0.5rem;
     letter-spacing: 1px;
 }
 
 .hero-screening-card h2 {
     font-family: 'Cinzel', serif;
-    font-size: 2.2rem;
+    font-size: 1.6rem;
     color: #fff;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.4rem;
     line-height: 1.25;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
 }
 
 .hero-subtitle {
     color: var(--text-secondary);
-    font-size: 1.05rem;
-    line-height: 1.6;
-    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    margin-bottom: 1.2rem;
 }
 
 .hero-actions {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
 .btn-hero {
     background: linear-gradient(135deg, var(--accent) 0%, #b38f28 100%);
     color: #110f0c !important;
-    font-size: 1.05rem;
-    padding: 1rem 2.2rem;
-    border-radius: 30px;
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.45);
+    font-size: 0.92rem;
+    padding: 0.7rem 1.6rem;
+    border-radius: 25px;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     width: auto;
     margin-top: 0;
 }
 
 .btn-hero:hover {
-    box-shadow: 0 0 35px rgba(212, 175, 55, 0.7);
-    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.7);
+    transform: translateY(-1px);
 }
 
 .btn-secondary {
     background: rgba(20, 16, 12, 0.8);
     border: 1px solid rgba(212, 175, 55, 0.4);
     color: var(--text-primary);
-    font-size: 0.95rem;
-    padding: 1rem 1.8rem;
-    border-radius: 30px;
+    font-size: 0.88rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: 25px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     width: auto;
     margin-top: 0;
 }
@@ -675,6 +675,112 @@ h1 {
 
 .btn-scene-submit:hover {
     box-shadow: 0 0 30px rgba(212, 175, 55, 0.8);
+    transform: translateY(-1px);
+}
+
+/* Final Scene Auth & Dispatch Box */
+.scene-auth-box {
+    margin-top: 22px;
+    background: linear-gradient(135deg, rgba(28, 22, 18, 0.95), rgba(16, 13, 10, 0.98));
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.scene-auth-box.logged-in {
+    border-color: rgba(39, 174, 96, 0.4);
+    background: linear-gradient(135deg, rgba(20, 32, 24, 0.95), rgba(12, 18, 14, 0.98));
+}
+
+.auth-box-prompt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.auth-box-prompt i {
+    font-size: 1.5rem;
+    color: var(--accent);
+}
+
+.scene-auth-box.logged-in .auth-box-prompt i {
+    color: #2ecc71;
+}
+
+.auth-box-prompt strong {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: #fff;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.auth-box-prompt p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.auth-box-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.choice-or {
+    color: #888;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.btn-scene-guest {
+    background: rgba(40, 32, 24, 0.9);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--text-primary);
+    padding: 9px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: auto;
+    margin: 0;
+    transition: all 0.2s ease;
+}
+
+.btn-scene-guest:hover {
+    background: rgba(60, 48, 36, 0.95);
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.btn-scene-google {
+    background: linear-gradient(135deg, var(--accent) 0%, #b38f28 100%);
+    color: #111;
+    padding: 9px 20px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    margin: 0;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    transition: all 0.2s ease;
+}
+
+.btn-scene-google:hover {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.7);
     transform: translateY(-1px);
 }
 

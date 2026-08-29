@@ -223,6 +223,7 @@ function updateAuthUI() {
     }
 
     updateModalIdentityBar();
+    updateSceneAuthBox();
 }
 
 function updateModalIdentityBar() {
@@ -250,6 +251,63 @@ function updateModalIdentityBar() {
         const chipBtn = document.getElementById('modal-login-chip-btn');
         if (chipBtn) {
             chipBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openAuthModal();
+            });
+        }
+    }
+}
+
+function updateSceneAuthBox() {
+    const box = document.getElementById('scene-auth-box');
+    if (!box) return;
+
+    if (currentUser && currentUser.email) {
+        box.className = 'scene-auth-box logged-in';
+        box.innerHTML = `
+            <div class="auth-box-prompt">
+                <i class="fas fa-user-check"></i>
+                <div>
+                    <strong>Ready to curate for ${currentUser.name || currentUser.email}</strong>
+                    <p>Your collaborative taste memory will actively shape tonight's experience.</p>
+                </div>
+            </div>
+            <button type="submit" id="submit-screening-btn" class="btn btn-scene-submit">
+                <span class="btn-text"><i class="fas fa-wand-magic-sparkles"></i> Orchestrate Cinema Night</span>
+                <div class="cinematic-spinner hidden">
+                    <span class="reel">🎞️</span>
+                    <span class="sp-text">Coordinating 4 agents...</span>
+                </div>
+            </button>
+        `;
+    } else {
+        box.className = 'scene-auth-box';
+        box.innerHTML = `
+            <div class="auth-box-prompt">
+                <i class="fas fa-brain"></i>
+                <div>
+                    <strong>Save to your Personal Memory?</strong>
+                    <p>Sign in with Google to sync preferences across sessions, or continue as guest.</p>
+                </div>
+            </div>
+            <div class="auth-box-buttons">
+                <button type="submit" id="submit-screening-btn" class="btn btn-scene-guest">
+                    <span class="btn-text"><i class="fas fa-user-clock"></i> Continue as Guest</span>
+                    <div class="cinematic-spinner hidden">
+                        <span class="reel">🎞️</span>
+                        <span class="sp-text">Coordinating...</span>
+                    </div>
+                </button>
+                <span class="choice-or">or</span>
+                <button type="button" id="scene-google-login-btn" class="btn btn-scene-google">
+                    <i class="fab fa-google"></i> Sign in with Google
+                </button>
+            </div>
+        `;
+
+        const sceneGoogleBtn = document.getElementById('scene-google-login-btn');
+        if (sceneGoogleBtn) {
+            sceneGoogleBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 openAuthModal();
             });
@@ -528,12 +586,20 @@ function initScreeningInterviewModal() {
         });
     }
 
+    // Auto-open modal on fresh arrival to greet user with cinema interview
+    setTimeout(() => {
+        const resultsSection = document.getElementById('results');
+        if (resultsSection && resultsSection.classList.contains('hidden')) {
+            openScreeningModal();
+        }
+    }, 350);
 }
 
 function openScreeningModal() {
     const modal = document.getElementById('screening-modal');
     if (!modal) return;
     updateModalIdentityBar();
+    updateSceneAuthBox();
     modal.classList.remove('hidden');
     goToScene(0);
 }
@@ -578,7 +644,6 @@ function goToScene(index) {
     // Update Nav Buttons
     const prevBtn = document.getElementById('prev-scene-btn');
     const nextBtn = document.getElementById('next-scene-btn');
-    const submitBtn = document.getElementById('submit-screening-btn');
     const keyboardHint = document.getElementById('keyboard-hint');
 
     if (prevBtn) {
@@ -587,12 +652,11 @@ function goToScene(index) {
     }
 
     if (index === totalScenes - 1) {
+        updateSceneAuthBox();
         if (nextBtn) nextBtn.classList.add('hidden');
-        if (submitBtn) submitBtn.classList.remove('hidden');
-        if (keyboardHint) keyboardHint.innerHTML = `<i class="fas fa-sparkles"></i> Press <kbd>Enter ↵</kbd> to Curate Night`;
+        if (keyboardHint) keyboardHint.innerHTML = `<i class="fas fa-sparkles"></i> Press <kbd>Enter ↵</kbd> to Launch`;
     } else {
         if (nextBtn) nextBtn.classList.remove('hidden');
-        if (submitBtn) submitBtn.classList.add('hidden');
         if (keyboardHint) keyboardHint.innerHTML = `<i class="fas fa-keyboard"></i> Press <kbd>Enter ↵</kbd> for Scene ${['II', 'III', 'IV'][index]}`;
     }
 }
