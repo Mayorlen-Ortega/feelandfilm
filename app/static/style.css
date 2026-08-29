@@ -333,6 +333,38 @@ h1 {
     100% { transform: translateY(-4px); }
 }
 
+.modal-cinema-branding {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed rgba(212, 175, 55, 0.25);
+}
+
+.modal-brand-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-brand-tag strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+.modal-brand-tagline {
+    font-size: 0.82rem;
+    color: #cbd5e1;
+    font-family: 'Outfit', sans-serif;
+    font-style: italic;
+    line-height: 1.4;
+}
+
 .screening-modal-header {
     display: flex;
     justify-content: space-between;
