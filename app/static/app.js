@@ -1023,17 +1023,20 @@ function renderCinemaNightPackage(response) {
 // Behind the Scenes: Agent Crew & Terminal Trace Logger
 // ---------------------------------------------------------------------------
 
-function toggleTraceLogs() {
+function toggleTraceLogs(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
     const traceBody = document.getElementById('trace-body');
     const arrowIcon = document.getElementById('trace-arrow-icon');
     const toggleText = document.getElementById('trace-toggle-text');
     if (!traceBody) return;
 
-    const isCurrentlyHidden = traceBody.classList.contains('hidden') || traceBody.style.display === 'none';
+    traceBody.style.display = '';
+    const isNowHidden = traceBody.classList.toggle('hidden');
 
-    if (isCurrentlyHidden) {
-        traceBody.classList.remove('hidden');
-        traceBody.style.display = 'block';
+    if (!isNowHidden) {
         if (arrowIcon) arrowIcon.classList.add('rotated');
         if (toggleText) toggleText.innerText = "Hide Multi-Agent Execution Logs";
 
@@ -1042,8 +1045,6 @@ function toggleTraceLogs() {
             : null;
         renderAgentTrace(currentTraces);
     } else {
-        traceBody.classList.add('hidden');
-        traceBody.style.display = 'none';
         if (arrowIcon) arrowIcon.classList.remove('rotated');
         if (toggleText) toggleText.innerText = "Inspect Raw Multi-Agent Execution Logs";
     }
