@@ -328,6 +328,97 @@ h1 {
     animation: float-ethereal 4s ease-in-out infinite alternate;
 }
 
+/* Floating Ambient Intro Curator Loader */
+.intro-curator-loader {
+    position: fixed;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(22, 18, 14, 0.94);
+    border: 1.5px solid var(--accent);
+    border-radius: 30px;
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(212, 175, 55, 0.3);
+    z-index: 1050;
+    backdrop-filter: blur(12px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    animation: loader-slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.intro-curator-loader.fade-out {
+    opacity: 0;
+    transform: translate(-50%, 25px);
+    pointer-events: none;
+}
+
+@keyframes loader-slide-up {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 35px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.loader-reel {
+    font-size: 1.4rem;
+    display: inline-block;
+    animation: reel-spin 2s linear infinite;
+}
+
+@keyframes reel-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.loader-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.loader-main {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+}
+
+.loader-sub {
+    font-size: 0.78rem;
+    color: #e2e8f0;
+    font-family: 'Outfit', sans-serif;
+}
+
+.loader-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.loader-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--accent);
+    animation: progress-fill 2.4s ease-in-out forwards;
+}
+
+@keyframes progress-fill {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+
 @keyframes float-ethereal {
     0% { transform: translateY(0px); }
     100% { transform: translateY(-4px); }

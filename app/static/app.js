@@ -512,11 +512,21 @@ function initScreeningInterviewModal() {
     const nextBtn = document.getElementById('next-scene-btn');
     const prevBtn = document.getElementById('prev-scene-btn');
     const submitBtn = document.getElementById('submit-screening-btn');
-    const form = document.getElementById('screening-interview-form');
+    // 1. Open Modal Trigger & Intro Loader Dismissal
+    const introLoader = document.getElementById('intro-curator-loader');
+    let introTimer = null;
 
-    // 1. Open Modal Trigger
+    function dismissIntroLoader() {
+        if (introTimer) clearTimeout(introTimer);
+        if (introLoader) {
+            introLoader.classList.add('fade-out');
+            setTimeout(() => introLoader.remove(), 500);
+        }
+    }
+
     if (startBtn) {
         startBtn.addEventListener('click', () => {
+            dismissIntroLoader();
             openScreeningModal();
         });
     }
@@ -524,6 +534,7 @@ function initScreeningInterviewModal() {
     // 2. Browse Vault Shortcuts (Checks auth first)
     function navigateToCinemathequeVault(e) {
         if (e) e.preventDefault();
+        dismissIntroLoader();
         if (!currentUser || !currentUser.email) {
             openAuthModal();
             return;
@@ -607,13 +618,14 @@ function initScreeningInterviewModal() {
         });
     }
 
-    // Auto-open modal on fresh arrival to greet user with cinema interview
-    setTimeout(() => {
+    // Ambient loading delay (2.3s) so user can comfortably appreciate the Feel & Film landing page
+    introTimer = setTimeout(() => {
         const resultsSection = document.getElementById('results');
         if (resultsSection && resultsSection.classList.contains('hidden')) {
+            dismissIntroLoader();
             openScreeningModal();
         }
-    }, 350);
+    }, 2300);
 }
 
 function attachPillClickListeners() {
