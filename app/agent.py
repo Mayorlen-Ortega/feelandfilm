@@ -185,101 +185,80 @@ master_orchestrator_agent = Agent(
 )
 
 
-# 5. Visual Art Director & Lyria Moodboard Agent (Gemini Art Director + Lyria Composer)
-directors_storyboard_agent = Agent(
-    name="visual_moodboard_director_agent",
+# 5. Emotional Constellation & Lyria Soundscape Agent (Google Gemini 3.5 Flash + Lyria Acoustic Engine)
+emotional_constellation_agent = Agent(
+    name="emotional_constellation_agent",
     model="gemini-3.5-flash",
-    description="Cinematic Visual Art Director & Lyria Acoustic Composer. Curates high-definition moodboards, color palettes, and harmonic scores from the user's emotional journey.",
+    description="Cosmic Cinema Cartographer & Lyria Acoustic Soundscape Composer. Plots an interactive constellation map of watched films with harmonic audio chords and stellar coordinates.",
     instruction="""
-    You are the Feel & Film Visual Art Director & Lyria Acoustic Composer.
+    You are the Feel & Film Cosmic Cinema Cartographer & Google Lyria Soundscape Composer.
     You will receive a JSON payload containing:
     - 'user_name': Name of the cinephile.
     - 'watched_films': Array of watched movies with 'title', 'director', 'primary_mood', 'desired_atmosphere', 'poster_url'.
 
-    Your mission is to compile an Ultra-HD Cinémathèque Moodboard (Art Gallery & Soundscape) analyzing the visual and musical arc across their cinema journey.
+    Your mission is to map the user's cinema history into an Interactive Emotional Constellation & Audio Soundscape.
 
     Output ONLY valid raw JSON matching this schema (no markdown backticks):
     {
-      "story_title": "The Cinémathèque Ultra-HD Moodboard",
-      "curator_archetype": "The Contemplative Neorealist",
-      "director_preface": "A poetic 2-sentence art director's reflection on the visual and emotional harmony of these films.",
-      "color_palette": [
-        {"name": "Amber Chiaroscuro", "hex": "#d4af37"},
-        {"name": "Deep Midnight", "hex": "#0f172a"},
-        {"name": "Emerald Twilight", "hex": "#064e3b"},
-        {"name": "Crimson Celluloid", "hex": "#881337"}
-      ],
-      "acts": [
+      "constellation_name": "The Nocturnal Sanctuary Galaxy",
+      "celestial_archetype": "The Contemplative Dreamer",
+      "cosmic_narrative": "A luminous celestial journey where quiet introspection resonated with distant stars, guiding the spirit toward emotional elevation and serenity.",
+      "ambient_soundscape": {
+        "soundscape_title": "Celestial Reverie in D Minor",
+        "key": "D Minor",
+        "tempo": "64 BPM",
+        "instrumentation": "Warm Polyphonic Ambient Synthesizer, Glass Celesta & Sub-Bass Resonances",
+        "harmonic_progression": ["Dm9", "BbMaj7", "Gm11", "Asus4"],
+        "leitmotif_description": "Lush, slow-evolving ambient cinematic pads with crystalline arpeggios that instill weightless tranquility."
+      },
+      "stars": [
         {
-          "act_number": 1,
-          "act_title": "Movement I: The Introspective Sanctuary",
-          "emotional_state": "Fatigue & Solace",
-          "featured_film": "First Film Title",
-          "featured_director": "First Director",
+          "star_id": 1,
+          "title": "First Film Title",
+          "director": "First Director",
           "poster_url": "HD Poster / Backdrop URL",
-          "director_note": "An auteur observation on how the visual textures and shadow play created emotional shelter.",
-          "art_direction": {
-            "lighting_style": "Tungsten Twilight & Amber Shadow",
-            "composition": "Intimate low-contrast framing with organic 35mm grain",
-            "atmosphere_tone": "Warm, restorative and contemplative"
-          },
-          "lyria_score": {
-            "movement_name": "Nocturne in D Minor",
-            "key": "D Minor",
-            "tempo": "68 BPM",
-            "instrumentation": "Solo Steinway Grand Piano, Muted Cello & Warm Ambient Resonances",
-            "vibe": "Sparse, intimate acoustic tranquility designed to decompress the soul"
-          }
+          "spectral_color": "#d4af37",
+          "emotional_valence": "Solace & Refuge",
+          "coordinates": {"x": 22, "y": 68},
+          "audio_frequency": 293.66,
+          "chord_notes": [146.83, 220.00, 293.66, 349.23],
+          "connections": [2]
         },
         {
-          "act_number": 2,
-          "act_title": "Movement II: The Sensory Horizon",
-          "emotional_state": "Curiosity & Wonder",
-          "featured_film": "Second Film Title",
-          "featured_director": "Second Director",
+          "star_id": 2,
+          "title": "Second Film Title",
+          "director": "Second Director",
           "poster_url": "HD Poster / Backdrop URL",
-          "director_note": "A visual reflection on how color saturation and expansive vistas sparked an emotional awakening.",
-          "art_direction": {
-            "lighting_style": "Golden Hour Luminescence & Prism Glow",
-            "composition": "Sweeping wide-angle panoramas with dynamic natural light",
-            "atmosphere_tone": "Luminous, vibrant and exploratory"
-          },
-          "lyria_score": {
-            "movement_name": "Rhapsody in G Major",
-            "key": "G Major",
-            "tempo": "104 BPM",
-            "instrumentation": "Concert Harp, Analog Synthesizer Chords & Soaring String Ensembles",
-            "vibe": "Uplifting, expansive wonder opening into sonic discovery"
-          }
+          "spectral_color": "#38bdf8",
+          "emotional_valence": "Curiosity & Wonder",
+          "coordinates": {"x": 52, "y": 32},
+          "audio_frequency": 392.00,
+          "chord_notes": [196.00, 293.66, 392.00, 493.88],
+          "connections": [1, 3]
         },
         {
-          "act_number": 3,
-          "act_title": "Movement III: Catharsis & Lasting Serenity",
-          "emotional_state": "Restoration & Harmony",
-          "featured_film": "Third Film Title",
-          "featured_director": "Third Director",
+          "star_id": 3,
+          "title": "Third Film Title",
+          "director": "Third Director",
           "poster_url": "HD Poster / Backdrop URL",
-          "director_note": "A closing reflection on reaching emotional catharsis and aesthetic clarity through the mirror of cinema.",
-          "art_direction": {
-            "lighting_style": "Diffused Daylight & High-Contrast Monochrome Harmony",
-            "composition": "Centered heroic symmetry celebrating human grace and peace",
-            "atmosphere_tone": "Triumphant, peaceful and timeless"
-          },
-          "lyria_score": {
-            "movement_name": "Hymn in C Major",
-            "key": "C Major",
-            "tempo": "72 BPM",
-            "instrumentation": "Full Orchestral Strings, Warm French Horn & Harmonic Choral Swells",
-            "vibe": "Triumphant, serene resolution of the emotional arc"
-          }
+          "spectral_color": "#ec4899",
+          "emotional_valence": "Catharsis & Peace",
+          "coordinates": {"x": 80, "y": 62},
+          "audio_frequency": 523.25,
+          "chord_notes": [261.63, 329.63, 392.00, 523.25],
+          "connections": [2]
         }
       ],
-      "climax_quote": "Cinema does not merely show us other worlds; it translates what our soul needed to understand.",
-      "director_credits": "Visual Art Direction by Google Gemini • Acoustic Score by Google Lyria"
+      "central_supernova": {
+        "title": "Core Emotional Convergence",
+        "narrative": "Where your cinematic memories orbit in harmonic balance, illuminating your creative soul."
+      },
+      "credits": "Cartography by Google Gemini 3.5 Flash • Harmonic Soundscape by Google Lyria"
     }
     """
 )
-trailer_director_agent = directors_storyboard_agent
+directors_storyboard_agent = emotional_constellation_agent
+trailer_director_agent = emotional_constellation_agent
 # 6. Cinema Courier & Epistle Agent (Concierge Dispatcher)
 cinema_courier_agent = Agent(
     name="cinema_courier_agent",
@@ -894,12 +873,12 @@ async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_n
     }
 
     try:
-        raw, _ = await run_adk_agent(trailer_director_agent, payload, "trailer_director")
-        storyboard = parse_json_safely(raw, None)
-        if not storyboard or not isinstance(storyboard, dict) or "acts" not in storyboard:
-            raise ValueError("Failed to parse storyboard JSON from agent")
+        raw, _ = await run_adk_agent(emotional_constellation_agent, payload, "emotional_constellation")
+        constellation = parse_json_safely(raw, None)
+        if not constellation or not isinstance(constellation, dict) or "stars" not in constellation:
+            raise ValueError("Failed to parse constellation JSON from agent")
     except Exception as e:
-        print("Director Storyboard Agent fallback synthesis:", e)
+        print("Emotional Constellation Agent fallback synthesis:", e)
         f1 = watched_films[0] if len(watched_films) > 0 else {}
         f2 = watched_films[1] if len(watched_films) > 1 else {}
         f3 = watched_films[2] if len(watched_films) > 2 else {}
@@ -910,96 +889,108 @@ async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_n
                 return url.replace("/w300/", "/w1280/").replace("/w500/", "/w1280/")
             return default_url
 
-        storyboard = {
-            "story_title": f"The Cinémathèque Ultra-HD Moodboard for {user_name}",
-            "curator_archetype": "The Contemplative Neorealist",
-            "director_preface": f"A cinematic synthesis of {user_name}'s emotional journey, mapping how quiet solitude blossomed into wonder and found lasting harmony.",
-            "color_palette": [
-                {"name": "Amber Chiaroscuro", "hex": "#d4af37"},
-                {"name": "Deep Midnight", "hex": "#0f172a"},
-                {"name": "Emerald Twilight", "hex": "#064e3b"},
-                {"name": "Crimson Celluloid", "hex": "#881337"}
-            ],
-            "acts": [
+        constellation = {
+            "constellation_name": f"The Luminous Orbit of {user_name}",
+            "celestial_archetype": "The Nocturnal Contemplative",
+            "cosmic_narrative": f"A celestial dialogue across {user_name}'s cinematic voyage, mapping how quiet vulnerability resonated with distant stars, guiding the spirit toward emotional elevation and harmony.",
+            "ambient_soundscape": {
+                "soundscape_title": "Celestial Reverie in D Minor",
+                "key": "D Minor",
+                "tempo": "64 BPM",
+                "instrumentation": "Warm Polyphonic Ambient Synthesizer, Glass Celesta & Sub-Bass Resonances",
+                "harmonic_progression": ["Dm9", "BbMaj7", "Gm11", "Asus4"],
+                "leitmotif_description": "Lush, slow-evolving ambient cinematic pads with crystalline arpeggios that instill weightless tranquility."
+            },
+            "stars": [
                 {
-                    "act_number": 1,
-                    "act_title": "Movement I: The Introspective Sanctuary",
-                    "emotional_state": f1.get("primary_mood", "Fatigue & Vulnerability"),
-                    "featured_film": f1.get("title", "Blade Runner 2049"),
-                    "featured_director": f1.get("director", "Denis Villeneuve"),
+                    "star_id": 1,
+                    "title": f1.get("title", "Blade Runner 2049"),
+                    "director": f1.get("director", "Denis Villeneuve"),
                     "poster_url": get_hd_img(f1, "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop"),
-                    "director_note": f"In {f1.get('title', 'Blade Runner 2049')}, the visual composition created a tranquil sanctuary where quiet vulnerability felt understood.",
-                    "art_direction": {
-                        "lighting_style": "Tungsten Twilight & Amber Shadow",
-                        "composition": "Intimate low-contrast framing with organic 35mm grain",
-                        "atmosphere_tone": "Warm, restorative and contemplative"
-                    },
-                    "lyria_score": {
-                        "movement_name": "Nocturne in D Minor",
-                        "key": "D Minor",
-                        "tempo": "68 BPM",
-                        "instrumentation": "Solo Steinway Grand Piano & Muted Cello",
-                        "vibe": "Sparse, intimate acoustic tranquility designed to decompress the soul"
-                    }
+                    "spectral_color": "#d4af37",
+                    "emotional_valence": f1.get("primary_mood", "Solace & Refuge"),
+                    "coordinates": {"x": 22, "y": 68},
+                    "audio_frequency": 293.66,
+                    "chord_notes": [146.83, 220.00, 293.66, 349.23],
+                    "connections": [2],
+                    "resonance_note": "A sanctuary star offering introspective shelter from emotional fatigue."
                 },
                 {
-                    "act_number": 2,
-                    "act_title": "Movement II: The Sensory Horizon",
-                    "emotional_state": f2.get("desired_atmosphere", "Adventure & Wonder"),
-                    "featured_film": f2.get("title", "Spirited Away"),
-                    "featured_director": f2.get("director", "Hayao Miyazaki"),
+                    "star_id": 2,
+                    "title": f2.get("title", "Spirited Away"),
+                    "director": f2.get("director", "Hayao Miyazaki"),
                     "poster_url": get_hd_img(f2, "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop"),
-                    "director_note": f"Curiosity opened a luminous portal into imaginative worlds with {f2.get('title', 'Spirited Away')}, expanding the horizon into sensory delight.",
-                    "art_direction": {
-                        "lighting_style": "Golden Hour Luminescence & Prism Glow",
-                        "composition": "Sweeping wide-angle panoramas with dynamic natural light",
-                        "atmosphere_tone": "Luminous, vibrant and exploratory"
-                    },
-                    "lyria_score": {
-                        "movement_name": "Rhapsody in G Major",
-                        "key": "G Major",
-                        "tempo": "104 BPM",
-                        "instrumentation": "Concert Harp, Analog Synthesizer Chords & Soaring String Ensembles",
-                        "vibe": "Uplifting, expansive wonder opening into sonic discovery"
-                    }
+                    "spectral_color": "#38bdf8",
+                    "emotional_valence": f2.get("desired_atmosphere", "Wonder & Curiosity"),
+                    "coordinates": {"x": 52, "y": 28},
+                    "audio_frequency": 392.00,
+                    "chord_notes": [196.00, 293.66, 392.00, 493.88],
+                    "connections": [1, 3],
+                    "resonance_note": "A luminous stellar apex expanding imagination into weightless discovery."
                 },
                 {
-                    "act_number": 3,
-                    "act_title": "Movement III: Catharsis & Lasting Serenity",
-                    "emotional_state": "Restoration & Peace",
-                    "featured_film": f3.get("title", "Roma"),
-                    "featured_director": f3.get("director", "Alfonso Cuarón"),
+                    "star_id": 3,
+                    "title": f3.get("title", "Roma"),
+                    "director": f3.get("director", "Alfonso Cuarón"),
                     "poster_url": get_hd_img(f3, "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"),
-                    "director_note": f"In {f3.get('title', 'Roma')}, emotion and memory converged into pure cinematic serenity, leaving a lasting sense of human resilience and peace.",
-                    "art_direction": {
-                        "lighting_style": "Diffused Daylight & High-Contrast Monochrome Harmony",
-                        "composition": "Centered heroic symmetry celebrating human grace and peace",
-                        "atmosphere_tone": "Triumphant, peaceful and timeless"
-                    },
-                    "lyria_score": {
-                        "movement_name": "Hymn in C Major",
-                        "key": "C Major",
-                        "tempo": "72 BPM",
-                        "instrumentation": "Full Orchestral Strings, Warm French Horn & Harmonic Choral Swells",
-                        "vibe": "Triumphant, serene resolution of the emotional arc"
-                    }
+                    "spectral_color": "#ec4899",
+                    "emotional_valence": "Catharsis & Peace",
+                    "coordinates": {"x": 82, "y": 62},
+                    "audio_frequency": 523.25,
+                    "chord_notes": [261.63, 329.63, 392.00, 523.25],
+                    "connections": [2],
+                    "resonance_note": "A peaceful supernova where emotional catharsis harmonizes into lasting serenity."
                 }
             ],
-            "climax_quote": "Cinema does not merely show us other worlds; it translates what our soul needed to understand.",
-            "director_credits": "Visual Art Direction by Google Gemini • Acoustic Score by Google Lyria"
+            "central_supernova": {
+                "title": "Core Emotional Convergence",
+                "narrative": "Where your cinematic memories orbit in harmonic balance, illuminating your creative soul."
+            },
+            "credits": "Cartography by Google Gemini 3.5 Flash • Harmonic Soundscape by Google Lyria"
         }
 
-    for i, act in enumerate(storyboard.get("acts", [])):
+    # Ensure HD images for stars
+    for i, star in enumerate(constellation.get("stars", [])):
         if i < len(watched_films):
             raw_url = watched_films[i].get("poster_url") or watched_films[i].get("backdrop_url")
             if raw_url:
-                act["poster_url"] = raw_url.replace("/w300/", "/w1280/").replace("/w500/", "/w1280/")
-            elif not act.get("poster_url"):
-                act["poster_url"] = "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"
+                star["poster_url"] = raw_url.replace("/w300/", "/w1280/").replace("/w500/", "/w1280/")
+            elif not star.get("poster_url"):
+                star["poster_url"] = "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"
+
+    # Backward compatibility mappings
+    constellation["story_title"] = constellation.get("constellation_name")
+    constellation["curator_archetype"] = constellation.get("celestial_archetype")
+    constellation["director_preface"] = constellation.get("cosmic_narrative")
+    constellation["acts"] = [
+        {
+            "act_number": s.get("star_id", idx + 1),
+            "act_title": f"Star {s.get('star_id', idx + 1)}: {s.get('title')}",
+            "featured_film": s.get("title"),
+            "featured_director": s.get("director"),
+            "poster_url": s.get("poster_url"),
+            "emotional_state": s.get("emotional_valence"),
+            "director_note": s.get("resonance_note", "Cosmic harmonic alignment."),
+            "art_direction": {
+                "lighting_style": f"Spectral {s.get('spectral_color', '#d4af37')} Glow",
+                "composition": "Cosmic orbital framing",
+                "atmosphere_tone": s.get("emotional_valence")
+            },
+            "lyria_score": {
+                "movement_name": f"Harmonic Orbit in {constellation.get('ambient_soundscape', {}).get('key', 'D Minor')}",
+                "key": constellation.get("ambient_soundscape", {}).get("key", "D Minor"),
+                "tempo": constellation.get("ambient_soundscape", {}).get("tempo", "64 BPM"),
+                "instrumentation": constellation.get("ambient_soundscape", {}).get("instrumentation", "Warm Synthesizer & Celesta"),
+                "vibe": constellation.get("ambient_soundscape", {}).get("leitmotif_description", "Cosmic tranquility")
+            }
+        }
+        for idx, s in enumerate(constellation.get("stars", []))
+    ]
 
     return {
         "status": "success",
-        "storyboard": storyboard
+        "constellation": constellation,
+        "storyboard": constellation
     }
 
 

@@ -1788,11 +1788,17 @@ function updateBiopicMilestone() {
             genBtn.innerHTML = `<i class="fas fa-lock"></i> Mark ${target - count} more to unlock`;
         }
     }
-}
+// ---------------------------------------------------------------------------
+// Google Gemini & Lyria Interactive Emotional Constellation & Soundscape Engine
+// ---------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
-// Google Gemini & Lyria Ultra-HD Moodboard Engine
-// ---------------------------------------------------------------------------
+let currentConstellationData = null;
+let activeStarIndex = 0;
+let lyriaAudioContext = null;
+let isLyriaSoundscapePlaying = false;
+let ambientGainNode = null;
+let ambientOscillators = [];
+let starfieldAnimId = null;
 
 async function generateBiopicTrailer(isDemoMode = false) {
     const genBtn = document.getElementById('generate-biopic-btn');
@@ -1801,17 +1807,16 @@ async function generateBiopicTrailer(isDemoMode = false) {
 
     const originalHtml = triggerBtn.innerHTML;
     triggerBtn.disabled = true;
-    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Curating 4K Moodboard...';
+    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Plotting Celestial Galaxy...';
 
     const watchedIds = getWatchedFilmIds();
     let targetFilms = allArchiveRecords.filter(r => watchedIds.includes(r.session_id));
 
     if (isDemoMode && targetFilms.length < 3) {
-        // In demo mode for judges, supplement with any available archive films or sample high-res films
         targetFilms = allArchiveRecords.slice(0, 3);
         if (targetFilms.length === 0) {
             targetFilms = [
-                { title: "Blade Runner 2049", director: "Denis Villeneuve", primary_mood: "Melancholic", desired_atmosphere: "Comforting Warmth", poster_url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop" },
+                { title: "Blade Runner 2049", director: "Denis Villeneuve", primary_mood: "Melancholic & Reflective", desired_atmosphere: "Sanctuary", poster_url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop" },
                 { title: "Spirited Away", director: "Hayao Miyazaki", primary_mood: "Curious & Adventurous", desired_atmosphere: "Wonder", poster_url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop" },
                 { title: "Roma", director: "Alfonso Cuarón", primary_mood: "Contemplative", desired_atmosphere: "Catharsis", poster_url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop" }
             ];
@@ -1833,183 +1838,407 @@ async function generateBiopicTrailer(isDemoMode = false) {
         });
 
         const data = await res.json();
-        if (data.status === 'success' && data.storyboard) {
-            openDirectorStoryboard(data.storyboard);
+        const payload = data.constellation || data.storyboard;
+        if (data.status === 'success' && payload) {
+            openEmotionalConstellation(payload);
         } else {
-            alert("Could not load storyboard at this time. Please try again.");
+            alert("Could not load constellation at this time. Please try again.");
         }
     } catch (e) {
-        console.error("Director storyboard generation error:", e);
-        alert("Error loading storyboard. Please check console.");
+        console.error("Constellation generation error:", e);
+        alert("Error loading constellation. Please check console.");
     } finally {
         triggerBtn.disabled = false;
         triggerBtn.innerHTML = originalHtml;
     }
 }
 
-let isAmbientHarmonyEnabled = true;
-
-function openDirectorStoryboard(storyboard) {
-    currentBiopicStoryboard = storyboard;
-    currentBiopicActIndex = 0;
+function openEmotionalConstellation(data) {
+    currentConstellationData = data;
+    activeStarIndex = 0;
 
     const modal = document.getElementById('biopic-trailer-modal');
     const titleEl = document.getElementById('biopic-story-title');
     const archetypeEl = document.getElementById('storyboard-archetype-text');
     const prefaceEl = document.getElementById('storyboard-preface-text');
-    const paletteBar = document.getElementById('storyboard-palette-bar');
     const creditsEl = document.getElementById('biopic-credits-text');
 
-    if (titleEl) titleEl.innerText = storyboard.story_title || "The 35mm Emotional Chronicles";
-    if (archetypeEl) archetypeEl.innerText = storyboard.curator_archetype || "The Contemplative Neorealist";
-    if (prefaceEl) prefaceEl.innerText = storyboard.director_preface || "An auteur dialogue mapping the emotional transformation across cinema.";
-    if (creditsEl) creditsEl.innerText = storyboard.climax_quote || "Cinema translates what our soul needed to understand.";
+    if (titleEl) titleEl.innerText = data.constellation_name || data.story_title || "The Emotional Constellation";
+    if (archetypeEl) archetypeEl.innerText = data.celestial_archetype || data.curator_archetype || "The Nocturnal Contemplative";
+    if (prefaceEl) prefaceEl.innerText = data.cosmic_narrative || data.director_preface || "A celestial dialogue across your cinematic voyage.";
+    
+    const supernova = data.central_supernova || {};
+    if (creditsEl) creditsEl.innerText = supernova.narrative || data.climax_quote || "Where cinematic memories orbit in harmonic balance.";
 
-    // Render palette swatches
-    if (paletteBar && storyboard.color_palette) {
-        paletteBar.innerHTML = storyboard.color_palette.map(c => 
-            `<span class="color-dot" style="background: ${c.hex};" title="${c.name || 'Color'}"></span>`
-        ).join('');
-    }
+    // Render Lyria Soundscape metadata
+    const soundscape = data.ambient_soundscape || {};
+    const keyEl = document.getElementById('lyria-spec-key');
+    const tempoEl = document.getElementById('lyria-spec-tempo');
+    const promptEl = document.getElementById('biopic-lyria-prompt');
+
+    if (keyEl) keyEl.innerText = soundscape.key || "D Minor";
+    if (tempoEl) tempoEl.innerText = soundscape.tempo || "64 BPM";
+    if (promptEl) promptEl.innerText = soundscape.leitmotif_description || soundscape.instrumentation || "Lush ambient synthesizer pads with crystalline celesta chords.";
 
     if (modal) modal.classList.remove('hidden');
 
-    displayStoryboardAct(0);
+    // Initialize Cosmic Starfield Canvas & Map
+    initCosmicStarfieldCanvas();
+    renderConstellationSkyMap(data);
+    selectConstellationStar(0, true);
+
+    // Auto-start ambient soundscape
+    startLyriaAmbientPad(soundscape.key || "D Minor", soundscape.tempo || "64 BPM");
 }
 
-function closeDirectorStoryboard() {
+function closeEmotionalConstellation() {
     const modal = document.getElementById('biopic-trailer-modal');
     if (modal) modal.classList.add('hidden');
+    stopLyriaAmbientPad();
+    if (starfieldAnimId) {
+        cancelAnimationFrame(starfieldAnimId);
+        starfieldAnimId = null;
+    }
 }
 
-function displayStoryboardAct(actIndex) {
-    if (!currentBiopicStoryboard || !currentBiopicStoryboard.acts) return;
-    const acts = currentBiopicStoryboard.acts;
-    if (actIndex < 0 || actIndex >= acts.length) return;
+// ---------------------------------------------------------------------------
+// Interactive Sky Map & Star Orbs Renderer
+// ---------------------------------------------------------------------------
 
-    currentBiopicActIndex = actIndex;
-    const act = acts[actIndex];
+function renderConstellationSkyMap(data) {
+    const container = document.getElementById('constellation-stars-container');
+    const svgCanvas = document.getElementById('constellation-svg-lines');
+    const stepper = document.getElementById('biopic-act-stepper');
+    if (!container || !svgCanvas) return;
 
-    // Frame Elements
-    const posterEl = document.getElementById('biopic-active-poster');
-    const filmTitleEl = document.getElementById('storyboard-film-title');
-    const filmDirectorEl = document.getElementById('storyboard-film-director');
-    const frameNumEl = document.getElementById('storyboard-frame-num');
-    const stockLabelEl = document.getElementById('storyboard-stock-label');
+    const stars = data.stars || [];
+    container.innerHTML = '';
+    svgCanvas.innerHTML = '';
 
-    // Editorial Dossier Elements
-    const actPill = document.getElementById('biopic-act-pill');
-    const emotionalBeatEl = document.getElementById('storyboard-emotional-beat');
-    const actName = document.getElementById('biopic-act-name');
-    const directorNoteEl = document.getElementById('biopic-voiceover-text');
+    // Calculate default coordinate fallbacks if not given
+    const defaultCoords = [
+        { x: 22, y: 70 },
+        { x: 50, y: 28 },
+        { x: 80, y: 64 },
+        { x: 35, y: 40 },
+        { x: 68, y: 45 }
+    ];
 
-    // Visual Art Direction Specs
-    const veoAspectEl = document.getElementById('veo-spec-aspect');
-    const veoLensEl = document.getElementById('veo-spec-lens');
-    const veoLightingEl = document.getElementById('veo-spec-lighting');
-    const veoPromptEl = document.getElementById('biopic-veo-prompt');
+    // 1. Draw SVG Connecting Lines between stars
+    let linesHtml = '';
+    stars.forEach((star, idx) => {
+        const c1 = star.coordinates || defaultCoords[idx % defaultCoords.length];
+        const connections = star.connections || (idx > 0 ? [idx] : []);
 
-    // Lyria Specs
-    const lyriaKeyEl = document.getElementById('lyria-spec-key');
-    const lyriaTempoEl = document.getElementById('lyria-spec-tempo');
-    const lyriaPromptEl = document.getElementById('biopic-lyria-prompt');
+        connections.forEach(targetId => {
+            const targetStar = stars.find(s => s.star_id === targetId) || (stars[targetId - 1]);
+            if (targetStar) {
+                const c2 = targetStar.coordinates || defaultCoords[(targetId - 1) % defaultCoords.length];
+                linesHtml += `
+                    <line x1="${c1.x}%" y1="${c1.y}%" x2="${c2.x}%" y2="${c2.y}%" class="constellation-beam" stroke="${star.spectral_color || '#d4af37'}" stroke-width="1.5" stroke-dasharray="4,4" />
+                `;
+            }
+        });
+    });
+    svgCanvas.innerHTML = linesHtml;
 
-    // Resolve Ultra-HD Image
-    let hdPoster = act.poster_url || "";
-    hdPoster = hdPoster.replace('/w300/', '/w1280/').replace('/w500/', '/w1280/');
-    if (!hdPoster || hdPoster.includes('w=300')) {
-        const fallbacks = [
-            "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"
-        ];
-        hdPoster = fallbacks[actIndex % fallbacks.length];
-    }
+    // 2. Render Interactive Star Orbs
+    stars.forEach((star, idx) => {
+        const coords = star.coordinates || defaultCoords[idx % defaultCoords.length];
+        const spectralColor = star.spectral_color || (idx === 0 ? '#d4af37' : idx === 1 ? '#38bdf8' : '#ec4899');
+        const posterUrl = star.poster_url || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop";
 
-    if (posterEl) {
-        posterEl.src = hdPoster;
-    }
-    if (filmTitleEl) filmTitleEl.innerText = act.featured_film || act.title || "Cinema Selection";
-    if (filmDirectorEl) filmDirectorEl.innerText = act.featured_director || act.director || "Auteur Director";
-    if (frameNumEl) frameNumEl.innerText = `MOVEMENT 0${actIndex + 1} / 0${acts.length}`;
+        const orb = document.createElement('div');
+        orb.className = `constellation-star-orb ${idx === 0 ? 'active' : ''}`;
+        orb.id = `star-orb-${idx}`;
+        orb.style.left = `${coords.x}%`;
+        orb.style.top = `${coords.y}%`;
+        orb.style.setProperty('--spectral-glow', spectralColor);
 
-    const art = act.art_direction || act.veo_cinematography || {};
-    const lyria = act.lyria_score || {};
+        orb.innerHTML = `
+            <div class="star-pulse-ring" style="border-color: ${spectralColor};"></div>
+            <div class="star-orb-thumb" style="border-color: ${spectralColor};">
+                <img src="${posterUrl}" alt="${star.title}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80'">
+            </div>
+            <div class="star-label-badge" style="background: rgba(10, 8, 6, 0.85); border-color: ${spectralColor};">
+                <span class="star-num">STAR 0${idx + 1}</span>
+                <span class="star-name">${star.title || 'Cinema Star'}</span>
+            </div>
+        `;
 
-    if (stockLabelEl) stockLabelEl.innerHTML = `<i class="fas fa-sparkles"></i> ULTRA-HD ART DIRECTION`;
+        orb.addEventListener('click', () => {
+            selectConstellationStar(idx, true);
+        });
 
-    if (actPill) actPill.innerText = `MOVEMENT ${act.act_number || actIndex + 1} • ${((act.act_title || '').split(':')[0] || 'CHAPTER').toUpperCase()}`;
-    if (emotionalBeatEl) emotionalBeatEl.innerHTML = `<i class="fas fa-heart-pulse"></i> ${act.emotional_state || act.emotional_beat || 'Emotional Resonance'}`;
-    if (actName) actName.innerText = act.act_title || `Movement ${actIndex + 1}`;
-    if (directorNoteEl) directorNoteEl.innerText = act.director_note || act.voiceover_line || "A reflective observation on this cinematic chapter.";
-
-    if (veoAspectEl) veoAspectEl.innerText = art.lighting_style || art.aspect_ratio || "Amber Chiaroscuro";
-    if (veoLensEl) veoLensEl.innerText = art.composition || art.lens || "Low-Contrast 35mm";
-    if (veoLightingEl) veoLightingEl.innerText = art.atmosphere_tone || art.lighting || "Restorative";
-    if (veoPromptEl) veoPromptEl.innerText = art.composition || act.veo_video_prompt || "Intimate chiaroscuro with organic analog grain and contemplative depth.";
-
-    if (lyriaKeyEl) lyriaKeyEl.innerText = lyria.key || "D Minor";
-    if (lyriaTempoEl) lyriaTempoEl.innerText = lyria.tempo ? `${lyria.tempo}` : "68 BPM";
-    if (lyriaPromptEl) lyriaPromptEl.innerText = (lyria.instrumentation ? `${lyria.instrumentation} — ${lyria.vibe || ''}` : (act.lyria_music_cue || "Solo grand piano and warm acoustic resonances"));
-
-    // Update stepper
-    const stepperDots = document.querySelectorAll('#biopic-act-stepper .act-step');
-    stepperDots.forEach((dot, idx) => {
-        if (idx === actIndex) {
-            dot.classList.add('active');
-        } else {
-            dot.classList.remove('active');
-        }
+        container.appendChild(orb);
     });
 
-    // Play subtle harmonic chord if enabled
-    if (isAmbientHarmonyEnabled) {
-        playLyriaHarmonicChord(actIndex);
+    // 3. Render Stepper Buttons in Footer
+    if (stepper) {
+        stepper.innerHTML = stars.map((s, idx) => `
+            <button type="button" class="star-step-btn ${idx === 0 ? 'active' : ''}" onclick="selectConstellationStar(${idx}, true)" style="--step-color: ${s.spectral_color || '#d4af37'}">
+                <span class="step-dot"></span>
+                <span>Star 0${idx + 1}: ${s.title || 'Film'}</span>
+            </button>
+        `).join('');
     }
 }
 
-function playLyriaHarmonicChord(actIndex) {
+function selectConstellationStar(starIndex, playSound = true) {
+    if (!currentConstellationData || !currentConstellationData.stars) return;
+    const stars = currentConstellationData.stars;
+    if (starIndex < 0 || starIndex >= stars.length) return;
+
+    activeStarIndex = starIndex;
+    const star = stars[starIndex];
+
+    // Highlight active orb in sky map
+    document.querySelectorAll('.constellation-star-orb').forEach((el, idx) => {
+        if (idx === starIndex) el.classList.add('active');
+        else el.classList.remove('active');
+    });
+
+    // Highlight active step button
+    document.querySelectorAll('.star-step-btn').forEach((btn, idx) => {
+        if (idx === starIndex) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
+
+    // Update Observatory Dossier Panel
+    const titleEl = document.getElementById('storyboard-film-title');
+    const directorEl = document.getElementById('storyboard-film-director');
+    const posterEl = document.getElementById('biopic-active-poster');
+    const pillEl = document.getElementById('observatory-star-pill');
+    const freqEl = document.getElementById('observatory-star-freq');
+    const emotionalBeatEl = document.getElementById('storyboard-emotional-beat');
+    const resonanceNoteEl = document.getElementById('biopic-voiceover-text');
+
+    if (titleEl) titleEl.innerText = star.title || "Cinema Selection";
+    if (directorEl) directorEl.innerHTML = `<i class="fas fa-video"></i> Directed by ${star.director || 'Auteur Director'}`;
+    if (posterEl) posterEl.src = star.poster_url || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop";
+
+    if (pillEl) {
+        pillEl.innerText = `STAR 0${starIndex + 1} • ${(star.emotional_valence || 'RESONANCE').toUpperCase()}`;
+        pillEl.style.color = star.spectral_color || '#d4af37';
+        pillEl.style.borderColor = star.spectral_color || 'rgba(212, 175, 55, 0.4)';
+    }
+
+    const freqVal = star.audio_frequency || [293.66, 392.00, 523.25][starIndex % 3];
+    if (freqEl) freqEl.innerHTML = `<i class="fas fa-wave-square"></i> ${freqVal} Hz`;
+
+    if (emotionalBeatEl) emotionalBeatEl.innerText = star.emotional_valence || "Emotional Elevation";
+    if (resonanceNoteEl) resonanceNoteEl.innerText = star.resonance_note || star.director_note || "Harmonic stellar alignment in the emotional sky.";
+
+    // Play star harmonic chord
+    if (playSound) {
+        playLyriaAcousticStarSound(freqVal, star.chord_notes || [freqVal * 0.5, freqVal * 0.75, freqVal, freqVal * 1.5]);
+    }
+}
+
+window.selectConstellationStar = selectConstellationStar;
+
+function playActiveStarChord() {
+    if (!currentConstellationData || !currentConstellationData.stars) return;
+    const star = currentConstellationData.stars[activeStarIndex];
+    if (!star) return;
+    const freqVal = star.audio_frequency || [293.66, 392.00, 523.25][activeStarIndex % 3];
+    playLyriaAcousticStarSound(freqVal, star.chord_notes || [freqVal * 0.5, freqVal * 0.75, freqVal, freqVal * 1.5]);
+}
+
+window.playActiveStarChord = playActiveStarChord;
+
+// ---------------------------------------------------------------------------
+// Google Lyria WebAudio Acoustic Music Synthesizer
+// ---------------------------------------------------------------------------
+
+function getAudioContext() {
+    if (!lyriaAudioContext) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) lyriaAudioContext = new AudioCtx();
+    }
+    if (lyriaAudioContext && lyriaAudioContext.state === 'suspended') {
+        lyriaAudioContext.resume();
+    }
+    return lyriaAudioContext;
+}
+
+function startLyriaAmbientPad(key = "D Minor", tempo = "64 BPM") {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    stopLyriaAmbientPad();
+
     try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
+        ambientGainNode = ctx.createGain();
+        ambientGainNode.gain.setValueAtTime(0.001, ctx.currentTime);
+        ambientGainNode.gain.exponentialRampToValueAtTime(0.04, ctx.currentTime + 2.5);
 
-        const chords = [
-            [220, 261.63, 329.63, 392.00], // Am7 (melancholic warmth)
-            [261.63, 329.63, 392.00, 523.25], // Cmaj7 (discovery & wonder)
-            [293.66, 369.99, 440.00, 587.33]  // Dmaj7 (cathartic elevation)
-        ][actIndex % 3];
+        // Lowpass filter for smooth cinematic warmth
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(480, ctx.currentTime);
 
-        chords.forEach(freq => {
+        ambientGainNode.connect(filter);
+        filter.connect(ctx.destination);
+
+        // Ambient chord frequencies based on key
+        const baseChord = [146.83, 220.00, 293.66, 349.23]; // Dm (D3, A3, D4, F4)
+
+        baseChord.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            osc.type = (i % 2 === 0) ? 'sine' : 'triangle';
+            osc.frequency.setValueAtTime(freq + (i * 0.4), ctx.currentTime); // subtle chorus detune
+            osc.connect(ambientGainNode);
+            osc.start();
+            ambientOscillators.push(osc);
+        });
+
+        isLyriaSoundscapePlaying = true;
+        updateAudioButtonState();
+    } catch (e) {
+        console.warn("Lyria audio synth notice:", e);
+    }
+}
+
+function stopLyriaAmbientPad() {
+    if (ambientGainNode && lyriaAudioContext) {
+        try {
+            ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, lyriaAudioContext.currentTime + 1.2);
+            setTimeout(() => {
+                ambientOscillators.forEach(o => {
+                    try { o.stop(); o.disconnect(); } catch (e) {}
+                });
+                ambientOscillators = [];
+            }, 1300);
+        } catch (e) {}
+    }
+    isLyriaSoundscapePlaying = false;
+    updateAudioButtonState();
+}
+
+function toggleLyriaSoundscape() {
+    if (isLyriaSoundscapePlaying) {
+        stopLyriaAmbientPad();
+    } else {
+        const soundscape = (currentConstellationData && currentConstellationData.ambient_soundscape) || {};
+        startLyriaAmbientPad(soundscape.key || "D Minor", soundscape.tempo || "64 BPM");
+    }
+}
+
+function updateAudioButtonState() {
+    const btnText = document.getElementById('ambient-audio-text');
+    const playBtn = document.getElementById('biopic-play-pause-btn');
+    if (!playBtn || !btnText) return;
+
+    if (isLyriaSoundscapePlaying) {
+        playBtn.classList.add('playing');
+        btnText.innerHTML = `Lyria Soundscape: Playing (${(currentConstellationData?.ambient_soundscape?.key) || 'D Minor'})`;
+    } else {
+        playBtn.classList.remove('playing');
+        btnText.innerHTML = `Lyria Soundscape: Muted (Click to Play)`;
+    }
+}
+
+function playLyriaAcousticStarSound(rootFreq, chordNotes) {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    try {
+        const now = ctx.currentTime;
+        const notes = chordNotes || [rootFreq, rootFreq * 1.25, rootFreq * 1.5, rootFreq * 2];
+
+        // Crystalline Celesta Bell Arpeggio
+        notes.forEach((freq, idx) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            gain.gain.setValueAtTime(0.012, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 3.8);
+
+            osc.type = (idx === 0) ? 'triangle' : 'sine';
+            osc.frequency.setValueAtTime(freq, now + (idx * 0.12));
+
+            gain.gain.setValueAtTime(0.0001, now + (idx * 0.12));
+            gain.gain.exponentialRampToValueAtTime(0.035, now + (idx * 0.12) + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + (idx * 0.12) + 2.8);
+
             osc.connect(gain);
             gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 3.8);
+
+            osc.start(now + (idx * 0.12));
+            osc.stop(now + (idx * 0.12) + 3.0);
         });
     } catch (e) {}
 }
 
-function toggleAmbientHarmony() {
-    isAmbientHarmonyEnabled = !isAmbientHarmonyEnabled;
-    const btnText = document.getElementById('ambient-audio-text');
-    const playBtn = document.getElementById('biopic-play-pause-btn');
+function playChordIndex(index) {
+    const chords = [
+        [146.83, 220.00, 293.66, 349.23, 440.00], // Dm9
+        [116.54, 174.61, 233.08, 293.66, 349.23], // BbMaj7
+        [196.00, 261.63, 293.66, 349.23, 440.00], // Gm11
+        [220.00, 293.66, 329.63, 440.00, 523.25]  // Asus4
+    ];
+    const notes = chords[index % chords.length];
+    playLyriaAcousticStarSound(notes[0], notes);
 
-    if (btnText) {
-        btnText.innerText = isAmbientHarmonyEnabled ? "Ambient Harmony: On" : "Ambient Harmony: Muted";
-    }
-    if (playBtn) {
-        playBtn.innerHTML = isAmbientHarmonyEnabled ? '<i class="fas fa-volume-high"></i> <span id="ambient-audio-text">Ambient Harmony: On</span>' : '<i class="fas fa-volume-xmark"></i> <span id="ambient-audio-text">Ambient Harmony: Muted</span>';
+    // Visual button ripple
+    const buttons = document.querySelectorAll('.harmonic-chords-row .chord-pill');
+    buttons.forEach((b, i) => {
+        if (i === index) b.classList.add('playing');
+        else b.classList.remove('playing');
+    });
+    setTimeout(() => {
+        buttons.forEach(b => b.classList.remove('playing'));
+    }, 1500);
+}
+
+window.playChordIndex = playChordIndex;
+
+// ---------------------------------------------------------------------------
+// Starfield Dynamic Particle Background Canvas
+// ---------------------------------------------------------------------------
+
+function initCosmicStarfieldCanvas() {
+    const canvas = document.getElementById('cosmic-starfield-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const width = canvas.offsetWidth || 600;
+    const height = canvas.offsetHeight || 420;
+    canvas.width = width;
+    canvas.height = height;
+
+    const stars = Array.from({ length: 90 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.6 + 0.4,
+        alpha: Math.random() * 0.8 + 0.2,
+        speed: Math.random() * 0.02 + 0.008
+    }));
+
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Subtle cosmic nebula glow
+        const grad = ctx.createRadialGradient(width * 0.5, height * 0.4, 40, width * 0.5, height * 0.4, width * 0.6);
+        grad.addColorStop(0, 'rgba(56, 189, 248, 0.05)');
+        grad.addColorStop(0.5, 'rgba(212, 175, 55, 0.03)');
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, width, height);
+
+        stars.forEach(s => {
+            s.alpha += s.speed;
+            if (s.alpha > 1 || s.alpha < 0.2) s.speed = -s.speed;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.1, Math.min(1, s.alpha))})`;
+            ctx.fill();
+        });
+
+        starfieldAnimId = requestAnimationFrame(draw);
     }
 
-    if (isAmbientHarmonyEnabled) {
-        playLyriaHarmonicChord(currentBiopicActIndex);
-    }
+    if (starfieldAnimId) cancelAnimationFrame(starfieldAnimId);
+    draw();
 }
 
 function initBiopicTrailerControls() {
@@ -2020,37 +2249,12 @@ function initBiopicTrailerControls() {
     if (demoBtn) demoBtn.addEventListener('click', () => generateBiopicTrailer(true));
 
     const closeBtn = document.getElementById('close-biopic-btn');
-    if (closeBtn) closeBtn.addEventListener('click', closeDirectorStoryboard);
-
-    const prevBtn = document.getElementById('biopic-prev-act-btn');
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            if (currentBiopicActIndex > 0) {
-                displayStoryboardAct(currentBiopicActIndex - 1);
-            }
-        });
-    }
-
-    const nextBtn = document.getElementById('biopic-next-act-btn');
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            if (currentBiopicStoryboard && currentBiopicActIndex < currentBiopicStoryboard.acts.length - 1) {
-                displayStoryboardAct(currentBiopicActIndex + 1);
-            }
-        });
-    }
+    if (closeBtn) closeBtn.addEventListener('click', closeEmotionalConstellation);
 
     const ambientBtn = document.getElementById('biopic-play-pause-btn');
     if (ambientBtn) {
-        ambientBtn.addEventListener('click', toggleAmbientHarmony);
+        ambientBtn.addEventListener('click', toggleLyriaSoundscape);
     }
-
-    const stepperDots = document.querySelectorAll('#biopic-act-stepper .act-step');
-    stepperDots.forEach((dot, idx) => {
-        dot.addEventListener('click', () => {
-            displayStoryboardAct(idx);
-        });
-    });
 }
 
 // ---------------------------------------------------------------------------

@@ -2314,28 +2314,594 @@ button:disabled {
     flex-direction: column;
 }
 
-/* 35mm Filmstrip Sprocket Holes */
-.sprocket-track {
+/* 35mm Filmstrip Sprocket Holes *//* ==========================================================================
+   Interactive Emotional Constellation & Google Lyria Soundscape
+   ========================================================================== */
+
+.constellation-overlay {
+    background: rgba(4, 3, 6, 0.94);
+    backdrop-filter: blur(14px);
+    z-index: 10000;
     display: flex;
-    justify-content: space-around;
-    background: #050403;
-    padding: 8px 12px;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-    user-select: none;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
 }
 
-.sprocket-track.bottom-track {
-    border-bottom: none;
-    border-top: 1px solid rgba(212, 175, 55, 0.2);
+.constellation-modal-wrapper {
+    max-width: 1040px;
+    width: 100%;
+    background: #06050a;
+    border: 1.5px solid rgba(212, 175, 55, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 0 60px rgba(56, 189, 248, 0.15), 0 20px 50px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+    animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.sprocket-track span {
-    width: 14px;
-    height: 9px;
-    background: #181512;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 2px;
+.constellation-card {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.08) 0%, rgba(212, 175, 55, 0.04) 40%, transparent 80%);
+}
+
+/* Constellation Header */
+.constellation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.constellation-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.constellation-cosmic-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid #38bdf8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #38bdf8;
+    font-size: 1.2rem;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+}
+
+.constellation-subtitle {
+    font-size: 0.68rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 2px;
+    color: var(--accent);
     display: block;
+}
+
+.constellation-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.25rem;
+    color: #fff;
+    margin: 0;
+    font-weight: 700;
+}
+
+.constellation-header-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Audio Player Button with Animated Equalizer */
+.btn-constellation-audio {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    color: #a7f3d0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+}
+
+.btn-constellation-audio:hover {
+    background: rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    color: #fff;
+}
+
+.sound-equalizer {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 12px;
+}
+
+.sound-equalizer span {
+    width: 2.5px;
+    background: #10b981;
+    border-radius: 1px;
+    height: 4px;
+}
+
+.btn-constellation-audio.playing .sound-equalizer span:nth-child(1) { animation: eqBounce 0.8s ease-in-out infinite; }
+.btn-constellation-audio.playing .sound-equalizer span:nth-child(2) { animation: eqBounce 0.6s ease-in-out infinite 0.15s; }
+.btn-constellation-audio.playing .sound-equalizer span:nth-child(3) { animation: eqBounce 0.9s ease-in-out infinite 0.3s; }
+.btn-constellation-audio.playing .sound-equalizer span:nth-child(4) { animation: eqBounce 0.7s ease-in-out infinite 0.45s; }
+
+@keyframes eqBounce {
+    0%, 100% { height: 3px; }
+    50% { height: 12px; }
+}
+
+/* Narrative Bar */
+.constellation-narrative-bar {
+    background: rgba(15, 23, 42, 0.7);
+    border-left: 3px solid #38bdf8;
+    padding: 8px 14px;
+    border-radius: 0 6px 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.narrative-star-icon {
+    color: #38bdf8;
+    font-size: 0.95rem;
+}
+
+.constellation-narrative-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.88rem;
+    color: #e2e8f0;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Main Stage Grid (Sky Map on Left, Observatory on Right) */
+.constellation-stage-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 18px;
+    align-items: stretch;
+}
+
+@media (max-width: 860px) {
+    .constellation-stage-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Constellation Viewport Canvas */
+.constellation-map-viewport {
+    position: relative;
+    width: 100%;
+    min-height: 420px;
+    background: radial-gradient(circle at center, #0c0a14 0%, #040306 100%);
+    border: 1.5px solid rgba(56, 189, 248, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.9);
+}
+
+.starfield-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.constellation-svg-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.constellation-beam {
+    stroke-linecap: round;
+    animation: beamGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes beamGlow {
+    from { opacity: 0.4; stroke-width: 1; }
+    to { opacity: 0.9; stroke-width: 2; }
+}
+
+.constellation-stars-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Interactive Star Orb */
+.constellation-star-orb {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 5;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.constellation-star-orb:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+    z-index: 10;
+}
+
+.constellation-star-orb.active {
+    transform: translate(-50%, -50%) scale(1.2);
+    z-index: 15;
+}
+
+.star-pulse-ring {
+    position: absolute;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 1.5px dashed var(--spectral-glow, #d4af37);
+    animation: spinRing 12s linear infinite;
+    pointer-events: none;
+}
+
+.constellation-star-orb.active .star-pulse-ring {
+    border-style: solid;
+    box-shadow: 0 0 25px var(--spectral-glow, #d4af37);
+    animation: spinRing 6s linear infinite;
+}
+
+@keyframes spinRing {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.star-orb-thumb {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 2px solid var(--spectral-glow, #d4af37);
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+.star-orb-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.star-label-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--spectral-glow, #d4af37);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+    pointer-events: none;
+    max-width: 110px;
+}
+
+.star-label-badge .star-num {
+    font-size: 0.58rem;
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.star-label-badge .star-name {
+    font-size: 0.68rem;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+.constellation-canvas-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 12px;
+    font-size: 0.72rem;
+    color: #94a3b8;
+    background: rgba(0, 0, 0, 0.65);
+    padding: 4px 10px;
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+/* Right: Observatory Dossier & Lyria Musicology Panel */
+.constellation-observatory-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.observatory-star-card {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1.5px solid rgba(212, 175, 55, 0.35);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+.observatory-star-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.star-badge-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.star-spectral-pill {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--accent);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.star-freq-badge {
+    font-size: 0.68rem;
+    font-family: 'Fira Code', monospace;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.observatory-film-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    color: #fff;
+    margin: 4px 0 0 0;
+}
+
+.observatory-director {
+    font-size: 0.76rem;
+    color: #94a3b8;
+}
+
+.observatory-poster-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.observatory-thumbnail {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.observatory-resonance-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    font-size: 0.8rem;
+}
+
+.resonance-label {
+    font-size: 0.68rem;
+    color: var(--accent);
+    font-weight: 700;
+    font-family: 'Cinzel', serif;
+}
+
+.resonance-text {
+    color: #f1f5f9;
+    font-weight: 600;
+    margin: 0;
+}
+
+.resonance-note {
+    color: #cbd5e1;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.btn-play-star-note {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(56, 189, 248, 0.2) 100%);
+    border: 1px solid var(--accent);
+    color: #fef08a;
+    font-family: 'Cinzel', serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-play-star-note:hover {
+    background: var(--accent);
+    color: #111 !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+}
+
+/* Lyria Architecture Card */
+.lyria-architecture-card {
+    background: rgba(10, 8, 14, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.lyria-arch-header {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: #a5f3fc;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lyria-arch-specs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.spec-tag {
+    font-size: 0.65rem;
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+}
+
+.lyria-arch-desc {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    margin: 0;
+    line-height: 1.35;
+}
+
+.harmonic-chords-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.chord-pill {
+    flex: 1;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: #38bdf8;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chord-pill:hover, .chord-pill.playing {
+    background: #38bdf8;
+    color: #000 !important;
+    box-shadow: 0 0 12px #38bdf8;
+    transform: scale(1.05);
+}
+
+/* Supernova Quote */
+.supernova-quote-card {
+    background: rgba(0, 0, 0, 0.5);
+    border-left: 2px solid var(--accent);
+    padding: 6px 10px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.supernova-icon {
+    color: var(--accent);
+    font-size: 0.8rem;
+}
+
+/* Constellation Footer */
+.constellation-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.constellation-stepper-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.star-step-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #94a3b8;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.star-step-btn .step-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--step-color, #d4af37);
+}
+
+.star-step-btn:hover, .star-step-btn.active {
+    background: rgba(212, 175, 55, 0.18);
+    border-color: var(--step-color, var(--accent));
+    color: #fff;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.constellation-credits {
+    font-size: 0.7rem;
+    color: #64748b;
+    font-family: 'Cinzel', serif;
 }
 
 /* Storyboard Header */
