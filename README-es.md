@@ -32,14 +32,20 @@ En lugar de ser un simple formulario de recomendaciones paso a paso, **Feel & Fi
 
 ---
 
-## 🌟 Características Principales
+## 🌟 Características Principales e Innovaciones
 
 * **Orquestación en 1 Solo Clic:** Paquete completo de noche de cine generado autónomamente sin interacciones fragmentadas.
-* **Memoria Activa y Aprendizaje Continuo (*Collaborative Partner*):** El agente recuerda feedbacks previos y adapta activamente la música, duración y maridajes futuros.
-* **Consola de Trazabilidad en Vivo (*Live Agent Trace*):** Terminal cinema-noir interactivo que muestra las llamadas inter-agente, tools y decisiones en tiempo real (ideal para la demo técnica en video).
-* **The Cinémathèque Archive:** Cajones archivadores de bronce vintage (`[Todos los Registros]`, `[Estresado]`, `[Triste]`, `[Cansado]`, `[Emocionado]`, `[Curioso]`) en ClickHouse Cloud.
+* **Motor Dinámico de Descubrimiento TMDB 100% en Vivo:** Búsqueda en tiempo real sobre 800,000+ películas con enrutador multi-vía:
+  - *Directores reales* (créditos oficiales de dirección)
+  - *Estudios de Cine* (Studio Ghibli, A24, Pixar, Marvel)
+  - *Épocas y Décadas* (años 80, 90s, 70s, 60s)
+  - *Temáticas y Cine Internacional* (Latinoamericano, Asiático, Francés, etc.)
+* **Memoria Activa y Aprendizaje Continuo (*Collaborative Partner*):** El agente recuerda feedbacks previos y restricciones dietéticas a lo largo de las sesiones, generando notas explícitas (*"He recordado tu preferencia de maridajes sin alcohol..."*).
+* **Panel Visual "Behind the Scenes":** Línea de tiempo visual de 4 agentes especialistas con cajón técnico desplegable para los logs de Google ADK.
+* **Guardrail de Seguridad de IA Responsable Multilingüe:** Filtra y mitiga contenido NSFW, violencia explícita o gore en Español, Inglés, Francés, Portugués, Italiano, Alemán y Japonés antes de cualquier consulta.
+* **The Cinémathèque Archive (ClickHouse Cloud):** Archivador vintage con gavetas emocionales (`[Todos los Registros]`, `[Estresado]`, `[Triste]`, `[Cansado]`, `[Emocionado]`, `[Curioso]`), eliminación individual de tarjetas (`🗑️`) y colapso de paginación a las primeras 3 recomendaciones.
 * **Autenticación Federada con Google (GIS):** Inicio de sesión con Google OAuth 2.0 y verificación JWT para sincronizar la memoria del usuario.
-* **Buscador de Streaming Regional:** Consulta directa de plataformas (Netflix, Prime Video, Max, Apple TV, etc.).
+* **Buscador de Streaming Regional:** Consulta directa de plataformas (Netflix, Prime Video, Max, Apple TV, etc.) basada en datos de TMDB y JustWatch.
 
 ---
 

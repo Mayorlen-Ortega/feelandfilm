@@ -42,7 +42,7 @@ def init_db():
         ORDER BY id
     ''')
 
-    # audience_sessions
+    # audience_sessions (The Cinémathèque Archive)
     client.command('''
         CREATE TABLE IF NOT EXISTS audience_sessions (
             session_id UUID DEFAULT generateUUIDv4(),
@@ -50,10 +50,13 @@ def init_db():
             initial_mood String,
             desired_atmosphere String,
             audience_age_range String,
-            max_intensity UInt8,
-            film_id UUID,
-            outcome_rating UInt8 COMMENT '1 to 5 scale',
-            mood_transition_success Bool
+            user_email String,
+            film_title String,
+            film_director String,
+            poster_url String,
+            reasoning String,
+            detected_tags Array(String),
+            primary_mood String
         ) ENGINE = MergeTree()
         ORDER BY timestamp
     ''')

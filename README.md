@@ -32,14 +32,20 @@ Rather than being a simple step-by-step recommendation UI, **Feel & Film** funct
 
 ---
 
-## 🌟 Key Features
+## 🌟 Key Features & Innovations
 
-* **1-Click Autonomous Orchestration:** Full cinema night plan generated without fragmented requests.
-* **Active Memory & Continuous Learning (*Collaborative Partner Track*):** The agent remembers past ratings and adapts future curations accordingly.
-* **Live Agent Trace Terminal:** Interactive cinema-noir terminal displaying step-by-step agent communication and tool calls in real time (perfect for video demos).
-* **The Cinémathèque Archive:** Vintage brass drawers (`[All Records]`, `[Stressed]`, `[Sad]`, `[Tired]`, `[Excited]`, `[Curious]`) backed by ClickHouse Cloud.
-* **Google Federated Authentication (GIS):** Sign in with Google OAuth 2.0 and JWT verification to sync personal memory.
-* **Where to Watch Integration:** Direct streaming availability powered by TMDB and JustWatch data.
+* **1-Click Autonomous Multi-Agent Orchestration:** Complete cinema night plan (Film + Soundtrack + Concession + Streaming) generated in a single cycle without fragmented requests.
+* **100% Dynamic Live TMDB Discovery Engine:** Real-time query engine searching across 800,000+ movies on TMDB with smart multi-routing for:
+  - *Directors* (official directing credits)
+  - *Studios & Companies* (Studio Ghibli, A24, Pixar, Marvel)
+  - *Eras & Decades* (80s, 90s, 70s, 60s)
+  - *Thematic Keywords* & international cinema (Latin American, Asian, Nordic, French, etc.)
+* **Active Memory & Continuous Learning (*Collaborative Partner Track*):** The agent remembers past ratings and dietary restrictions across sessions, generating explicit collaborative notes (*"I remembered your preference for (Non-alcoholic pairings only)..."*).
+* **"Behind the Scenes" Visual AI Crew Pipeline:** Visual 4-agent workflow display with collapsible raw Google ADK execution logs.
+* **Responsible AI Multilingual Safety Guardrail:** Intercepts and mitigates NSFW, gore, and extreme violence across Spanish, English, French, Portuguese, Italian, German, and Japanese before execution.
+* **The Cinémathèque Archive (ClickHouse Cloud):** Vintage brass drawers (`[All Records]`, `[Stressed]`, `[Sad]`, `[Tired]`, `[Excited]`, `[Curious]`) with individual card deletion and top-3 pagination collapse.
+* **Google Federated Authentication (GIS):** Sign in with Google OAuth 2.0 and JWT verification to sync persistent personal memory.
+* **Where to Watch Streaming Integration:** Direct regional streaming availability powered by TMDB and JustWatch data.
 
 ---
 

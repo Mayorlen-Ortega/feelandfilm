@@ -1,41 +1,61 @@
-# Demo Script
+# Feel & Film — Hackathon Demo Script (Collaborative Partner Track)
 
-Follow these steps to demonstrate the Feel & Film application to the judges.
+Follow these steps to deliver a compelling, high-impact demonstration of **Feel & Film** to the hackathon judges.
 
-## Prerequisites
-- A Google Cloud Project with Vertex AI enabled.
-- Application Default Credentials configured locally (`gcloud auth application-default login`).
-- A ClickHouse Cloud instance provisioned.
-- `.env` file populated with ClickHouse credentials.
+---
 
-## Step 1: Initialize Data
-Run the initialization scripts to prove we are using fresh, original fictional data.
+## ⏱️ 5-Minute Demo Walkthrough
+
+### 1. 🌟 Introduction & The Problem (0:00 - 0:45)
+- **Say to judges:** *"Welcome to Feel & Film. Most movie recommendation systems are rigid dropdown filters or simple search bars. We built an autonomous Multi-Agent Collaborative Partner that transforms raw human emotions into a complete Cinema Night Experience in a single cycle, and actively learns your preferences across sessions."*
+- **Show UI:** Point out the Cinema-Noir aesthetic, responsive typography, and glassmorphic layout at `http://localhost:8000`.
+
+### 2. 🧠 Autonomous Multi-Agent Orchestration (0:45 - 2:00)
+- **Input complex emotions:**
+  - *How are you feeling tonight?*: `Exhausted after shipping complex code all week`
+  - *What kind of cinematic experience do you want?*: `Uplifting, contemplative comfort with great visuals`
+  - *Audience Demographic*: `Adults (18+)`
+  - *Specific themes, directors, or eras?*: `Studio Ghibli` (or `Alfonso Cuarón`, `años 80`, etc.)
+- **Click "Orchestrate Cinema Night":**
+  - Point out that in a single autonomous request, the **Master Orchestrator Agent** (Google ADK / Gemini 3.5 Flash) coordinates 3 specialized sub-agents:
+    1. **Film Curator Agent**: Searches TMDB global catalog in real-time.
+    2. **Soundtrack Maestro Agent**: Analyzes score musicology, composer, and standout track.
+    3. **Cinema Sommelier Agent**: Pairs artisanal concessions adhering to user dietary boundaries.
+  - Parallel API tasks simultaneously fetch the official HD poster and regional streaming availability (*Netflix, Prime, Apple TV*).
+
+### 3. 🎬 "Behind the Scenes" Agent Crew & Transparency (2:00 - 3:00)
+- **Click `[ 🎬 Behind the Scenes: See how your 4 agents collaborated ]`:**
+  - Show the 4 visual crew cards (*Master Orchestrator, Film Curator, Soundtrack Maestro, Cinema Sommelier*).
+  - Open the **Detailed Google ADK Execution Log** drawer to show judges the exact live timestamps, tool executions, and model parameters.
+
+### 4. 🔄 Active Memory & Collaborative Partner Loop (3:00 - 4:00)
+- **Teach the agent:**
+  - Click the `[🚫 Non-alcoholic drinks]` chip or `[🌎 Latin American cinema]`, or rate 5 stars.
+  - Show the confirmation: the agent instantly commits this feedback into persistent memory.
+- **Run a 2nd search:**
+  - Show the **Collaborative Partner Note**:
+    > *"Collaborative Partner Note: I remembered your preference for (Non-alcoholic pairings only) and tailored tonight's concession pairing to accompany [Film]."*
+  - Point out that the Sommelier strictly selected a botanical mocktail/craft soda.
+
+### 5. 🗄️ The Cinémathèque Archive in ClickHouse Cloud (4:00 - 4:45)
+- **Show the Archive section:**
+  - Browse vintage brass filing drawers (`[All Records]`, `[Stressed]`, `[Sad]`, `[Tired]`, `[Excited]`, `[Curious]`).
+  - Demonstrate individual card deletion (`🗑️` button) and pagination collapse (`[Show All Curations (X)]`).
+  - Explain that all records are indexed and stored in **ClickHouse Cloud**.
+
+### 6. 🛡️ Responsible AI & Safety Guardrail (4:45 - 5:00)
+- **Explain safety:** Show how the system includes a multilingual content safety guardrail protecting against NSFW, gore, or malicious inputs in multiple languages before any API call is made.
+
+---
+
+## 🚀 Quick Commands for Live Testing
 ```bash
-python scripts/init_db.py
-python scripts/seed_data.py
-```
-*Point out to judges:* We are creating a fictional `film_catalog` and generating synthetic `audience_sessions` to act as our historical analytics memory.
-
-## Step 2: Start the Server
-```bash
+# Start server
 uvicorn app.main:app --reload
+
+# Run full agent test suite
+python test_orchestrator.py
+
+# Run API test suite
+python test_api.py
 ```
-Navigate to `http://localhost:8000` in your browser.
-
-## Step 3: Run the Agent
-1. **Show the UI**: Point out the modern, dynamic design, meeting the "vibrant colors and glassmorphism" aesthetic.
-2. **Input Constraints**:
-   - Mood: *Stressed*
-   - Atmosphere: *Relaxing*
-   - Target: *Adult*
-   - Intensity: *4*
-3. **Generate**: Click "Generate Slate". Explain that the request is now being sent to the Google ADK Agent.
-4. **Agent at Work**: The agent translates the request into ClickHouse SQL, fetches results, and builds the slate.
-
-## Step 4: Review Results
-1. **The Slate**: Show the three fictional films recommended. Emphasize that these do *not* exist on TMDB or Netflix.
-2. **Evidence**: Read the "Why this slate?" section to show how the agent used ClickHouse data to justify the transition from Stressed to Relaxing.
-3. **Audit Trail**: Scroll down to the Agent Audit Trail. Point out the exact tool calls made by the ADK agent, showing the SQL executed against ClickHouse Cloud.
-
-## Step 5: (Optional) Show Code Architecture
-Open `app/agent.py` to demonstrate the use of `from google.adk.agents import Agent` and the explicit tool definitions.

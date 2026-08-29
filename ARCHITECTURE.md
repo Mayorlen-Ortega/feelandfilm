@@ -3,46 +3,73 @@
 ![Feel & Film Architecture Diagram](app/static/architecture_diagram.svg)
 
 ## Overview
-**Feel & Film** is an autonomous multi-agent cinematic curation platform built with **Google ADK**, **Gemini 3.5 Flash**, **FastAPI**, **Google Identity Services (GIS)**, and **ClickHouse Cloud**.
+**Feel & Film** is an autonomous multi-agent cinematic curation platform and personal vault built with **Google ADK**, **Gemini 3.5 Flash**, **FastAPI**, **Google Identity Services (GIS)**, and **ClickHouse Cloud**.
 
-Designed specifically for the **Collaborative Partner Track**, the platform transforms human emotional states into a comprehensive **Cinema Night Experience Package** in a **single autonomous cycle**, while continuously learning from user feedback across sessions.
+Designed specifically for the **Collaborative Partner Track**, the platform transforms human emotional states into a comprehensive **Cinema Night Experience Package** in a **single autonomous cycle**, while continuously learning from user feedback and preference memory across sessions.
 
 ---
 
-## Autonomous Multi-Agent Pipeline & Orchestrator Flow
+## 🤖 Autonomous Multi-Agent Pipeline & Orchestrator Flow
 
 ```text
-                                 [ User Emotional Input ]
-                                            │
-                                            ▼
-                           ┌───────────────────────────────────┐
-                           │   Master Orchestrator Agent       │
-                           │   (Google ADK / Gemini 3.5 Flash) │
-                           └─────────────────┬─────────────────┘
+                           [ User Emotional Input & Constraints ]
+                                             │
+                                             ▼
+                    ┌─────────────────────────────────────────────────┐
+                    │  Layer 0: Responsible AI Content Safety Filter  │
+                    │  (Multilingual NSFW, Violence & Gore Guardrail) │
+                    └────────────────────────┬────────────────────────┘
+                                             │ (Safe Request)
+                                             ▼
+                    ┌─────────────────────────────────────────────────┐
+                    │       Master Orchestrator Agent (Brain)         │
+                    │       (Google ADK / Gemini 3.5 Flash)           │
+                    │  - Retrieves user memory & dietary rules        │
+                    │  - Synthesizes collaborative partner note       │
+                    └────────────────────────┬────────────────────────┘
                                              │
                ┌─────────────────────────────┼─────────────────────────────┐
                ▼                             ▼                             ▼
-    [ Film Curator Agent ]          [ Soundtrack Agent ]         [ Sommelier Agent ]
-   - Analyzes mood & memory       - Musicological OST         - Dietary & drink pairing
-   - Enforces age limits (G/PG)   - Composer & key tracks     - English parenthetical tags
-   - Selects 1 perfect movie                 │                             │
+    [ Film Curator Agent ]          [ Soundtrack Maestro ]       [ Cinema Sommelier ]
+   - 100% Live TMDB Discovery     - Musicological OST Analysis  - Gastronomy Pairing
+   - Smart 4-way Query Router:    - Original Score Composer     - Enforces diet rules
+     • Directors (Official Crew)  - Standout Track               (100% non-alcoholic /
+     • Studios (Ghibli, A24)      - Mood Vibe                    vegan snacks)
+     • Eras & Decades (80s, 90s)
+     • Title / Themes
+   - Age Rating Limit (G/PG)
                │                             │                             │
                └─────────────────────────────┼─────────────────────────────┘
                                              │
                                              ▼
-                          ┌─────────────────────────────────────┐
-                          │   Live Agent Execution Trace        │
-                          │   & Collaborative Learning Note     │
-                          └──────────────────┬──────────────────┘
+                           ┌───────────────────────────────────┐
+                           │   Parallel Enrichment Engine      │
+                           │   • TMDB HD Poster Art            │
+                           │   • Regional Streaming Providers  │
+                           └─────────────────┬─────────────────┘
                                              │
                                              ▼
-               ┌─────────────────────────────────────────────────────────┐
-               │         Complete Cinema Night Package (1-Click)         │
-               │   • Selected Film + Synopsis + Fun Fact + Poster        │
-               │   • Where to Watch Streaming (TMDB / JustWatch)         │
-               │   • Soundtrack Breakdown & Concession Gastronomy        │
-               │   • Collaborative Memory Feedback Loop                  │
-               └─────────────────────────────────────────────────────────┘
+                           ┌───────────────────────────────────┐
+                           │  Live Agent Execution Trace       │
+                           │  & Behind-the-Scenes Crew Cards   │
+                           └─────────────────┬─────────────────┘
+                                             │
+                                             ▼
+        ┌────────────────────────────────────────────────────────────────────────┐
+        │                 Complete Cinema Night Experience                       │
+        │   • Film + Director + Runtime + Synopsis + Fun Fact + Poster           │
+        │   • Where to Watch Regional Streaming (TMDB / JustWatch)               │
+        │   • Soundtrack Musicology & Tailored Concession Gastronomy             │
+        │   • Collaborative Memory Feedback Loop (Stars + Instant Chips)         │
+        └────────────────────────────────────┬───────────────────────────────────┘
+                                             │
+                                             ▼
+                    ┌─────────────────────────────────────────────────┐
+                    │    The Cinémathèque Archive (ClickHouse Cloud)  │
+                    │    • Indexed Emotional Drawers                  │
+                    │    • Individual Card Deletion                   │
+                    │    • Top-3 Pagination & Historical Sync         │
+                    └─────────────────────────────────────────────────┘
 ```
 
 ---
@@ -53,34 +80,39 @@ Designed specifically for the **Collaborative Partner Track**, the platform tran
 - **`master_orchestrator_agent`**:
   - **Framework**: `google.adk.agents.Agent` (Google ADK)
   - **Model**: `gemini-3.5-flash`
-  - **Function**: Coordinates the sub-agents, analyzes active user memory profiles, generates collaborative partner notes (*"I remembered that..."*), and produces a complete, timestamped **Agent Execution Trace**.
-- **`film_curator_agent`**:
-  - **Function**: Interprets free-form emotional feelings, extracts multi-dimensional mood tags, enforces age constraints (G/PG for Kids 0-12), and selects high-value indie gems and classics avoiding clichés.
+  - **Function**: Coordinates the sub-agents, analyzes active user memory profiles, generates collaborative partner notes (*"I remembered that you prefer non-alcoholic pairings..."*), and produces a complete, timestamped **Agent Execution Trace**.
+- **`film_curator_agent` & Dynamic TMDB Engine (`discover_live_tmdb_film`)**:
+  - **Function**: Interprets free-form emotional feelings, extracts multi-dimensional mood tags, enforces age constraints (G/PG for Kids 0-12), and discovers matching films in real-time from TMDB's 800,000+ global movie database across 4 specialized routes:
+    1. *Director Search*: `/3/search/person` ➡️ `/movie_credits?job=Director`
+    2. *Studio Search*: `/3/search/company` ➡️ `with_companies={id}`
+    3. *Era / Decade Search*: Detects 80s/90s/70s ➡️ `primary_release_date.gte` & `lte`
+    4. *Keyword & Title Search*: `/3/search/movie`
 - **`soundtrack_agent`**:
   - **Function**: Analyzes film musicology, identifies composers, mood vibe, and standout tracks.
 - **`sommelier_agent`**:
-  - **Function**: Curates custom beverage & snack pairings strictly adhering to user dietary restrictions (e.g. non-alcoholic mocktails, vegan snacks).
+  - **Function**: Curates custom beverage & snack pairings strictly adhering to user dietary restrictions (e.g. non-alcoholic mocktails, botanical craft sodas, vegan snacks).
 
 ### 2. Backend Gateway & Memory Management (`app/main.py`)
 - **`POST /api/curate-experience`**:
-  - Main autonomous orchestration endpoint. Executes the complete multi-agent pipeline in 1 cycle, enriches with TMDB posters and regional streaming availability, saves to ClickHouse Cloud, and returns the package with execution trace.
+  - Main autonomous orchestration endpoint. Executes safety guardrails, user memory retrieval, multi-agent synthesis, poster/streaming enrichment, and ClickHouse Cloud persistence.
 - **`POST /api/feedback`**:
-  - Continuous learning endpoint for the **Collaborative Partner Track**. Allows users to rate screenings and teach the agent (*"No alcohol in pairings"*, *"Prefer shorter films"*, *"Loved the jazz score"*).
+  - Continuous learning endpoint for the **Collaborative Partner Track**. Allows users to rate screenings (1-5 stars) and select instant preference chips (*"Non-alcoholic drinks"*, *"Latin American cinema"*, *"Films under 110 min"*).
 - **`GET /api/user-memory`**:
   - Inspects active memory graph, learned preferences, and dietary restrictions for the active user.
-- **`GET /api/cinematheque`**:
-  - Queries ClickHouse `audience_sessions` filtered by authenticated `user_email`.
+- **`GET /api/cinematheque` & `DELETE /api/cinematheque/{session_id}`**:
+  - Queries and manages ClickHouse `audience_sessions` filtered by authenticated `user_email`.
 - **`GET /api/auth/config` & `POST /api/auth/google`**:
   - Google Identity Services (GIS) configuration and JWT credential decoding.
 - **`GET /api/watch-providers`**:
   - Auto-detects client country and queries TMDB / JustWatch streaming availability.
 
 ### 3. Presentation Layer & Real-Time Transparency (`app/static/`)
-- **`index.html` & `app.js`**:
+- **`index.html`, `style.css` & `app.js`**:
   - **One-Click Cinema Night Presentation**: Displays the complete package immediately without multi-step manual requests.
-  - **Live Agent Trace Terminal**: Real-time cinema-noir terminal displaying timestamped sub-agent communication, tool calls, and decision steps.
-  - **Collaborative Feedback Chips**: Interactive tags enabling users to teach the agent in real time.
-  - **The Cinémathèque Archive**: Vintage brass filing cabinet preserving curated films by emotional drawer in ClickHouse Cloud.
+  - **Behind the Scenes Visual AI Crew**: 4 interactive agent cards displaying real-time responsibilities and decisions.
+  - **Detailed Google ADK Execution Log Drawer**: Developer-friendly collapsible terminal for judge audits.
+  - **Instant Feedback Auto-Save**: Auto-saves on star rating click (5 stars active by default) and quick chips.
+  - **The Cinémathèque Archive**: Vintage brass filing cabinet preserving curated films by emotional drawer with individual delete and top-3 pagination.
 
 ### 4. Cloud Persistence Layer
 - **ClickHouse Cloud (OLAP)**:
