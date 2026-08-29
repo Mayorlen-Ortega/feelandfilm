@@ -2694,34 +2694,34 @@ button:disabled {
    ========================================================================== */
 
 .constellation-overlay {
-    background: rgba(4, 3, 6, 0.94);
-    backdrop-filter: blur(14px);
+    background: rgba(4, 3, 6, 0.95);
+    backdrop-filter: blur(16px);
     z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 35px 20px;
-    overflow-y: auto;
+    padding: 3vh 2vw;
+    overflow: hidden;
 }
 
 .constellation-modal-wrapper {
-    max-width: 960px;
-    width: 100%;
-    max-height: 88vh;
+    max-width: 930px;
+    width: 94vw;
+    max-height: calc(100vh - 6vh);
     margin: auto;
     background: #06050a;
     border: 1.5px solid rgba(212, 175, 55, 0.5);
     border-radius: 14px;
     box-shadow: 0 0 50px rgba(56, 189, 248, 0.2), 0 25px 60px rgba(0, 0, 0, 0.95);
-    overflow-y: auto;
+    overflow: hidden;
     animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .constellation-card {
-    padding: 20px 24px;
+    padding: 12px 18px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 8px;
     background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.08) 0%, rgba(212, 175, 55, 0.04) 40%, transparent 80%);
 }
 
@@ -2730,15 +2730,15 @@ button:disabled {
     background: rgba(239, 68, 68, 0.18);
     border: 1.5px solid #ef4444;
     color: #fca5a5;
-    padding: 6px 16px;
+    padding: 5px 14px;
     border-radius: 20px;
     font-family: 'Cinzel', serif;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 700;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.35);
     transition: all 0.25s ease;
     margin: 0;
@@ -2757,20 +2757,20 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
-    padding-bottom: 12px;
+    gap: 8px;
+    padding-bottom: 6px;
     border-bottom: 1px solid rgba(212, 175, 55, 0.25);
 }
 
 .constellation-header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .constellation-cosmic-icon {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: rgba(56, 189, 248, 0.15);
     border: 1px solid #38bdf8;
@@ -2778,21 +2778,21 @@ button:disabled {
     align-items: center;
     justify-content: center;
     color: #38bdf8;
-    font-size: 1.2rem;
+    font-size: 1rem;
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
 }
 
 .constellation-subtitle {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-family: 'Cinzel', serif;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     color: var(--accent);
     display: block;
 }
 
 .constellation-title {
     font-family: 'Cinzel', serif;
-    font-size: 1.25rem;
+    font-size: 1.12rem;
     color: #fff;
     margin: 0;
     font-weight: 700;
@@ -2801,7 +2801,7 @@ button:disabled {
 .constellation-header-meta {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
@@ -2811,14 +2811,14 @@ button:disabled {
     border: 1px solid rgba(16, 185, 129, 0.5);
     color: #a7f3d0;
     font-family: 'Outfit', sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    padding: 6px 14px;
+    padding: 4px 12px;
     border-radius: 20px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: all 0.25s ease;
 }
 
@@ -2832,14 +2832,14 @@ button:disabled {
     display: inline-flex;
     align-items: flex-end;
     gap: 2px;
-    height: 12px;
+    height: 10px;
 }
 
 .sound-equalizer span {
-    width: 2.5px;
+    width: 2px;
     background: #10b981;
     border-radius: 1px;
-    height: 4px;
+    height: 3px;
 }
 
 .btn-constellation-audio.playing .sound-equalizer span:nth-child(1) { animation: eqBounce 0.8s ease-in-out infinite; }
@@ -2849,39 +2849,39 @@ button:disabled {
 
 @keyframes eqBounce {
     0%, 100% { height: 3px; }
-    50% { height: 12px; }
+    50% { height: 10px; }
 }
 
 /* Narrative Bar */
 .constellation-narrative-bar {
     background: rgba(15, 23, 42, 0.7);
     border-left: 3px solid #38bdf8;
-    padding: 8px 14px;
+    padding: 4px 10px;
     border-radius: 0 6px 6px 0;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .narrative-star-icon {
     color: #38bdf8;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
 }
 
 .constellation-narrative-text {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 0.88rem;
+    font-size: 0.78rem;
     color: #e2e8f0;
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.3;
 }
 
 /* Main Stage Grid (Sky Map on Left, Observatory on Right) */
 .constellation-stage-grid {
     display: grid;
-    grid-template-columns: 1.35fr 1fr;
-    gap: 18px;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 12px;
     align-items: stretch;
 }
 
@@ -2895,8 +2895,8 @@ button:disabled {
 .constellation-map-viewport {
     position: relative;
     width: 100%;
-    min-height: 330px;
-    height: 340px;
+    min-height: 275px;
+    height: 285px;
     background: radial-gradient(circle at center, #0c0a14 0%, #040306 100%);
     border: 1.5px solid rgba(56, 189, 248, 0.3);
     border-radius: 10px;
@@ -2948,7 +2948,7 @@ button:disabled {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     z-index: 5;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2965,8 +2965,8 @@ button:disabled {
 
 .star-pulse-ring {
     position: absolute;
-    width: 68px;
-    height: 68px;
+    width: 58px;
+    height: 58px;
     border-radius: 50%;
     border: 1.5px dashed var(--spectral-glow, #d4af37);
     animation: spinRing 12s linear infinite;
@@ -2975,7 +2975,7 @@ button:disabled {
 
 .constellation-star-orb.active .star-pulse-ring {
     border-style: solid;
-    box-shadow: 0 0 25px var(--spectral-glow, #d4af37);
+    box-shadow: 0 0 20px var(--spectral-glow, #d4af37);
     animation: spinRing 6s linear infinite;
 }
 
@@ -2985,8 +2985,8 @@ button:disabled {
 }
 
 .star-orb-thumb {
-    width: 54px;
-    height: 54px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 2px solid var(--spectral-glow, #d4af37);
     overflow: hidden;
@@ -3001,8 +3001,8 @@ button:disabled {
 }
 
 .star-label-badge {
-    padding: 3px 8px;
-    border-radius: 12px;
+    padding: 2px 6px;
+    border-radius: 10px;
     border: 1px solid var(--spectral-glow, #d4af37);
     display: flex;
     flex-direction: column;
@@ -3010,34 +3010,34 @@ button:disabled {
     text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.8);
     pointer-events: none;
-    max-width: 110px;
+    max-width: 95px;
 }
 
 .star-label-badge .star-num {
-    font-size: 0.58rem;
+    font-size: 0.52rem;
     font-family: 'Cinzel', serif;
     color: var(--accent);
     font-weight: 700;
 }
 
 .star-label-badge .star-name {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 100px;
+    max-width: 85px;
 }
 
 .constellation-canvas-hint {
     position: absolute;
-    bottom: 8px;
-    left: 12px;
-    font-size: 0.72rem;
+    bottom: 6px;
+    left: 10px;
+    font-size: 0.66rem;
     color: #94a3b8;
     background: rgba(0, 0, 0, 0.65);
-    padding: 4px 10px;
-    border-radius: 12px;
+    padding: 3px 8px;
+    border-radius: 10px;
     pointer-events: none;
 }
 
@@ -3045,24 +3045,24 @@ button:disabled {
 .constellation-observatory-panel {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
 }
 
 .observatory-star-card {
     background: rgba(15, 23, 42, 0.85);
     border: 1.5px solid rgba(212, 175, 55, 0.35);
-    border-radius: 10px;
-    padding: 14px;
+    border-radius: 8px;
+    padding: 8px 12px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    gap: 6px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
 .observatory-star-header {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
 }
 
 .star-badge-row {
@@ -3073,46 +3073,46 @@ button:disabled {
 
 .star-spectral-pill {
     font-family: 'Cinzel', serif;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 700;
     color: var(--accent);
     border: 1px solid rgba(212, 175, 55, 0.4);
-    padding: 2px 8px;
-    border-radius: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
 }
 
 .star-freq-badge {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-family: 'Fira Code', monospace;
     color: #38bdf8;
     background: rgba(56, 189, 248, 0.12);
-    padding: 2px 8px;
-    border-radius: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
 }
 
 .observatory-film-title {
     font-family: 'Cinzel', serif;
-    font-size: 1.15rem;
+    font-size: 1.02rem;
     color: #fff;
-    margin: 4px 0 0 0;
+    margin: 2px 0 0 0;
 }
 
 .observatory-director {
-    font-size: 0.76rem;
+    font-size: 0.7rem;
     color: #94a3b8;
 }
 
 .observatory-poster-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
 }
 
 .observatory-thumbnail {
-    width: 60px;
-    height: 80px;
+    width: 46px;
+    height: 62px;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: 5px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     flex-shrink: 0;
 }
@@ -3121,11 +3121,11 @@ button:disabled {
     display: flex;
     flex-direction: column;
     gap: 1px;
-    font-size: 0.8rem;
+    font-size: 0.74rem;
 }
 
 .resonance-label {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     color: var(--accent);
     font-weight: 700;
     font-family: 'Cinzel', serif;
@@ -3142,8 +3142,8 @@ button:disabled {
     font-style: italic;
     font-family: 'Playfair Display', serif;
     margin: 0;
-    font-size: 0.82rem;
-    line-height: 1.35;
+    font-size: 0.75rem;
+    line-height: 1.25;
 }
 
 .btn-play-star-note {
@@ -3151,15 +3151,15 @@ button:disabled {
     border: 1px solid var(--accent);
     color: #fef08a;
     font-family: 'Cinzel', serif;
-    font-size: 0.76rem;
+    font-size: 0.7rem;
     font-weight: 700;
-    padding: 7px 12px;
-    border-radius: 6px;
+    padding: 5px 10px;
+    border-radius: 5px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
     transition: all 0.2s ease;
 }
 
@@ -3173,59 +3173,59 @@ button:disabled {
 .lyria-architecture-card {
     background: rgba(10, 8, 14, 0.85);
     border: 1px solid rgba(56, 189, 248, 0.3);
-    border-radius: 8px;
-    padding: 10px 12px;
+    border-radius: 6px;
+    padding: 6px 10px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
 }
 
 .lyria-arch-header {
     font-family: 'Cinzel', serif;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     color: #a5f3fc;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
 }
 
 .lyria-arch-specs {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
 }
 
 .spec-tag {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     background: rgba(255, 255, 255, 0.06);
     color: #cbd5e1;
-    padding: 2px 6px;
+    padding: 1px 5px;
     border-radius: 4px;
     font-family: 'Fira Code', monospace;
 }
 
 .lyria-arch-desc {
-    font-size: 0.72rem;
+    font-size: 0.66rem;
     color: #94a3b8;
     margin: 0;
-    line-height: 1.35;
+    line-height: 1.25;
 }
 
 .harmonic-chords-row {
     display: flex;
-    gap: 6px;
-    margin-top: 4px;
+    gap: 5px;
+    margin-top: 2px;
     flex-wrap: wrap;
 }
 
 .chord-pill {
     flex: 1;
-    min-width: 60px;
+    min-width: 52px;
     background: rgba(56, 189, 248, 0.1);
     border: 1px solid rgba(56, 189, 248, 0.4);
     color: #38bdf8;
-    padding: 4px 6px;
-    border-radius: 6px;
+    padding: 3px 5px;
+    border-radius: 5px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -3237,18 +3237,18 @@ button:disabled {
 
 .chord-pill .chord-title-text {
     font-family: 'Fira Code', monospace;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 700;
 }
 
 .chord-pill .chord-mood-sub {
-    font-size: 0.55rem;
+    font-size: 0.5rem;
     font-family: 'Outfit', sans-serif;
     color: #94a3b8;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 60px;
+    max-width: 52px;
 }
 
 .chord-pill:hover, .chord-pill.playing {
@@ -3267,19 +3267,19 @@ button:disabled {
 .supernova-quote-card {
     background: rgba(0, 0, 0, 0.5);
     border-left: 2px solid var(--accent);
-    padding: 6px 10px;
+    padding: 4px 8px;
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #94a3b8;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .supernova-icon {
     color: var(--accent);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 /* Constellation Footer */
@@ -3287,15 +3287,15 @@ button:disabled {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 10px;
+    padding-top: 6px;
     border-top: 1px solid rgba(212, 175, 55, 0.2);
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 6px;
 }
 
 .constellation-stepper-row {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
 }
 
@@ -3304,9 +3304,9 @@ button:disabled {
     border: 1px solid rgba(255, 255, 255, 0.15);
     color: #94a3b8;
     font-family: 'Cinzel', serif;
-    font-size: 0.72rem;
-    padding: 4px 10px;
-    border-radius: 14px;
+    font-size: 0.66rem;
+    padding: 3px 8px;
+    border-radius: 12px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -3314,24 +3314,31 @@ button:disabled {
     transition: all 0.2s ease;
 }
 
-.star-step-btn .step-dot {
+.star-step-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-color: var(--step-color, var(--accent));
+}
+
+.star-step-btn.active {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--step-color, var(--accent));
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+}
+
+.step-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--step-color, #d4af37);
-}
-
-.star-step-btn:hover, .star-step-btn.active {
-    background: rgba(212, 175, 55, 0.18);
-    border-color: var(--step-color, var(--accent));
-    color: #fff;
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    background: var(--step-color, var(--accent));
 }
 
 .constellation-credits {
-    font-size: 0.7rem;
+    font-size: 0.64rem;
     color: #64748b;
-    font-family: 'Cinzel', serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* Storyboard Header */
