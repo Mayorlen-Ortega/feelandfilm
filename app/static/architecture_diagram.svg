@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1420 920" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1480 1020" width="100%" height="100%">
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0b0d11"/>
-      <stop offset="50%" stop-color="#12161f"/>
-      <stop offset="100%" stop-color="#08090c"/>
+      <stop offset="0%" stop-color="#07080b"/>
+      <stop offset="50%" stop-color="#0f131a"/>
+      <stop offset="100%" stop-color="#050608"/>
     </linearGradient>
 
     <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -13,22 +13,22 @@
     </linearGradient>
 
     <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#1a202c" stop-opacity="0.95"/>
-      <stop offset="100%" stop-color="#12161f" stop-opacity="0.95"/>
+      <stop offset="0%" stop-color="#141923" stop-opacity="0.96"/>
+      <stop offset="100%" stop-color="#0d1118" stop-opacity="0.96"/>
     </linearGradient>
 
     <linearGradient id="agentGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#242b3d"/>
-      <stop offset="100%" stop-color="#171c28"/>
+      <stop offset="0%" stop-color="#1e2535"/>
+      <stop offset="100%" stop-color="#131722"/>
     </linearGradient>
 
     <filter id="glowGold" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feGaussianBlur stdDeviation="4" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
 
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.6"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.7"/>
     </filter>
 
     <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
@@ -43,300 +43,388 @@
     <marker id="arrowPink" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
       <path d="M 1 1 L 7 4 L 1 7 Z" fill="#f472b6"/>
     </marker>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#c084fc"/>
+    </marker>
   </defs>
 
   <style>
-    .title { font-family: 'Cinzel', 'Playfair Display', 'Georgia', serif; font-weight: 700; fill: #f3d069; letter-spacing: 2px; }
-    .subtitle { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; letter-spacing: 1px; }
-    .tier-title { font-family: 'Cinzel', 'Playfair Display', serif; font-size: 14px; font-weight: bold; fill: #e2e8f0; letter-spacing: 1.5px; }
-    .box-title { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 700; fill: #f8fafc; }
-    .box-desc { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; line-height: 1.4; }
-    .badge { font-family: 'Inter', system-ui, sans-serif; font-size: 10px; font-weight: 600; fill: #d4af37; }
-    .code-txt { font-family: 'Courier New', monospace; font-size: 11px; font-weight: 600; }
+    .title { font-family: 'Cinzel', 'Georgia', serif; font-weight: 700; fill: #f3d069; letter-spacing: 2px; }
+    .subtitle { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; letter-spacing: 1px; }
+    .tier-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: bold; fill: #e2e8f0; letter-spacing: 1.5px; }
+    .box-title { font-family: 'Inter', system-ui, sans-serif; font-size: 12px; font-weight: 700; fill: #f8fafc; }
+    .box-desc { font-family: 'Inter', system-ui, sans-serif; font-size: 10.5px; fill: #94a3b8; line-height: 1.35; }
+    .badge { font-family: 'Inter', system-ui, sans-serif; font-size: 9.5px; font-weight: 600; fill: #d4af37; }
+    .code-txt { font-family: 'Courier New', monospace; font-size: 10.5px; font-weight: 600; }
   </style>
 
   <!-- Background Canvas -->
-  <rect width="1420" height="920" fill="url(#bgGrad)" rx="16"/>
-  <rect x="15" y="15" width="1390" height="890" fill="none" stroke="#2a3346" stroke-width="1.5" rx="12" stroke-dasharray="6,6"/>
+  <rect width="1480" height="1020" fill="url(#bgGrad)" rx="16"/>
+  <rect x="15" y="15" width="1450" height="990" fill="none" stroke="#252d3d" stroke-width="1.5" rx="12" stroke-dasharray="6,6"/>
 
   <!-- Header Section -->
-  <g transform="translate(60, 35)">
-    <text x="0" y="28" class="title" font-size="28">FEEL &amp; FILM</text>
-    <text x="185" y="28" class="title" font-size="28" fill="#ffffff">— ARCHITECTURE DIAGRAM</text>
-    <text x="0" y="52" class="subtitle">Autonomous Multi-Agent Cinema Intelligence &amp; Personal Cinémathèque Archive</text>
-    <line x1="0" y1="65" x2="1300" y2="65" stroke="url(#goldGrad)" stroke-width="2"/>
+  <g transform="translate(50, 30)">
+    <text x="0" y="26" class="title" font-size="26">FEEL &amp; FILM</text>
+    <text x="175" y="26" class="title" font-size="26" fill="#ffffff">— AUTONOMOUS MULTI-AGENT ARCHITECTURE</text>
+    <text x="0" y="48" class="subtitle">Google Gemini 3.5 Flash • Gemma 2 • Google Lyria • ClickHouse Cloud Memory • TMDB Live</text>
+    <line x1="0" y1="58" x2="1380" y2="58" stroke="url(#goldGrad)" stroke-width="2"/>
   </g>
 
-  <!-- ================= TIER 1: FRONTEND LAYER ================= -->
-  <g transform="translate(50, 125)">
-    <rect width="310" height="745" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="310" height="42" fill="#1e293b" rx="12"/>
-    <rect x="0" y="30" width="310" height="12" fill="#1e293b"/>
-    <text x="18" y="27" class="tier-title">1. CLIENT UI (app/static)</text>
+  <!-- ================= TIER 1: CLIENT PRESENTATION LAYER ================= -->
+  <g transform="translate(45, 110)">
+    <rect width="320" height="870" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="320" height="38" fill="#1e293b" rx="12"/>
+    <rect x="0" y="26" width="320" height="12" fill="#1e293b"/>
+    <text x="16" y="24" class="tier-title">1. CLIENT UI (HTML5 / Vanilla CSS / ES6+)</text>
 
-    <!-- Google Federated Auth Bar -->
-    <g transform="translate(15, 55)">
-      <rect width="280" height="65" fill="#0f172a" stroke="#d4af37" stroke-width="1.2" rx="8"/>
-      <text x="12" y="20" class="box-title">🔑 Google Federated Auth</text>
-      <text x="12" y="38" class="box-desc">• Google Identity Services (GIS)</text>
-      <text x="12" y="54" class="box-desc">• Profile Badge / Session Storage</text>
+    <!-- Google Federated Auth & Memory Sync -->
+    <g transform="translate(15, 48)">
+      <rect width="290" height="60" fill="#0b1120" stroke="#d4af37" stroke-width="1.2" rx="8"/>
+      <text x="12" y="18" class="box-title">🔑 Google Identity Services (GIS)</text>
+      <text x="12" y="34" class="box-desc">• OAuth 2.0 JWT Token Verification</text>
+      <text x="12" y="48" class="box-desc">• Memory Profile Sync &amp; Guest Mode</text>
     </g>
 
-    <!-- Expressive Textarea Input Form -->
-    <g transform="translate(15, 130)">
-      <rect width="280" height="150" fill="#0f172a" stroke="#d4af37" stroke-width="1.2" rx="8"/>
-      <text x="12" y="22" class="box-title">🎬 Expressive Audience Inputs</text>
-      <text x="12" y="42" class="box-desc">• textarea #initial_mood ("How feeling?")</text>
-      <text x="12" y="60" class="box-desc">• textarea #desired_atmosphere</text>
-      <text x="12" y="78" class="box-desc">• textarea #theme (optional notes)</text>
-      <text x="12" y="96" class="box-desc">• select #audience_age_range</text>
-      <rect x="12" y="112" width="256" height="22" fill="#c59b27" fill-opacity="0.2" rx="4"/>
-      <text x="18" y="127" class="code-txt" fill="#facc15">POST /api/recommend (+ user_email)</text>
+    <!-- 4-Scene Modal Screening Workflow -->
+    <g transform="translate(15, 116)">
+      <rect width="290" height="120" fill="#0b1120" stroke="#d4af37" stroke-width="1.2" rx="8"/>
+      <text x="12" y="18" class="box-title">🎬 4-Scene Modal Screening Workflow</text>
+      <text x="12" y="34" class="box-desc">• Scene I: Emotional Feeling (#initial_mood)</text>
+      <text x="12" y="48" class="box-desc">• Scene II: Desired Cinema Atmosphere</text>
+      <text x="12" y="62" class="box-desc">• Scene III: Dietary &amp; Age Restrictions</text>
+      <text x="12" y="76" class="box-desc">• Scene IV: Executive Review &amp; Launch</text>
+      <rect x="12" y="90" width="266" height="20" fill="#c59b27" fill-opacity="0.2" rx="4"/>
+      <text x="18" y="104" class="code-txt" fill="#facc15">POST /api/curate-experience</text>
     </g>
 
-    <!-- Slate Card & Actions -->
-    <g transform="translate(15, 290)">
-      <rect width="280" height="185" fill="#0f172a" stroke="#475569" stroke-width="1" rx="8"/>
-      <text x="12" y="22" class="box-title">🎞️ Film Card &amp; Interactive Actions</text>
-      <text x="12" y="42" class="box-desc">• Title, Director, Runtime, Synopsis</text>
-      <text x="12" y="60" class="box-desc">• Reasoning &amp; Cinematic Fun Fact</text>
-      <line x1="12" y1="74" x2="268" y2="74" stroke="#334155" stroke-width="1"/>
-      <text x="12" y="92" class="code-txt" fill="#818cf8">• btn.soundtrack-btn (/api/soundtrack)</text>
-      <text x="12" y="110" class="code-txt" fill="#f472b6">• btn.sommelier-btn (/api/sommelier)</text>
-      <text x="12" y="128" class="code-txt" fill="#60a5fa">• btn.watch-btn (/api/watch-providers)</text>
-      <text x="12" y="146" class="code-txt" fill="#facc15">• btn.another-option-btn (zero repeats)</text>
-      <text x="12" y="166" class="code-txt" fill="#38bdf8">GET /api/poster?title=...</text>
+    <!-- Cinema Night Package Stage -->
+    <g transform="translate(15, 244)">
+      <rect width="290" height="145" fill="#0b1120" stroke="#475569" stroke-width="1" rx="8"/>
+      <text x="12" y="18" class="box-title">🎞️ Complete Cinema Night Package</text>
+      <text x="12" y="34" class="box-desc">• Curated Auteur Film + Synopsis + Fun Fact</text>
+      <text x="12" y="48" class="box-desc">• Soundtrack Maestro Musicology &amp; Track</text>
+      <text x="12" y="62" class="box-desc">• Sommelier Concession (Drink + Snack Pairing)</text>
+      <text x="12" y="76" class="box-desc">• Live Where to Watch Streaming (JustWatch)</text>
+      <text x="12" y="90" class="box-desc">• 🎲 1-Click Re-roll (Keep Same Mood)</text>
+      <text x="12" y="104" class="box-desc">• ✉️ 1-Click Cinema Courier Dispatch</text>
+      <rect x="12" y="116" width="266" height="20" fill="#60a5fa" fill-opacity="0.15" rx="4"/>
+      <text x="18" y="130" class="code-txt" fill="#93c5fd">POST /api/send-email (Courier Agent)</text>
     </g>
 
-    <!-- The Cinémathèque Archive -->
-    <g transform="translate(15, 485)">
-      <rect width="280" height="240" fill="#0f172a" stroke="#eab308" stroke-width="1.5" rx="8"/>
-      <text x="12" y="22" class="box-title" fill="#fde047">🗄️ The Cinémathèque Archive</text>
-      <text x="12" y="42" class="box-desc">• Vintage Filing Drawers (#drawer-cabinet)</text>
-      <text x="12" y="60" class="box-desc">  [All] [Stressed] [Sad] [Tired] [Excited] [Curious]</text>
-      <text x="12" y="80" class="box-desc">• Preserved Film Cards (.archive-record-card)</text>
-      <text x="12" y="98" class="box-desc">  - Mini Poster + Director + Timestamp</text>
-      <text x="12" y="116" class="box-desc">  - Multi-Emotional Tag Badges (#Tags)</text>
-      <text x="12" y="134" class="box-desc">  - User Quote Note + Curator Reason</text>
-      <text x="12" y="152" class="box-desc">• Guest Mode Alert / Private Vault</text>
-      <rect x="12" y="170" width="256" height="22" fill="#34d399" fill-opacity="0.15" rx="4"/>
-      <text x="18" y="185" class="code-txt" fill="#34d399">GET /api/cinematheque?user_email=...</text>
+    <!-- The Cinémathèque Archive & Relive Engine -->
+    <g transform="translate(15, 397)">
+      <rect width="290" height="150" fill="#0b1120" stroke="#eab308" stroke-width="1.2" rx="8"/>
+      <text x="12" y="18" class="box-title" fill="#fde047">🗄️ The Cinémathèque Archive</text>
+      <text x="12" y="34" class="box-desc">• Multi-Criteria Sort &amp; Emotional Drawers</text>
+      <text x="12" y="48" class="box-desc">• 1-Click Mark as Watched &amp; Star Ratings</text>
+      <text x="12" y="62" class="box-desc">• 🎬 1-Click Relive Full Package from Vault</text>
+      <text x="12" y="76" class="box-desc">• Deduplication Guard (Zero Re-curations)</text>
+      <rect x="12" y="92" width="266" height="20" fill="#34d399" fill-opacity="0.15" rx="4"/>
+      <text x="18" y="106" class="code-txt" fill="#6ee7b7">GET /api/cinematheque (Historical Sync)</text>
+      <text x="18" y="126" class="code-txt" fill="#f87171">DELETE /api/cinematheque/{session_id}</text>
+    </g>
+
+    <!-- 5-Star Emotional Constellation & Lyria Soundscape -->
+    <g transform="translate(15, 555)">
+      <rect width="290" height="175" fill="#0b1120" stroke="#a855f7" stroke-width="1.5" rx="8"/>
+      <text x="12" y="18" class="box-title" fill="#c084fc">🌌 5-Star Emotional Constellation</text>
+      <text x="12" y="34" class="box-desc">• Milestone Progress: 5 Watched Films</text>
+      <text x="12" y="48" class="box-desc">• Deep Space Canvas &amp; SVG Orbital Beams</text>
+      <text x="12" y="62" class="box-desc">• Google Lyria Ambient Polyphonic Synthesizer</text>
+      <text x="12" y="76" class="box-desc">• Interactive Mood-Harmonic Keyboard:</text>
+      <text x="12" y="90" class="box-desc">  Dm9(Solitude), FMaj7#11(Wonder), Em9(Awe),</text>
+      <text x="12" y="104" class="box-desc">  Gmaj9(Joy), Dadd9(Catharsis)</text>
+      <rect x="12" y="120" width="266" height="20" fill="#c084fc" fill-opacity="0.2" rx="4"/>
+      <text x="18" y="134" class="code-txt" fill="#e9d5ff">POST /api/generate-biopic-trailer</text>
+    </g>
+
+    <!-- AI Crew Collaboration Terminal -->
+    <g transform="translate(15, 738)">
+      <rect width="290" height="110" fill="#0b1120" stroke="#334155" stroke-width="1" rx="8"/>
+      <text x="12" y="18" class="box-title">🤖 AI Crew Collaboration View</text>
+      <text x="12" y="34" class="box-desc">• 4 Live Decision Cards (Curator, OST, Somm, Memory)</text>
+      <text x="12" y="48" class="box-desc">• Developer Terminal Drawer (Execution Logs)</text>
+      <text x="12" y="62" class="box-desc">• Real-time timestamped Agent Traces</text>
+      <text x="12" y="76" class="box-desc">• Continuous Collaborative Partner Note</text>
     </g>
   </g>
 
-  <!-- ================= TIER 2: BACKEND ROUTER ================= -->
-  <g transform="translate(380, 125)">
-    <rect width="325" height="745" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="325" height="42" fill="#1e293b" rx="12"/>
-    <rect x="0" y="30" width="325" height="12" fill="#1e293b"/>
-    <text x="18" y="27" class="tier-title">2. FASTAPI BACKEND (app/main.py)</text>
+  <!-- ================= TIER 2: FASTAPI BACKEND GATEWAY ================= -->
+  <g transform="translate(390, 110)">
+    <rect width="335" height="870" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="335" height="38" fill="#1e293b" rx="12"/>
+    <rect x="0" y="26" width="335" height="12" fill="#1e293b"/>
+    <text x="16" y="24" class="tier-title">2. FASTAPI BACKEND (app/main.py)</text>
 
-    <!-- Endpoints -->
-    <g transform="translate(15, 55)">
-      
-      <!-- /api/auth/config & /api/auth/google -->
+    <g transform="translate(15, 48)">
+      <!-- Responsible AI Safety Filter -->
       <g transform="translate(0, 0)">
-        <rect width="295" height="65" fill="#0f172a" stroke="#d4af37" stroke-width="1.2" rx="8"/>
-        <text x="12" y="20" class="code-txt" fill="#facc15">GET /api/auth/config | POST /api/auth/google</text>
-        <text x="12" y="38" class="box-desc">• Google OAuth Client ID &amp; JWT Verification</text>
-        <text x="12" y="54" class="box-desc">• User profile decoding (email, name, avatar)</text>
+        <rect width="305" height="65" fill="#0b1120" stroke="#f59e0b" stroke-width="1.5" rx="8"/>
+        <text x="12" y="18" class="code-txt" fill="#fbbf24">Layer 0: Responsible AI Safety Filter</text>
+        <text x="12" y="34" class="box-desc">• Multilingual Adult, NSFW, Violence &amp; Gore Guardrail</text>
+        <text x="12" y="48" class="box-desc">• Mitigates unsafe prompts with cultural guidance</text>
       </g>
 
-      <!-- /api/recommend -->
-      <g transform="translate(0, 75)">
-        <rect width="295" height="100" fill="#0f172a" stroke="#d4af37" stroke-width="1.2" rx="8"/>
-        <text x="12" y="20" class="code-txt" fill="#facc15">POST /api/recommend (MoodRequest)</text>
-        <text x="12" y="38" class="box-desc">1. Executes Runner(film_curator_agent)</text>
-        <text x="12" y="54" class="box-desc">2. Extracts Multi-Label Tags &amp; Shift</text>
-        <text x="12" y="70" class="box-desc">3. Persists full record &amp; poster to ClickHouse</text>
-        <text x="12" y="86" class="box-desc">4. Returns curated 1-film slate JSON</text>
+      <!-- /api/curate-experience -->
+      <g transform="translate(0, 73)">
+        <rect width="305" height="125" fill="#0b1120" stroke="#d4af37" stroke-width="1.5" rx="8"/>
+        <text x="12" y="18" class="code-txt" fill="#facc15">POST /api/curate-experience</text>
+        <text x="12" y="34" class="box-desc">1. Synchronizes ClickHouse user memory &amp; vault</text>
+        <text x="12" y="48" class="box-desc">2. Enforces deduplication (excludes all archive films)</text>
+        <text x="12" y="62" class="box-desc">3. Executes orchestrate_cinematic_experience()</text>
+        <text x="12" y="76" class="box-desc">4. Parallel enrichment (TMDB HD poster + JustWatch)</text>
+        <text x="12" y="90" class="box-desc">5. Inserts session into ClickHouse audience_sessions</text>
+        <text x="12" y="104" class="box-desc">6. AI Battery Safe Mode (Resilient Zero-500 fallback)</text>
+      </g>
+
+      <!-- /api/send-cinema-email -->
+      <g transform="translate(0, 206)">
+        <rect width="305" height="80" fill="#0b1120" stroke="#60a5fa" stroke-width="1.2" rx="8"/>
+        <text x="12" y="18" class="code-txt" fill="#93c5fd">POST /api/send-cinema-email</text>
+        <text x="12" y="34" class="box-desc">• Runs cinema_courier_agent (Gemini 3.5 Flash)</text>
+        <text x="12" y="48" class="box-desc">• Composes HTML Cinema Epistle with recipes</text>
+        <text x="12" y="62" class="box-desc">• Dispatches via SMTP (Dynamic .env reload)</text>
+      </g>
+
+      <!-- /api/generate-biopic-trailer -->
+      <g transform="translate(0, 294)">
+        <rect width="305" height="80" fill="#0b1120" stroke="#a855f7" stroke-width="1.2" rx="8"/>
+        <text x="12" y="18" class="code-txt" fill="#e9d5ff">POST /api/generate-biopic-trailer</text>
+        <text x="12" y="34" class="box-desc">• Runs emotional_constellation_agent (Gemini)</text>
+        <text x="12" y="48" class="box-desc">• Google Lyria ambient soundscape synthesis</text>
+        <text x="12" y="62" class="box-desc">• Generates 5-star coordinates &amp; mood chords</text>
       </g>
 
       <!-- /api/cinematheque -->
-      <g transform="translate(0, 185)">
-        <rect width="295" height="75" fill="#0f172a" stroke="#34d399" stroke-width="1.2" rx="8"/>
-        <text x="12" y="20" class="code-txt" fill="#6ee7b7">GET /api/cinematheque (user_email)</text>
-        <text x="12" y="38" class="box-desc">• Queries ClickHouse audience_sessions</text>
-        <text x="12" y="54" class="box-desc">• Returns preserved user film archive &amp; tags</text>
-        <text x="12" y="70" class="box-desc">• Powers personal vintage filing drawers</text>
+      <g transform="translate(0, 382)">
+        <rect width="305" height="75" fill="#0b1120" stroke="#34d399" stroke-width="1.2" rx="8"/>
+        <text x="12" y="18" class="code-txt" fill="#6ee7b7">GET /api/cinematheque &amp; /toggle-watched</text>
+        <text x="12" y="34" class="box-desc">• Queries ClickHouse audience_sessions by user</text>
+        <text x="12" y="48" class="box-desc">• Synchronizes 5-film watched milestone status</text>
+        <text x="12" y="62" class="box-desc">• Relive Package and Instant Vault Deletion</text>
       </g>
 
-      <!-- /api/soundtrack -->
-      <g transform="translate(0, 270)">
-        <rect width="295" height="60" fill="#0f172a" stroke="#818cf8" stroke-width="1.2" rx="8"/>
-        <text x="12" y="20" class="code-txt" fill="#a5b4fc">POST /api/soundtrack</text>
-        <text x="12" y="38" class="box-desc">• Executes Runner(soundtrack_agent)</text>
-        <text x="12" y="54" class="box-desc">• Returns composer, vibe &amp; standout track</text>
+      <!-- /api/feedback & /api/user-memory -->
+      <g transform="translate(0, 465)">
+        <rect width="305" height="75" fill="#0b1120" stroke="#f472b6" stroke-width="1.2" rx="8"/>
+        <text x="12" y="18" class="code-txt" fill="#fbcfe8">POST /api/feedback | GET /user-memory</text>
+        <text x="12" y="34" class="box-desc">• Collaborative Partner Track learning loop</text>
+        <text x="12" y="48" class="box-desc">• Registers ratings (1-5★) &amp; dietary restrictions</text>
+        <text x="12" y="62" class="box-desc">• Injects preferences into future curation prompts</text>
       </g>
 
-      <!-- /api/sommelier -->
-      <g transform="translate(0, 340)">
-        <rect width="295" height="60" fill="#0f172a" stroke="#f472b6" stroke-width="1.2" rx="8"/>
-        <text x="12" y="20" class="code-txt" fill="#fbcfe8">POST /api/sommelier</text>
-        <text x="12" y="38" class="box-desc">• Executes Runner(sommelier_agent)</text>
-        <text x="12" y="54" class="box-desc">• Snack &amp; drink with English descriptions</text>
-      </g>
-
-      <!-- /api/watch-providers -->
-      <g transform="translate(0, 410)">
-        <rect width="295" height="65" fill="#0f172a" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
-        <text x="12" y="20" class="code-txt" fill="#60a5fa">GET/POST /api/watch-providers</text>
-        <text x="12" y="38" class="box-desc">• Queries TMDB JustWatch for user country</text>
-        <text x="12" y="54" class="box-desc">• Returns streaming, rent, &amp; buy links</text>
-      </g>
-
-      <!-- /api/poster & /api/status -->
-      <g transform="translate(0, 485)">
-        <rect width="295" height="55" fill="#0f172a" stroke="#475569" stroke-width="1" rx="8"/>
-        <text x="12" y="20" class="code-txt" fill="#94a3b8">GET /api/poster | GET /api/status</text>
-        <text x="12" y="38" class="box-desc">• TMDB poster search &amp; DB connectivity check</text>
+      <!-- External Enrichment Routers -->
+      <g transform="translate(0, 548)">
+        <rect width="305" height="75" fill="#0b1120" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
+        <text x="12" y="18" class="code-txt" fill="#7dd3fc">GET /api/watch-providers | /api/poster</text>
+        <text x="12" y="34" class="box-desc">• TMDB JustWatch streaming detection by country</text>
+        <text x="12" y="48" class="box-desc">• TMDB poster search &amp; HD image resolver</text>
+        <text x="12" y="62" class="box-desc">• Standalone soundtrack &amp; sommelier endpoints</text>
       </g>
     </g>
 
-    <!-- Session Service Engine Note -->
-    <g transform="translate(15, 620)">
-      <rect width="295" height="85" fill="#1e293b" stroke="#334155" stroke-width="1" rx="6"/>
-      <text x="12" y="22" class="box-title" font-size="12">Google ADK Session Engine</text>
-      <text x="12" y="42" class="box-desc">• Runner with InMemorySessionService()</text>
-      <text x="12" y="60" class="box-desc">• Auto-orchestration of specialized agents</text>
-      <text x="12" y="78" class="box-desc">• Graceful local fallback execution</text>
+    <!-- ADK Engine Architecture Badge -->
+    <g transform="translate(15, 680)">
+      <rect width="305" height="168" fill="#172033" stroke="#3b82f6" stroke-width="1.2" rx="8"/>
+      <text x="12" y="20" class="box-title" fill="#93c5fd">⚡ Google ADK Autonomous Orchestrator</text>
+      <text x="12" y="38" class="box-desc">• Framework: google.adk.agents.Agent &amp; Runner</text>
+      <text x="12" y="54" class="box-desc">• Session Service: InMemorySessionService()</text>
+      <text x="12" y="70" class="box-desc">• Single Autonomous Cycle Multi-Agent Pipeline</text>
+      <text x="12" y="86" class="box-desc">• Dynamic Error Mitigation &amp; AI Safe Mode</text>
+      <text x="12" y="102" class="box-desc">• Multi-lingual prompt translation &amp; parsing</text>
+      <text x="12" y="118" class="box-desc">• Real-time Agent Trace Generation</text>
     </g>
   </g>
 
-  <!-- ================= TIER 3: GOOGLE ADK AGENTS ================= -->
-  <g transform="translate(725, 125)">
-    <rect width="320" height="745" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="320" height="42" fill="#1e293b" rx="12"/>
-    <rect x="0" y="30" width="320" height="12" fill="#1e293b"/>
-    <text x="18" y="27" class="tier-title">3. GOOGLE ADK AGENTS (app/agent.py)</text>
+  <!-- ================= TIER 3: GOOGLE ADK MULTI-AGENT CREW ================= -->
+  <g transform="translate(750, 110)">
+    <rect width="345" height="870" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="345" height="38" fill="#1e293b" rx="12"/>
+    <rect x="0" y="26" width="345" height="12" fill="#1e293b"/>
+    <text x="16" y="24" class="tier-title">3. GOOGLE ADK MULTI-AGENT CREW (app/agent.py)</text>
 
-    <!-- Agent 1: film_curator_agent -->
-    <g transform="translate(15, 55)">
-      <rect width="290" height="190" fill="url(#agentGrad)" stroke="#d4af37" stroke-width="1.5" rx="10" filter="url(#glowGold)"/>
-      <text x="14" y="24" class="box-title" fill="#fde047">🎥 agent (film_curator_agent)</text>
-      <text x="14" y="44" class="box-desc">• Model: gemini-3.5-flash</text>
-      <text x="14" y="62" class="box-desc">• Expressive Emotional Interpretation</text>
-      <text x="14" y="80" class="box-desc">• Multi-Label Output: detected_mood_tags</text>
-      <text x="14" y="98" class="box-desc">• Output JSON Slate (title, director, runtime,</text>
-      <text x="14" y="116" class="box-desc">  synopsis, reasoning, fun_fact, tags)</text>
-      <text x="14" y="134" class="box-desc">• Strict Kids (0-12) age filter &amp; Anti-Cliché</text>
-      <rect x="14" y="146" width="262" height="22" fill="#d4af37" fill-opacity="0.15" rx="4"/>
-      <text x="20" y="161" class="code-txt" fill="#fde047">ADK Agent (name="film_curator_agent")</text>
+    <!-- Master Orchestrator Agent -->
+    <g transform="translate(15, 48)">
+      <rect width="315" height="110" fill="url(#agentGrad)" stroke="#d4af37" stroke-width="1.5" rx="8" filter="url(#glowGold)"/>
+      <text x="14" y="20" class="box-title" fill="#fde047">🧠 master_orchestrator_agent</text>
+      <text x="14" y="36" class="box-desc">• Model: gemini-3.5-flash (Google ADK)</text>
+      <text x="14" y="52" class="box-desc">• Analyzes user memory profile &amp; learned rules</text>
+      <text x="14" y="68" class="box-desc">• Generates Collaborative Partner Learning Note</text>
+      <text x="14" y="84" class="box-desc">• Coordinates Curator, Soundtrack &amp; Sommelier</text>
     </g>
 
-    <!-- Agent 2: soundtrack_agent -->
-    <g transform="translate(15, 260)">
-      <rect width="290" height="145" fill="url(#agentGrad)" stroke="#818cf8" stroke-width="1.5" rx="10"/>
-      <text x="14" y="26" class="box-title" fill="#c7d2fe">🎵 soundtrack_agent</text>
-      <text x="14" y="48" class="box-desc">• Model: gemini-3.5-flash</text>
-      <text x="14" y="68" class="box-desc">• Input: movie_title</text>
-      <text x="14" y="88" class="box-desc">• Output: JSON (composer, vibe,</text>
-      <text x="14" y="106" class="box-desc">  standout_track)</text>
-      <rect x="14" y="116" width="262" height="20" fill="#818cf8" fill-opacity="0.15" rx="4"/>
-      <text x="20" y="130" class="code-txt" fill="#a5b4fc">ADK Agent (name="soundtrack_agent")</text>
+    <!-- Film Curator Agent -->
+    <g transform="translate(15, 166)">
+      <rect width="315" height="120" fill="url(#agentGrad)" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
+      <text x="14" y="20" class="box-title" fill="#7dd3fc">🎥 film_curator_agent (Live TMDB Engine)</text>
+      <text x="14" y="36" class="box-desc">• Model: gemini-3.5-flash + Tool Calling</text>
+      <text x="14" y="52" class="box-desc">• 4-Way Search: Directors, Studios (Ghibli, A24),</text>
+      <text x="14" y="66" class="box-desc">  Eras (80s, 90s, 70s), Keywords &amp; Age Rating</text>
+      <text x="14" y="80" class="box-desc">• Multi-dimensional mood tagging &amp; emotional shift</text>
+      <text x="14" y="94" class="box-desc">• Anti-cliché filter &amp; strict exclusion check</text>
     </g>
 
-    <!-- Agent 3: sommelier_agent -->
-    <g transform="translate(15, 420)">
-      <rect width="290" height="145" fill="url(#agentGrad)" stroke="#f472b6" stroke-width="1.5" rx="10"/>
-      <text x="14" y="26" class="box-title" fill="#fbcfe8">🍿 sommelier_agent</text>
-      <text x="14" y="48" class="box-desc">• Model: gemini-3.5-flash</text>
-      <text x="14" y="68" class="box-desc">• Input: "Movie: {movie_title}"</text>
-      <text x="14" y="88" class="box-desc">• Output: Concession pairing with</text>
-      <text x="14" y="106" class="box-desc">  English parenthetical descriptors</text>
-      <rect x="14" y="116" width="262" height="20" fill="#f472b6" fill-opacity="0.15" rx="4"/>
-      <text x="20" y="130" class="code-txt" fill="#fbcfe8">ADK Agent (name="sommelier_agent")</text>
+    <!-- Soundtrack Maestro Agent -->
+    <g transform="translate(15, 294)">
+      <rect width="315" height="90" fill="url(#agentGrad)" stroke="#818cf8" stroke-width="1.2" rx="8"/>
+      <text x="14" y="20" class="box-title" fill="#c7d2fe">🎵 soundtrack_agent (Soundtrack Maestro)</text>
+      <text x="14" y="36" class="box-desc">• Model: gemini-3.5-flash</text>
+      <text x="14" y="52" class="box-desc">• Musicological analysis: Composer, standout track,</text>
+      <text x="14" y="68" class="box-desc">  acoustic atmosphere &amp; emotional orchestration</text>
     </g>
 
-    <!-- Google Cloud Gemini Engine -->
-    <g transform="translate(15, 580)">
-      <rect width="290" height="75" fill="#0f172a" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
-      <text x="14" y="26" class="box-title" fill="#7dd3fc">☁️ Google Cloud Vertex AI / Gemini</text>
-      <text x="14" y="46" class="box-desc">• google-adk &amp; google-genai</text>
-      <text x="14" y="64" class="box-desc">• Model: gemini-3.5-flash</text>
+    <!-- Cinema Sommelier Agent -->
+    <g transform="translate(15, 392)">
+      <rect width="315" height="95" fill="url(#agentGrad)" stroke="#f472b6" stroke-width="1.2" rx="8"/>
+      <text x="14" y="20" class="box-title" fill="#fbcfe8">🍿 sommelier_agent (Cinema Sommelier)</text>
+      <text x="14" y="36" class="box-desc">• Model: gemini-3.5-flash</text>
+      <text x="14" y="52" class="box-desc">• Concession pairing strictly tailored to dietary rules</text>
+      <text x="14" y="68" class="box-desc">• 100% Non-alcoholic botanical drinks, vegan snacks,</text>
+      <text x="14" y="82" class="box-desc">  English descriptions &amp; pairing rationale</text>
+    </g>
+
+    <!-- Cinema Courier & Epistle Agent -->
+    <g transform="translate(15, 495)">
+      <rect width="315" height="95" fill="url(#agentGrad)" stroke="#60a5fa" stroke-width="1.2" rx="8"/>
+      <text x="14" y="20" class="box-title" fill="#93c5fd">✉️ cinema_courier_agent (Concierge Dispatcher)</text>
+      <text x="14" y="36" class="box-desc">• Model: gemini-3.5-flash</text>
+      <text x="14" y="52" class="box-desc">• Composes bespoke Cinema Night Epistle for email</text>
+      <text x="14" y="68" class="box-desc">• Formats step-by-step kitchen concession recipes,</text>
+      <text x="14" y="82" class="box-desc">  acoustic atmosphere tips, and streaming links</text>
+    </g>
+
+    <!-- Emotional Constellation & Lyria Soundscape Agent -->
+    <g transform="translate(15, 598)">
+      <rect width="315" height="120" fill="url(#agentGrad)" stroke="#a855f7" stroke-width="1.5" rx="8"/>
+      <text x="14" y="20" class="box-title" fill="#e9d5ff">🌌 emotional_constellation_agent (Google Lyria)</text>
+      <text x="14" y="36" class="box-desc">• Model: gemini-3.5-flash + Google Lyria Specs</text>
+      <text x="14" y="52" class="box-desc">• 5-Star celestial cartography (coordinates, colors)</text>
+      <text x="14" y="68" class="box-desc">• Google Lyria Ambient Soundscape generation</text>
+      <text x="14" y="84" class="box-desc">• Maps emotions to exact WebAudio frequencies:</text>
+      <text x="14" y="98" class="box-desc">  Dm9(Solitude), FMaj7#11(Wonder), Dadd9(Catharsis)</text>
+    </g>
+
+    <!-- Additional Models -->
+    <g transform="translate(15, 726)">
+      <rect width="315" height="120" fill="#0f172a" stroke="#475569" stroke-width="1" rx="8"/>
+      <text x="14" y="20" class="box-title" fill="#cbd5e1">☁️ Multi-Model Architecture Integration</text>
+      <text x="14" y="36" class="box-desc">• Google Gemini 3.5 Flash: Autonomous Reasoning</text>
+      <text x="14" y="52" class="box-desc">• Google Gemma 2: Auteur Screenplay Direction</text>
+      <text x="14" y="68" class="box-desc">• Google Veo: 35mm Cinematography Prompts</text>
+      <text x="14" y="84" class="box-desc">• Google Lyria: Polyphonic Acoustic Score Engine</text>
+      <text x="14" y="100" class="box-desc">• Ollama Local Engine Support for Gemma</text>
     </g>
   </g>
 
-  <!-- ================= TIER 4: PERSISTENCE & APIS ================= -->
-  <g transform="translate(1065, 125)">
-    <rect width="295" height="745" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="295" height="42" fill="#1e293b" rx="12"/>
-    <rect x="0" y="30" width="295" height="12" fill="#1e293b"/>
-    <text x="18" y="27" class="tier-title">4. PERSISTENCE &amp; CLOUD APIS</text>
+  <!-- ================= TIER 4: PERSISTENCE, CLOUD & EXTERNAL APIS ================= -->
+  <g transform="translate(1115, 110)">
+    <rect width="320" height="870" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="320" height="38" fill="#1e293b" rx="12"/>
+    <rect x="0" y="26" width="320" height="12" fill="#1e293b"/>
+    <text x="16" y="24" class="tier-title">4. PERSISTENCE &amp; CLOUD APIS</text>
 
     <!-- ClickHouse Cloud -->
-    <g transform="translate(15, 55)">
-      <rect width="265" height="295" fill="#0f172a" stroke="#eab308" stroke-width="1.5" rx="8"/>
-      <text x="14" y="24" class="box-title" fill="#fde047">🗄️ ClickHouse Cloud (OLAP)</text>
-      <text x="14" y="42" class="box-desc">• Driver: clickhouse-connect (Port 8443)</text>
-      <text x="14" y="58" class="box-desc">• Powers Cinémathèque Multi-Tag Search</text>
+    <g transform="translate(15, 48)">
+      <rect width="290" height="320" fill="#0b1120" stroke="#eab308" stroke-width="1.5" rx="8"/>
+      <text x="14" y="22" class="box-title" fill="#fde047">🗄️ ClickHouse Cloud (OLAP)</text>
+      <text x="14" y="38" class="box-desc">• Driver: clickhouse-connect (Port 8443)</text>
+      <text x="14" y="52" class="box-desc">• Sub-millisecond queries on user sessions</text>
       
-      <!-- Table audience_sessions -->
-      <g transform="translate(10, 70)">
-        <rect width="245" height="210" fill="#1e293b" rx="6" stroke="#475569" stroke-width="1"/>
-        <text x="10" y="18" class="code-txt" fill="#facc15">audience_sessions</text>
-        <text x="10" y="34" class="box-desc">• session_id: UUID, timestamp</text>
-        <text x="10" y="50" class="box-desc">• user_email: String (Google Auth)</text>
-        <text x="10" y="66" class="box-desc">• film_title, film_director</text>
-        <text x="10" y="82" class="box-desc">• poster_url: String (TMDB)</text>
-        <text x="10" y="98" class="box-desc">• reasoning: String (Curator Note)</text>
-        <text x="10" y="114" class="box-desc">• detected_tags: Array(String)</text>
-        <text x="10" y="130" class="box-desc">• primary_mood, initial_mood</text>
-        <text x="10" y="146" class="box-desc">• desired_atmosphere</text>
-        <text x="10" y="162" class="box-desc">• audience_age_range</text>
+      <g transform="translate(10, 62)">
+        <rect width="270" height="242" fill="#131d2e" rx="6" stroke="#475569" stroke-width="1"/>
+        <text x="10" y="18" class="code-txt" fill="#facc15">Table: audience_sessions</text>
+        <text x="10" y="34" class="box-desc">• session_id: UUID (Primary Key)</text>
+        <text x="10" y="48" class="box-desc">• timestamp: DateTime</text>
+        <text x="10" y="62" class="box-desc">• user_email: String (Google GIS)</text>
+        <text x="10" y="76" class="box-desc">• film_title, film_director: String</text>
+        <text x="10" y="90" class="box-desc">• poster_url: String (TMDB HD)</text>
+        <text x="10" y="104" class="box-desc">• reasoning, synopsis: String</text>
+        <text x="10" y="118" class="box-desc">• detected_tags: Array(String)</text>
+        <text x="10" y="132" class="box-desc">• primary_mood, initial_mood: String</text>
+        <text x="10" y="146" class="box-desc">• desired_atmosphere: String</text>
+        <text x="10" y="160" class="box-desc">• audience_age_range: String</text>
+        <text x="10" y="174" class="box-desc">• is_watched: UInt8 (Milestones)</text>
+        <text x="10" y="188" class="box-desc">• rating: UInt8 (1-5 Star Ratings)</text>
+        <text x="10" y="202" class="box-desc">• feedback_text: String</text>
+        <text x="10" y="216" class="box-desc">• deleted_at: Nullable(DateTime)</text>
+        <text x="10" y="230" class="box-desc">• Powers Cinémathèque Multi-Tag Search</text>
       </g>
     </g>
 
-    <!-- TMDB API & JustWatch -->
-    <g transform="translate(15, 365)">
-      <rect width="265" height="150" fill="#0f172a" stroke="#06b6d4" stroke-width="1.5" rx="8"/>
-      <text x="14" y="24" class="box-title" fill="#67e8f9">🌐 TMDB REST API &amp; JustWatch</text>
-      <text x="14" y="44" class="box-desc">• Auth: Bearer TMDB_API_KEY</text>
+    <!-- TMDB REST API & JustWatch -->
+    <g transform="translate(15, 380)">
+      <rect width="290" height="150" fill="#0b1120" stroke="#06b6d4" stroke-width="1.5" rx="8"/>
+      <text x="14" y="22" class="box-title" fill="#67e8f9">🌐 TMDB REST API &amp; JustWatch</text>
+      <text x="14" y="38" class="box-desc">• Auth: Bearer TMDB_API_KEY (v3/v4)</text>
       
-      <g transform="translate(10, 56)">
-        <rect width="245" height="40" fill="#1e293b" rx="6" stroke="#0891b2" stroke-width="1"/>
-        <text x="10" y="18" class="code-txt" fill="#a5f3fc">/3/search/movie?query=...</text>
-        <text x="10" y="32" class="box-desc">Poster artwork &amp; movie ID</text>
+      <g transform="translate(10, 48)">
+        <rect width="270" height="40" fill="#131d2e" rx="6" stroke="#0891b2" stroke-width="1"/>
+        <text x="10" y="16" class="code-txt" fill="#a5f3fc">/3/search/movie | /3/search/person</text>
+        <text x="10" y="30" class="box-desc">Directors, Studios, Eras, 800k+ Films</text>
       </g>
       
-      <g transform="translate(10, 102)">
-        <rect width="245" height="40" fill="#1e293b" rx="6" stroke="#0891b2" stroke-width="1"/>
-        <text x="10" y="18" class="code-txt" fill="#a5f3fc">/3/movie/{id}/watch/providers</text>
-        <text x="10" y="32" class="box-desc">Regional streaming &amp; rent links</text>
+      <g transform="translate(10, 94)">
+        <rect width="270" height="42" fill="#131d2e" rx="6" stroke="#0891b2" stroke-width="1"/>
+        <text x="10" y="16" class="code-txt" fill="#a5f3fc">/3/movie/{id}/watch/providers</text>
+        <text x="10" y="30" class="box-desc">Live regional streaming (Netflix, Max...)</text>
       </g>
     </g>
 
     <!-- Google Identity Services -->
-    <g transform="translate(15, 530)">
-      <rect width="265" height="100" fill="#0f172a" stroke="#d4af37" stroke-width="1.2" rx="8"/>
-      <text x="14" y="24" class="box-title" fill="#fde047">🛡️ Google Identity Services</text>
-      <text x="14" y="44" class="box-desc">• accounts.google.com/gsi/client</text>
-      <text x="14" y="62" class="box-desc">• GOOGLE_CLIENT_ID OAuth</text>
-      <text x="14" y="80" class="box-desc">• JWT token verification</text>
+    <g transform="translate(15, 542)">
+      <rect width="290" height="95" fill="#0b1120" stroke="#d4af37" stroke-width="1.2" rx="8"/>
+      <text x="14" y="22" class="box-title" fill="#fde047">🛡️ Google Identity Services (GIS)</text>
+      <text x="14" y="38" class="box-desc">• accounts.google.com/gsi/client</text>
+      <text x="14" y="52" class="box-desc">• GOOGLE_CLIENT_ID OAuth 2.0</text>
+      <text x="14" y="66" class="box-desc">• Cryptographic JWT signature verification</text>
+      <text x="14" y="80" class="box-desc">• Syncs user email to personal memory graph</text>
+    </g>
+
+    <!-- SMTP Cinema Courier Gateway -->
+    <g transform="translate(15, 648)">
+      <rect width="290" height="95" fill="#0b1120" stroke="#60a5fa" stroke-width="1.2" rx="8"/>
+      <text x="14" y="22" class="box-title" fill="#93c5fd">📮 SMTP Cinema Courier Gateway</text>
+      <text x="14" y="38" class="box-desc">• SSL/TLS Authenticated SMTP Dispatch</text>
+      <text x="14" y="52" class="box-desc">• Live .env reloading without downtime</text>
+      <text x="14" y="66" class="box-desc">• Sends HTML Cinema Night Epistles</text>
+      <text x="14" y="80" class="box-desc">• Concession recipes &amp; direct watch links</text>
+    </g>
+
+    <!-- WebAudio API Synth Engine -->
+    <g transform="translate(15, 754)">
+      <rect width="290" height="95" fill="#0b1120" stroke="#a855f7" stroke-width="1.2" rx="8"/>
+      <text x="14" y="22" class="box-title" fill="#e9d5ff">🎵 WebAudio API Synth Engine</text>
+      <text x="14" y="38" class="box-desc">• Browser Native AudioContext</text>
+      <text x="14" y="52" class="box-desc">• Polyphonic Sine/Triangle Oscillators</text>
+      <text x="14" y="66" class="box-desc">• Lowpass warm filters &amp; Celesta arpeggios</text>
+      <text x="14" y="80" class="box-desc">• Plays Google Lyria mood-harmonic chords</text>
     </g>
   </g>
 
-  <!-- ================= FLOW CONNECTORS ================= -->
+  <!-- ================= FLOW CONNECTOR ARROWS ================= -->
   
-  <!-- Form -> POST /api/recommend -->
-  <path d="M 360 200 L 380 200" fill="none" stroke="#d4af37" stroke-width="2" marker-end="url(#arrowGold)"/>
+  <!-- Form -> POST /api/curate-experience -->
+  <path d="M 365 200 L 390 200" fill="none" stroke="#d4af37" stroke-width="2" marker-end="url(#arrowGold)"/>
 
-  <!-- /api/recommend -> Film Curator Agent -->
-  <path d="M 705 200 L 725 200" fill="none" stroke="#d4af37" stroke-width="2" marker-end="url(#arrowGold)"/>
+  <!-- Backend -> Master Orchestrator -->
+  <path d="M 725 180 L 750 100" fill="none" stroke="#d4af37" stroke-width="2" marker-end="url(#arrowGold)"/>
 
-  <!-- /api/recommend -> audience_sessions ClickHouse insert -->
-  <path d="M 705 180 Q 880 150 1065 180" fill="none" stroke="#eab308" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
+  <!-- Orchestrator -> Sub-agents -->
+  <path d="M 900 158 L 900 166" fill="none" stroke="#d4af37" stroke-width="2" marker-end="url(#arrowGold)"/>
 
-  <!-- btn.soundtrack-btn -> POST /api/soundtrack -> soundtrack_agent -->
-  <path d="M 360 380 L 380 340" fill="none" stroke="#818cf8" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
-  <path d="M 705 340 L 725 340" fill="none" stroke="#818cf8" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
+  <!-- Backend -> ClickHouse insert -->
+  <path d="M 725 210 Q 920 180 1115 180" fill="none" stroke="#eab308" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
 
-  <!-- btn.sommelier-btn -> POST /api/sommelier -> sommelier_agent -->
-  <path d="M 360 410 L 380 440" fill="none" stroke="#f472b6" stroke-width="1.8" marker-end="url(#arrowPink)"/>
-  <path d="M 705 440 L 725 480" fill="none" stroke="#f472b6" stroke-width="1.8" marker-end="url(#arrowPink)"/>
+  <!-- Backend -> Courier Agent & SMTP -->
+  <path d="M 725 320 L 750 540" fill="none" stroke="#60a5fa" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
+  <path d="M 1065 540 L 1115 690" fill="none" stroke="#60a5fa" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
 
-  <!-- GET /api/cinematheque -> ClickHouse audience_sessions query -->
-  <path d="M 360 670 L 380 310" fill="none" stroke="#34d399" stroke-width="1.8" marker-end="url(#arrowGreen)"/>
-  <path d="M 705 310 Q 880 270 1065 200" fill="none" stroke="#34d399" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arrowGreen)"/>
+  <!-- Backend -> Constellation Agent & WebAudio -->
+  <path d="M 725 410 L 750 650" fill="none" stroke="#a855f7" stroke-width="1.8" marker-end="url(#arrowPurple)"/>
+  <path d="M 1065 650 L 1115 800" fill="none" stroke="#a855f7" stroke-width="1.8" marker-end="url(#arrowPurple)"/>
+
+  <!-- Cinematheque -> ClickHouse query -->
+  <path d="M 365 470 L 390 495" fill="none" stroke="#34d399" stroke-width="1.8" marker-end="url(#arrowGreen)"/>
+  <path d="M 725 495 Q 920 450 1115 280" fill="none" stroke="#34d399" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#arrowGreen)"/>
 
 </svg>

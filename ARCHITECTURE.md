@@ -26,6 +26,7 @@ Designed specifically for the **Collaborative Partner Track**, the platform tran
                     │       (Google ADK / Gemini 3.5 Flash)           │
                     │  - Retrieves user memory & dietary rules        │
                     │  - Synthesizes collaborative partner note       │
+                    │  - Deduplicates (excludes vault movies)         │
                     └────────────────────────┬────────────────────────┘
                                              │
                ┌─────────────────────────────┼─────────────────────────────┐
@@ -45,7 +46,7 @@ Designed specifically for the **Collaborative Partner Track**, the platform tran
                            ┌───────────────────────────────────┐
                            │   Parallel Enrichment Engine      │
                            │   • TMDB HD Poster Art            │
-                           │   • Regional Streaming Providers  │
+                           │   • Regional Streaming (JustWatch)│
                            └─────────────────┬─────────────────┘
                                              │
                                              ▼
@@ -60,15 +61,27 @@ Designed specifically for the **Collaborative Partner Track**, the platform tran
         │   • Film + Director + Runtime + Synopsis + Fun Fact + Poster           │
         │   • Where to Watch Regional Streaming (TMDB / JustWatch)               │
         │   • Soundtrack Musicology & Tailored Concession Gastronomy             │
+        │   • 🎲 1-Click Re-roll (Same Mood) + AI Battery Safe Mode              │
+        │   • ✉️ Cinema Courier Agent (1-Click Email Dispatch)                   │
         │   • Collaborative Memory Feedback Loop (Stars + Instant Chips)         │
         └────────────────────────────────────┬───────────────────────────────────┘
                                              │
                                              ▼
                     ┌─────────────────────────────────────────────────┐
                     │    The Cinémathèque Archive (ClickHouse Cloud)  │
-                    │    • Indexed Emotional Drawers                  │
-                    │    • Individual Card Deletion                   │
-                    │    • Top-3 Pagination & Historical Sync         │
+                    │    • Multi-Criteria Sort & Indexed Drawers      │
+                    │    • 1-Click "Mark as Watched" & Star Ratings   │
+                    │    • 🎬 1-Click Relive Full Package from Vault  │
+                    │    • Instant Deletion (🗑️) & Historical Sync   │
+                    └────────────────────────┬────────────────────────┘
+                                             │ (5 Watched Milestone Unlocked)
+                                             ▼
+                    ┌─────────────────────────────────────────────────┐
+                    │   5-Star Emotional Constellation & Lyria Synth  │
+                    │   • Deep Space Canvas & SVG Orbital Beams       │
+                    │   • Google Gemini 3.5 Flash Celestial Map       │
+                    │   • Google Lyria Ambient Polyphonic Synthesizer │
+                    │   • Mood-Harmonic Keyboard (Dm9, FMaj7, Dadd9)  │
                     └─────────────────────────────────────────────────┘
 ```
 
@@ -80,55 +93,49 @@ Designed specifically for the **Collaborative Partner Track**, the platform tran
 - **`master_orchestrator_agent`**:
   - **Framework**: `google.adk.agents.Agent` (Google ADK)
   - **Model**: `gemini-3.5-flash`
-  - **Function**: Coordinates the sub-agents, analyzes active user memory profiles, generates collaborative partner notes (*"I remembered that you prefer non-alcoholic pairings..."*), and produces a complete, timestamped **Agent Execution Trace**.
+  - **Function**: Coordinates the sub-agents, analyzes active user memory profiles, generates collaborative partner notes (*"I remembered that you prefer non-alcoholic pairings..."*), eliminates previous vault films to prevent duplicate recommendations, and produces a complete, timestamped **Agent Execution Trace**.
 - **`film_curator_agent` & Dynamic TMDB Engine (`discover_live_tmdb_film`)**:
   - **Function**: Interprets free-form emotional feelings, extracts multi-dimensional mood tags, enforces age constraints (G/PG for Kids 0-12), and discovers matching films in real-time from TMDB's 800,000+ global movie database across 4 specialized routes:
     1. *Director Search*: `/3/search/person` ➡️ `/movie_credits?job=Director`
     2. *Studio Search*: `/3/search/company` ➡️ `with_companies={id}`
     3. *Era / Decade Search*: Detects 80s/90s/70s ➡️ `primary_release_date.gte` & `lte`
     4. *Keyword & Title Search*: `/3/search/movie`
-- **`soundtrack_agent`**:
-  - **Function**: Analyzes film musicology, identifies composers, mood vibe, and standout tracks.
-- **`sommelier_agent`**:
+- **`soundtrack_agent` (Soundtrack Maestro)**:
+  - **Function**: Analyzes film musicology, identifies composers, acoustic mood vibes, and standout tracks.
+- **`sommelier_agent` (Cinema Sommelier)**:
   - **Function**: Curates custom beverage & snack pairings strictly adhering to user dietary restrictions (e.g. non-alcoholic mocktails, botanical craft sodas, vegan snacks).
+- **`cinema_courier_agent` (Cinema Courier & Epistle Agent)**:
+  - **Function**: Composes elegant, personalized HTML cinema letters with step-by-step concession recipes, audio/lighting tips, and direct streaming links for 1-click email dispatch.
+- **`emotional_constellation_agent` (Google Gemini 3.5 Flash & Google Lyria)**:
+  - **Function**: Maps the user's cinema history into an interactive 5-star celestial galaxy, calculating exact astronomical coordinates, spectral colors, and Google Lyria mood-harmonic audio frequencies (*Dm9, FMaj7#11, Em9, Gmaj9, Dadd9*).
 
-### 2. Biopic Trailer & Additional Google AI Engine (`app/agent.py`)
-- **`trailer_director_agent` (Google Gemma 2 / Gemini 3.5 Flash & Ollama local support)**:
-  - **Function**: Takes user's emotional movie history and sequence of watched films to direct a 3-Act Biopic Movie Storyboard (*"The Emotional Odyssey of User"*).
-- **Google Veo Video Prompt Engine**:
-  - **Function**: Generates 35mm cinematic scene direction prompts, camera movement, and aesthetic shot composition for each chapter of the user's emotional arc.
-- **Google Lyria Music Composition Engine**:
-  - **Function**: Generates musical leitmotifs, key signatures, and instrumentation cues for the dynamic trailer score (from melancholic minor grand piano to triumphant orchestral swells).
+### 2. Google Lyria WebAudio Synthesis Engine (`app/static/app.js`)
+- **Native Browser `AudioContext`**:
+  - Synthesizes warm polyphonic ambient pads using sine and triangle oscillators with lowpass resonant filtering.
+  - Implements crystalline celesta arpeggios that play the exact mood chords generated by Google Lyria when hovering or clicking on constellation stars or harmonic keyboard buttons.
 
 ### 3. Backend Gateway & Memory Management (`app/main.py`)
 - **`POST /api/curate-experience`**:
-  - Main autonomous orchestration endpoint. Executes safety guardrails, user memory retrieval, multi-agent synthesis, poster/streaming enrichment, and ClickHouse Cloud persistence.
+  - Master autonomous orchestration endpoint. Executes safety guardrails, user memory synchronization, multi-agent synthesis, poster/streaming enrichment, ClickHouse persistence, and AI Battery Safe Mode.
+- **`POST /api/send-cinema-email`**:
+  - Concierge email dispatcher with live `.env` dynamic reload.
 - **`POST /api/generate-biopic-trailer`**:
-  - Generates the personalized 3-Act Biopic Storyboard using Google Veo, Lyria, and Gemma 2.
+  - Generates the 5-Star Emotional Constellation and Google Lyria ambient soundscape.
 - **`POST /api/cinematheque/toggle-watched`**:
-  - Records and synchronizes film watch status for emotional milestone calculations.
-- **`POST /api/feedback`**:
-  - Continuous learning endpoint for the **Collaborative Partner Track**. Allows users to rate screenings (1-5 stars) and select instant preference chips (*"Non-alcoholic drinks"*, *"Latin American cinema"*, *"Films under 110 min"*).
-- **`GET /api/user-memory`**:
-  - Inspects active memory graph, learned preferences, and dietary restrictions for the active user.
+  - Synchronizes film watch status for 5-film emotional milestone unlocking.
+- **`POST /api/feedback` & `GET /api/user-memory`**:
+  - Continuous learning loop for the **Collaborative Partner Track**.
 - **`GET /api/cinematheque` & `DELETE /api/cinematheque/{session_id}`**:
-  - Queries and manages ClickHouse `audience_sessions` filtered by authenticated `user_email`.
-- **`GET /api/auth/config` & `POST /api/auth/google`**:
-  - Google Identity Services (GIS) configuration and JWT credential decoding.
-- **`GET /api/watch-providers`**:
-  - Auto-detects client country and queries TMDB / JustWatch streaming availability.
+  - Queries and manages ClickHouse `audience_sessions` with instant deletion and 1-click vault relive restoration.
 
-### 4. Presentation Layer & Real-Time Transparency (`app/static/`)
-- **`index.html`, `style.css` & `app.js`**:
-  - **One-Click Cinema Night Presentation**: Displays the complete package immediately without multi-step manual requests.
-  - **Behind the Scenes Visual AI Crew**: 4 interactive agent cards displaying real-time responsibilities and decisions.
-  - **Detailed Google ADK Execution Log Drawer**: Developer-friendly collapsible terminal for judge audits.
-  - **Instant Feedback Auto-Save**: Auto-saves on star rating click (5 stars active by default) and quick chips.
-  - **The Cinémathèque Archive**: Vintage brass filing cabinet preserving curated films by emotional drawer with individual delete and top-3 pagination.
-  - **Milestone Progress Bar & "Watch Your Own Movie"**: Real-time progress tracker (3 watched films to unlock) and full-screen cinematic player with Ken Burns poster animation, voiceover, and Lyria harmonic soundtrack simulation.
+### 4. Presentation Layer (`app/static/`)
+- **Interactive 4-Scene Modal Workflow**: Immersive step-by-step screening setup.
+- **Cinema Night Stage**: High-definition film showcase, musicology, gastronomy, streaming links, and instant re-roll.
+- **The Cinémathèque Vault**: Vintage brass filing drawers with multi-criteria sorting, rating stars, and package relive.
+- **5-Star Emotional Constellation Modal**: Starfield canvas, SVG orbital beams, glowing star orbs, and interactive Lyria keyboard.
+- **Behind-the-Scenes AI Crew View & Terminal Drawer**: Real-time transparency and execution logs.
 
-### 5. Cloud Persistence Layer
-- **ClickHouse Cloud (OLAP)**:
-  - Stores emotional sessions, detected tags, director metadata, and historical curations.
-- **In-Memory & Storage Collaborative Profile Cache**:
-  - Hydrates and maintains active user memory and preference vectors across sessions.
+### 5. Cloud Persistence & External APIs
+- **ClickHouse Cloud (OLAP)**: High-speed analytics storing user screening sessions and tag distributions.
+- **TMDB REST API & JustWatch**: Live movie database search and regional streaming availability.
+- **Google Identity Services (GIS)**: Cryptographic OAuth 2.0 JWT verification.

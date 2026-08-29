@@ -56,6 +56,7 @@ For complete technical mapping and component specifications, see [ARCHITECTURE.m
                     │       (Google ADK / Gemini 3.5 Flash)           │
                     │  - Retrieves user memory & dietary rules        │
                     │  - Synthesizes collaborative partner note       │
+                    │  - Deduplicates (excludes vault movies)         │
                     └────────────────────────┬────────────────────────┘
                                              │
                ┌─────────────────────────────┼─────────────────────────────┐
@@ -75,7 +76,7 @@ For complete technical mapping and component specifications, see [ARCHITECTURE.m
                            ┌───────────────────────────────────┐
                            │   Parallel Enrichment Engine      │
                            │   • TMDB HD Poster Art            │
-                           │   • Regional Streaming Providers  │
+                           │   • Regional Streaming (JustWatch)│
                            └─────────────────┬─────────────────┘
                                              │
                                              ▼
@@ -84,24 +85,27 @@ For complete technical mapping and component specifications, see [ARCHITECTURE.m
         │   • Film + Director + Runtime + Synopsis + Fun Fact + Poster           │
         │   • Where to Watch Regional Streaming (TMDB / JustWatch)               │
         │   • Soundtrack Musicology & Tailored Concession Gastronomy             │
+        │   • 🎲 1-Click Re-roll (Same Mood) + AI Battery Safe Mode              │
+        │   • ✉️ Cinema Courier Agent (1-Click Email Dispatch)                   │
         │   • Collaborative Memory Feedback Loop (Stars + Instant Chips)         │
         └────────────────────────────────────┬───────────────────────────────────┘
                                              │
                                              ▼
                     ┌─────────────────────────────────────────────────┐
                     │    The Cinémathèque Archive (ClickHouse Cloud)  │
-                    │    • Multi-Criteria Sort & Emotional Drawers    │
+                    │    • Multi-Criteria Sort & Indexed Drawers      │
                     │    • 1-Click "Mark as Watched" & Star Ratings   │
+                    │    • 🎬 1-Click Relive Full Package from Vault  │
                     │    • Instant Deletion (🗑️) & Historical Sync   │
                     └────────────────────────┬────────────────────────┘
-                                             │ (3 Watched Milestone Unlocked)
+                                             │ (5 Watched Milestone Unlocked)
                                              ▼
                     ┌─────────────────────────────────────────────────┐
-                    │   Biopic Trailer Engine (Google Veo/Lyria/Gemma)│
-                    │   • 3-Act Cinematic Screenplay (Google Gemma 2) │
-                    │   • 35mm Video Direction Prompts (Google Veo)   │
-                    │   • Harmonic Leitmotif Soundtrack (Google Lyria)│
-                    │   • Full-Screen Player with Ken Burns & Voice   │
+                    │   5-Star Emotional Constellation & Lyria Synth  │
+                    │   • Deep Space Canvas & SVG Orbital Beams       │
+                    │   • Google Gemini 3.5 Flash Celestial Map       │
+                    │   • Google Lyria Ambient Polyphonic Synthesizer │
+                    │   • Mood-Harmonic Keyboard (Dm9, FMaj7, Dadd9)  │
                     └────────────────────────┬────────────────────────┘
                                              │
                                              ▼

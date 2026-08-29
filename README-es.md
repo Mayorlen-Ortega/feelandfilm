@@ -56,6 +56,7 @@ Para el mapeo técnico completo de componentes, consulta [ARCHITECTURE.md](ARCHI
                     │       (Google ADK / Gemini 3.5 Flash)           │
                     │  - Consulta memoria del usuario y dieta         │
                     │  - Sintetiza la nota de colaboración            │
+                    │  - Deduplica (excluye películas de la cineteca) │
                     └────────────────────────┬────────────────────────┘
                                              │
                ┌─────────────────────────────┼─────────────────────────────┐
@@ -84,6 +85,8 @@ Para el mapeo técnico completo de componentes, consulta [ARCHITECTURE.md](ARCHI
         │   • Película + Director + Duración + Sinopsis + Fun Fact + Póster      │
         │   • Dónde Ver en Streaming Regional (TMDB / JustWatch)                 │
         │   • Musicología de Banda Sonora + Maridaje Gastronómico                │
+        │   • 🎲 1-Clic Re-roll (Mismo Mood) + Modo Batería Segura               │
+        │   • ✉️ Cinema Courier Agent (Despacho a Correo en 1-Clic)              │
         │   • Bucle de Retroalimentación y Memoria (Estrellas + Chips)           │
         └────────────────────────────────────┬───────────────────────────────────┘
                                              │
@@ -92,16 +95,17 @@ Para el mapeo técnico completo de componentes, consulta [ARCHITECTURE.md](ARCHI
                     │    The Cinémathèque Archive (ClickHouse Cloud)  │
                     │    • Ordenamiento Multicriterio y Gavetas Mood  │
                     │    • 1-Clic "Marcar como Vista" y Estrellas     │
+                    │    • 🎬 1-Clic Revivir Paquete desde la Bóveda  │
                     │    • Eliminación Inmediata (🗑️) y Sincronización│
                     └────────────────────────┬────────────────────────┘
-                                             │ (Hito de 3 Películas Vistas)
+                                             │ (Hito de 5 Películas Vistas)
                                              ▼
                     ┌─────────────────────────────────────────────────┐
-                    │   Motor de Biopic Trailer (Google Veo/Lyria/Gemma)│
-                    │   • Guion Cinemático en 3 Actos (Google Gemma 2)│
-                    │   • Dirección Visual en 35mm (Google Veo)       │
-                    │   • Leitmotifs y Partitura (Google Lyria)       │
-                    │   • Sala de Cine Completa con Voz y Ken Burns   │
+                    │   Constelación Emocional 5★ & Sintetizador Lyria│
+                    │   • Lienzo de Espacio Profundo y Haces SVG      │
+                    │   • Cartografía Celestial Google Gemini 3.5     │
+                    │   • Sintetizador Polifónico Google Lyria        │
+                    │   • Teclado Armónico (Dm9, FMaj7#11, Dadd9)     │
                     └────────────────────────┬────────────────────────┘
                                              │
                                              ▼
