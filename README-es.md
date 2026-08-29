@@ -2,33 +2,240 @@
 
 # Feel & Film — Autonomous Multi-Agent Cinema & Collaborative Partner
 
-**Feel & Film** es un sistema autónomo de orquestación multi-agente y cineteca personal desarrollado para la hackathon **Agentic Cinema: The Blockbuster Hackathon** (Track: **Collaborative Partner**).
+> **Agentic Cinema: The Blockbuster Hackathon**  
+> **Track:** *Collaborative Partner*  
+> **Motor LLM:** Google Gemini 3.5 Flash  
+> **Framework de Agentes:** Google Agent Development Kit (`google-adk`)  
+> **Base de Datos y Memoria:** ClickHouse Cloud (Bóveda OLAP)  
+> **Autenticación:** Google Identity Services (OAuth 2.0 / GIS)  
+> **Despliegue:** Google Cloud Run  
 
 ---
 
-## 🎬 El Problema y la Solución Agentic
-En lugar de ser un simple formulario de recomendaciones paso a paso, **Feel & Film** actúa como un **Socio Colaborativo Inteligente (*Collaborative Partner*)**. Un **Master Orchestrator Agent** coordinado con **Google ADK** y **Gemini 3.5 Flash** genera en un **solo ciclo autónomo** un *Plan Completo de Noche de Cine* (Película + Banda Sonora + Maridaje Gastronómico + Disponibilidad de Streaming) y **aprende activamente** del feedback del usuario para recordar gustos, preferencias de duración y restricciones dietéticas en futuras sesiones.
+## 🎬 Descripción del Proyecto y la Solución Agentic
+
+Los sistemas tradicionales de recomendación de películas se limitan a filtros rígidos o algoritmos genéricos que tratan el cine como un catálogo de tienda online.
+
+**Feel & Film** actúa como un auténtico **Socio Colaborativo Inteligente (*Collaborative Partner*)**. Coordinado por un **Master Orchestrator Agent** impulsado por **Google ADK** y **Google Gemini 3.5 Flash**, el sistema traduce emociones humanas complejas y desestructuradas en una **Experiencia Completa de Noche de Cine** en un **único ciclo autónomo**:
+
+1. **Curaduría Emocional de Cine:** Descubrimiento semántico en tiempo real sobre 800,000+ películas de TMDB con enrutamiento inteligente para directores, estudios (*Studio Ghibli, A24*) y décadas (*años 80, 90s*).
+2. **Análisis Musicológico de Banda Sonora:** Desglose profundo de la BSO extrayendo el compositor, la vibra atmosférica y el tema principal.
+3. **Maridaje Gastronómico Personalizado:** Creación de maridajes de bebida y snack adaptados estrictamente a las restricciones dietéticas del usuario (*100% libre de alcohol, mocktails botánicos, snacks veganos*).
+4. **Buscador de Streaming Regional (*Where to Watch*):** Detección instantánea de plataformas disponibles (*Netflix, Prime Video, Apple TV, Max*) con datos de JustWatch.
+5. **Memoria Activa y Aprendizaje Continuo:** Aprende activamente del feedback del usuario a lo largo de las sesiones, generando notas colaborativas explícitas (*"He recordado que prefieres maridajes sin alcohol..."*).
+6. **The Cinémathèque Archive:** Gavetas de bronce vintage organizadas por estado emocional y persistidas en **ClickHouse Cloud**.
 
 ---
 
-## 🤖 Arquitectura Multi-Agente Autónoma (Google ADK)
+## 📐 Diagrama de Arquitectura y Diseño del Sistema
 
-1. **Master Orchestrator Agent (`master_orchestrator_agent`):**
-   - Recupera el perfil y memoria colaborativa del usuario (`user_memory_profile`).
-   - Delega concurrentemente las tareas a los sub-agentes especializados.
-   - Sintetiza la **Nota Colaborativa** (*"He recordado que prefieres maridajes sin alcohol y películas de menos de 110 min..."*).
-   - Genera la **Traza de Ejecución en Tiempo Real (`agent_trace`)** demostrando cada paso del backend.
-2. **Agente Curador de Cine (`film_curator_agent`):**
-   - Analiza el estado emocional profundo y atmósfera deseada.
-   - Aplica filtros de edad (G/PG para niños) y directivas anti-cliché para descubrir joyas ocultas.
-3. **Agente Musicólogo de Banda Sonora (`soundtrack_agent`):**
-   - Analiza la BSO original, compositor, vibra musical e identifica el tema destacado.
-4. **Agente Sommelier Cinematográfico (`sommelier_agent`):**
-   - Curaduría de maridaje de bebida y snack adaptado a las restricciones dietéticas aprendidas (mocktails sin alcohol, vegano, etc.).
-5. **Integración Streaming Regional (TMDB / JustWatch):**
-   - Detecta la región del espectador y entrega opciones de suscripción, alquiler y compra digital.
-6. **The Cinémathèque Archive (ClickHouse Cloud):**
-   - Persiste cada experiencia completa catalogada por gaveta emocional en ClickHouse Cloud.
+El diagrama ilustra cómo **Google Gemini 3.5 Flash** se conecta con el backend multi-agente, ClickHouse Cloud, las APIs externas y la capa de presentación:
+
+![Diagrama de Arquitectura de Feel & Film](app/static/architecture_diagram.svg)
+
+Para el mapeo técnico completo de componentes, consulta [ARCHITECTURE.md](ARCHITECTURE.md).
+
+```text
+                           [ Entrada Emocional y Restricciones ]
+                                             │
+                                             ▼
+                    ┌─────────────────────────────────────────────────┐
+                    │  Capa 0: Filtro de IA Responsable y Seguridad   │
+                    │  (Guardrail Multilingüe NSFW, Violencia y Gore) │
+                    └────────────────────────┬────────────────────────┘
+                                             │ (Petición Segura)
+                                             ▼
+                    ┌─────────────────────────────────────────────────┐
+                    │       Master Orchestrator Agent (Cerebro)       │
+                    │       (Google ADK / Gemini 3.5 Flash)           │
+                    │  - Consulta memoria del usuario y dieta         │
+                    │  - Sintetiza la nota de colaboración            │
+                    └────────────────────────┬────────────────────────┘
+                                             │
+               ┌─────────────────────────────┼─────────────────────────────┐
+               ▼                             ▼                             ▼
+    [ Film Curator Agent ]          [ Soundtrack Maestro ]       [ Cinema Sommelier ]
+   - TMDB en Vivo 100% Dinámico   - Análisis Musicológico BSO   - Maridaje Gastronómico
+   - Enrutador Inteligente:       - Compositor de la BSO        - Respeta reglas de dieta
+     • Directores (Créditos)      - Tema Destacado               (100% sin alcohol /
+     • Estudios (Ghibli, A24)     - Vibra Musical                snacks veganos)
+     • Décadas (años 80, 90s)
+     • Título / Temáticas
+   - Filtro de Edad (G/PG)
+               │                             │                             │
+               └─────────────────────────────┼─────────────────────────────┘
+                                             │
+                                             ▼
+                           ┌───────────────────────────────────┐
+                           │   Motor de Enriquecimiento        │
+                           │   • Póster HD Oficial TMDB        │
+                           │   • Proveedores Streaming Región  │
+                           └─────────────────┬─────────────────┘
+                                             │
+                                             ▼
+                           ┌───────────────────────────────────┐
+                           │  Traza de Ejecución en Tiempo Real│
+                           │  & Tarjetas "Behind the Scenes"   │
+                           └─────────────────┬─────────────────┘
+                                             │
+                                             ▼
+        ┌────────────────────────────────────────────────────────────────────────┐
+        │                 Experiencia Completa de Noche de Cine                  │
+        │   • Película + Director + Duración + Sinopsis + Fun Fact + Póster      │
+        │   • Dónde Ver en Streaming Regional (TMDB / JustWatch)                 │
+        │   • Musicología de Banda Sonora + Maridaje Gastronómico                │
+        │   • Bucle de Retroalimentación y Memoria (Estrellas + Chips)           │
+        └────────────────────────────────────┬───────────────────────────────────┘
+                                             │
+                                             ▼
+                    ┌─────────────────────────────────────────────────┐
+                    │    The Cinémathèque Archive (ClickHouse Cloud)  │
+                    │    • Gavetas Emocionales Indexadas              │
+                    │    • Eliminación Individual de Tarjetas         │
+                    │    • Paginación Top-3 y Sincronización Histórica│
+                    └─────────────────────────────────────────────────┘
+```
+
+---
+
+## 🛠️ Stack Tecnológico y Detalles
+
+* **Framework de Agentes:** Google Agent Development Kit (`google-adk`)
+* **Motor LLM:** Google Gemini 3.5 Flash (`gemini-3.5-flash` vía SDK Google GenAI / Vertex AI)
+* **Backend API & Servidor:** FastAPI (Python 3.11+) con servidor ASGI Uvicorn
+* **Base de Datos y Memoria OLAP:** ClickHouse Cloud (vía driver `clickhouse-connect`)
+* **Autenticación:** Google Identity Services (GIS / Verificación de Tokens JWT OAuth 2.0)
+* **Catálogo en Vivo y Streaming:** The Movie Database (API TMDB v3/v4) e integración JustWatch
+* **Frontend:** Vanilla HTML5, CSS3 Moderno (Diseño Glassmorphism y Cinema-Noir), JavaScript ES6+
+* **Contenerización y Despliegue:** Docker, Google Cloud Run
+
+---
+
+## 🚀 Guía de Inicio Paso a Paso (Reproducción Local)
+
+Sigue estos pasos para clonar, configurar y ejecutar el proyecto desde cero en menos de 3 minutos.
+
+### 1. Prerrequisitos
+- **Python:** 3.10, 3.11 o 3.12 instalado ([python.org](https://www.python.org/downloads/))
+- **Git:** Instalado en tu sistema
+- **Claves API:**
+  - **API Key de Google Gemini:** Gratuita en [Google AI Studio](https://aistudio.google.com/)
+  - **API Key de TMDB:** Gratuita en [The Movie Database](https://www.themoviedb.org/settings/api)
+
+---
+
+### 2. Clonar el Repositorio
+```bash
+git clone https://github.com/Mayorlen-Ortega/feelandfilm.git
+cd feelandfilm
+```
+
+---
+
+### 3. Crear y Activar un Entorno Virtual
+
+**En Windows (PowerShell / Símbolo del Sistema):**
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+**En macOS / Linux (bash / zsh):**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+---
+
+### 4. Instalar Dependencias
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+---
+
+### 5. Configurar Variables de Entorno (`.env`)
+Crea tu archivo local `.env` a partir de la plantilla:
+
+**Windows:**
+```powershell
+copy .env.example .env
+```
+
+**macOS / Linux:**
+```bash
+cp .env.example .env
+```
+
+Edita `.env` con tus credenciales:
+```ini
+# 1. API Key de Google Gemini (Requerida)
+GEMINI_API_KEY=tu_api_key_de_gemini_aistudio
+
+# 2. API Key de TMDB (Requerida para metadatos y streaming en vivo)
+TMDB_API_KEY=tu_api_key_o_bearer_token_de_tmdb
+
+# 3. Google Client ID (Opcional para inicio de sesión con Google)
+GOOGLE_CLIENT_ID=tu-client-id.apps.googleusercontent.com
+
+# 4. ClickHouse Cloud (Opcional - usa memoria local si se deja vacío)
+CLICKHOUSE_HOST=
+CLICKHOUSE_PORT=8443
+CLICKHOUSE_USER=default
+CLICKHOUSE_PASSWORD=
+CLICKHOUSE_SECURE=True
+```
+
+---
+
+### 6. Ejecutar la Aplicación
+Inicia el servidor FastAPI con recarga automática:
+```bash
+python -m uvicorn app.main:app --reload --port 8000
+```
+
+Abre tu navegador en:  
+👉 **`http://localhost:8000`**
+
+---
+
+### 7. Ejecutar Pruebas Automatizadas
+Comprueba que todos los flujos multi-agente, guardrails de seguridad y endpoints pasen al 100%:
+
+```bash
+# 1. Probar el Orquestador Multi-Agente y el Bucle de Memoria Colaborativa
+python test_orchestrator.py
+
+# 2. Probar Endpoints de la API, Cinemateca, Pósters y Streaming
+python test_api.py
+```
+
+---
+
+## ☁️ Instrucciones de Despliegue en la Nube
+
+### Opción A: Despliegue en 1 Clic en Google Cloud Run (Recomendado)
+
+Feel & Film está completamente contenerizado con un `Dockerfile` optimizado para producción.
+
+1. Abre la **[Consola de Google Cloud](https://console.cloud.google.com/run)** y dirígete a **Cloud Run**.
+2. Haz clic en **Crear servicio** ➡️ **Implementar continuamente desde un repositorio**.
+3. Selecciona tu repositorio de GitHub (`feelandfilm`) y elige la rama `feature/agentic-orchestrator`.
+4. En **Configuración de compilación**, selecciona **Dockerfile** (ruta: `/Dockerfile`).
+5. En **Autenticación**, selecciona **Permitir invocaciones no autenticadas**.
+6. En **Contenedor, Variables y Secretos**, añade tus variables de entorno (`GEMINI_API_KEY`, `TMDB_API_KEY`, `GOOGLE_CLIENT_ID`, `CLICKHOUSE_HOST`, etc.).
+7. Haz clic en **Crear** para desplegar. Cloud Run generará automáticamente una URL segura `https://*.run.app`.
+
+### Opción B: Despliegue local con Docker
+```bash
+# 1. Construir la imagen Docker
+docker build -t feelandfilm .
+
+# 2. Ejecutar el contenedor Docker
+docker run -p 8000:8000 --env-file .env feelandfilm
+```
 
 ---
 
@@ -49,67 +256,20 @@ En lugar de ser un simple formulario de recomendaciones paso a paso, **Feel & Fi
 
 ---
 
-## 📐 Diagrama de Arquitectura
+## 📜 Código de Terceros, Divulgaciones y Créditos
 
-![Diagrama de Arquitectura Feel & Film](app/static/architecture_diagram.svg)
+En cumplimiento con las directrices de transparencia del hackathon, se detalla la atribución de todas las librerías, servicios y activos de terceros utilizados:
 
-Para el mapeo detallado de componentes, consulta [ARCHITECTURE.md](ARCHITECTURE.md).
-
----
-
-## 🚀 Configuración y Ejecución Local
-
-### 1. Clonar el repositorio y configurar entorno:
-```bash
-git clone https://github.com/Mayorlen-Ortega/feelandfilm.git
-cd feelandfilm
-```
-
-### 2. Configurar variables de entorno:
-Crea un archivo `.env` basado en `.env.example`:
-```ini
-GEMINI_API_KEY=tu_clave_gemini
-TMDB_API_KEY=tu_clave_tmdb
-GOOGLE_CLIENT_ID=tu_google_client_id
-# ClickHouse Cloud (opcional para analítica histórica)
-CLICKHOUSE_HOST=...
-CLICKHOUSE_PORT=8443
-CLICKHOUSE_USER=...
-CLICKHOUSE_PASSWORD=...
-```
-
-### 3. Instalar dependencias:
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Iniciar la aplicación:
-```bash
-uvicorn app.main:app --reload
-```
-Abre en tu navegador: **http://localhost:8000**
+1. **Google Agent Development Kit (`google-adk`):** Framework de Google para la orquestación multi-agente, control de estado y runners.
+2. **Google GenAI SDK (`google-genai`):** Interfaz para el modelo Google Gemini 3.5 Flash.
+3. **The Movie Database (API TMDB):** Metadatos de películas en vivo, créditos de directores y pósters en HD. *(Este producto utiliza la API de TMDB pero no está respaldado ni certificado por TMDB).*
+4. **Datos de JustWatch (vía TMDB Watch Providers):** Detección de disponibilidad regional en plataformas de streaming.
+5. **Driver Python de ClickHouse (`clickhouse-connect`):** Conectividad con la base de datos OLAP ClickHouse Cloud.
+6. **FastAPI y Uvicorn:** Framework web asíncrono y servidor ASGI para Python.
+7. **Pydantic:** Validación estricta de esquemas de datos.
+8. **FontAwesome 6 y Google Fonts (Cinzel, Playfair Display, Outfit, Fira Code):** Tipografías e iconografía bajo licencias abiertas estándar.
 
 ---
 
-## 🧪 Pruebas Automatizadas
-
-Ejecuta la suite de pruebas del orquestador autónomo y memoria colaborativa:
-```bash
-python test_orchestrator.py
-```
-
-Ejecuta las pruebas de endpoints de API:
-```bash
-python test_api.py
-```
-
----
-
-## ☁️ Despliegue en Google Cloud Run
-
-Este proyecto está completamente dockerizado para despliegue con 1 clic en **Google Cloud Run**:
-1. En [Google Cloud Console](https://console.cloud.google.com/run), ve a **Cloud Run** y haz clic en **Crear servicio**.
-2. Conecta tu repositorio de GitHub y selecciona el branch `feature/agentic-orchestrator`.
-3. Selecciona **Dockerfile** (ruta: `/Dockerfile`).
-4. Configura las variables de entorno en **Variables y Secretos**.
-5. Haz clic en **Crear** para desplegar.
+## 📄 Licencia
+Este proyecto está licenciado bajo la **Licencia MIT** — consulta el archivo [LICENSE](LICENSE) para más detalles.
