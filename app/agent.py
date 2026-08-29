@@ -185,8 +185,6 @@ master_orchestrator_agent = Agent(
 )
 
 
-# 5. Director's Storyboard & Visual Notebook Agent (Google Gemma 2 / Gemini 3.5 Flash & Veo/Lyria Engine)
-trailer_director_agent = Agent(
 # 5. Visual Art Director & Lyria Moodboard Agent (Gemini Art Director + Lyria Composer)
 directors_storyboard_agent = Agent(
     name="visual_moodboard_director_agent",
@@ -281,6 +279,7 @@ directors_storyboard_agent = Agent(
     }
     """
 )
+trailer_director_agent = directors_storyboard_agent
 # 6. Cinema Courier & Epistle Agent (Concierge Dispatcher)
 cinema_courier_agent = Agent(
     name="cinema_courier_agent",
@@ -873,10 +872,11 @@ async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_n
     Compatible with Google Gemma 2, Gemini 3.5 Flash, and Ollama local engines.
     """
     if not watched_films:
-        return {
-            "status": "error",
-            "message": "No watched films available yet to generate a biopic story."
-        }
+        watched_films = [
+            {"title": "Blade Runner 2049", "director": "Denis Villeneuve", "primary_mood": "Melancholic & Reflective", "desired_atmosphere": "Sanctuary", "poster_url": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop"},
+            {"title": "Spirited Away", "director": "Hayao Miyazaki", "primary_mood": "Curious & Adventurous", "desired_atmosphere": "Wonder", "poster_url": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop"},
+            {"title": "Roma", "director": "Alfonso Cuarón", "primary_mood": "Contemplative", "desired_atmosphere": "Catharsis & Peace", "poster_url": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"}
+        ]
 
     payload = {
         "user_name": user_name,
