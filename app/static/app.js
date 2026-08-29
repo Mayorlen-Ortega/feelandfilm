@@ -1878,7 +1878,7 @@ function updateBiopicMilestone() {
     const watchedIds = getWatchedFilmIds();
     const watchedInArchive = allArchiveRecords.filter(r => watchedIds.includes(r.session_id));
     const count = watchedInArchive.length;
-    const target = 3;
+    const target = 5;
     const pct = Math.min(100, Math.round((count / target) * 100));
 
     if (fill) fill.style.width = `${pct}%`;
@@ -1913,20 +1913,20 @@ async function generateBiopicTrailer(isDemoMode = false) {
 
     const originalHtml = triggerBtn.innerHTML;
     triggerBtn.disabled = true;
-    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Plotting Celestial Galaxy...';
+    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Plotting 5-Star Celestial Galaxy...';
 
     const watchedIds = getWatchedFilmIds();
     let targetFilms = allArchiveRecords.filter(r => watchedIds.includes(r.session_id));
 
-    if (isDemoMode && targetFilms.length < 3) {
-        targetFilms = allArchiveRecords.slice(0, 3);
-        if (targetFilms.length === 0) {
-            targetFilms = [
-                { title: "Blade Runner 2049", director: "Denis Villeneuve", primary_mood: "Melancholic & Reflective", desired_atmosphere: "Sanctuary", poster_url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop" },
-                { title: "Spirited Away", director: "Hayao Miyazaki", primary_mood: "Curious & Adventurous", desired_atmosphere: "Wonder", poster_url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop" },
-                { title: "Roma", director: "Alfonso Cuarón", primary_mood: "Contemplative", desired_atmosphere: "Catharsis", poster_url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop" }
-            ];
-        }
+    if (isDemoMode && targetFilms.length < 5) {
+        const demoSamples = [
+            { title: "Blade Runner 2049", director: "Denis Villeneuve", primary_mood: "Melancholic & Reflective", desired_atmosphere: "Sanctuary", poster_url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop" },
+            { title: "Spirited Away", director: "Hayao Miyazaki", primary_mood: "Curious & Adventurous", desired_atmosphere: "Wonder", poster_url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop" },
+            { title: "Interstellar", director: "Christopher Nolan", primary_mood: "Transcendent Awe", desired_atmosphere: "Cosmic Horizon", poster_url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=90&auto=format&fit=crop" },
+            { title: "Amélie", director: "Jean-Pierre Jeunet", primary_mood: "Warmth & Playful Joy", desired_atmosphere: "Delight", poster_url: "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=1600&q=90&auto=format&fit=crop" },
+            { title: "Roma", director: "Alfonso Cuarón", primary_mood: "Contemplative", desired_atmosphere: "Catharsis & Peace", poster_url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop" }
+        ];
+        targetFilms = [...targetFilms, ...demoSamples.slice(targetFilms.length, 5)];
     }
 
     try {
@@ -1969,12 +1969,12 @@ function openEmotionalConstellation(data) {
     const prefaceEl = document.getElementById('storyboard-preface-text');
     const creditsEl = document.getElementById('biopic-credits-text');
 
-    if (titleEl) titleEl.innerText = data.constellation_name || data.story_title || "The Emotional Constellation";
+    if (titleEl) titleEl.innerText = data.constellation_name || data.story_title || "The 5-Star Emotional Constellation";
     if (archetypeEl) archetypeEl.innerText = data.celestial_archetype || data.curator_archetype || "The Nocturnal Contemplative";
-    if (prefaceEl) prefaceEl.innerText = data.cosmic_narrative || data.director_preface || "A celestial dialogue across your cinematic voyage.";
+    if (prefaceEl) prefaceEl.innerText = data.cosmic_narrative || data.director_preface || "A celestial dialogue across your 5 cinematic milestones.";
     
     const supernova = data.central_supernova || {};
-    if (creditsEl) creditsEl.innerText = supernova.narrative || data.climax_quote || "Where cinematic memories orbit in harmonic balance.";
+    if (creditsEl) creditsEl.innerText = supernova.narrative || data.climax_quote || "Where 5 cinematic memories orbit in harmonic balance.";
 
     // Render Lyria Soundscape metadata
     const soundscape = data.ambient_soundscape || {};
@@ -1986,6 +1986,9 @@ function openEmotionalConstellation(data) {
     if (tempoEl) tempoEl.innerText = soundscape.tempo || "64 BPM";
     if (promptEl) promptEl.innerText = soundscape.leitmotif_description || soundscape.instrumentation || "Lush ambient synthesizer pads with crystalline celesta chords.";
 
+    // Render dynamic mood-harmonic progression keyboard
+    renderHarmonicChordsKeyboard(soundscape.harmonic_progression);
+
     if (modal) modal.classList.remove('hidden');
 
     // Initialize Cosmic Starfield Canvas & Map
@@ -1995,6 +1998,32 @@ function openEmotionalConstellation(data) {
 
     // Auto-start ambient soundscape
     startLyriaAmbientPad(soundscape.key || "D Minor", soundscape.tempo || "64 BPM");
+}
+
+function renderHarmonicChordsKeyboard(progression) {
+    const chordsContainer = document.getElementById('constellation-chords-row');
+    if (!chordsContainer) return;
+
+    const defaultProgression = [
+        { chord: "Dm9", mood: "Solitude & Refuge", frequencies: [146.83, 220.00, 293.66, 349.23, 440.00] },
+        { chord: "FMaj7#11", mood: "Wonder & Discovery", frequencies: [174.61, 261.63, 329.63, 369.99, 523.25] },
+        { chord: "Em9", mood: "Transcendent Awe", frequencies: [164.81, 246.94, 329.63, 392.00, 493.88] },
+        { chord: "Gmaj9", mood: "Warmth & Joy", frequencies: [196.00, 246.94, 293.66, 392.00, 440.00] },
+        { chord: "Dadd9", mood: "Catharsis & Serenity", frequencies: [146.83, 220.00, 293.66, 369.99, 587.33] }
+    ];
+
+    const chords = (progression && progression.length) ? progression : defaultProgression;
+
+    chordsContainer.innerHTML = chords.map((item, idx) => {
+        const chordName = typeof item === 'string' ? item : (item.chord || 'Chord');
+        const moodName = (typeof item === 'object' && item.mood) ? item.mood.split('&')[0].trim() : `Mood ${idx + 1}`;
+        return `
+            <button type="button" class="chord-pill" onclick="playChordIndex(${idx})" title="Play ${chordName} (${moodName})">
+                <span class="chord-title-text">${chordName}</span>
+                <span class="chord-mood-sub">${moodName}</span>
+            </button>
+        `;
+    }).join('');
 }
 
 function closeEmotionalConstellation() {
@@ -2008,7 +2037,7 @@ function closeEmotionalConstellation() {
 }
 
 // ---------------------------------------------------------------------------
-// Interactive Sky Map & Star Orbs Renderer
+// Interactive Sky Map & Star Orbs Renderer (5-Star Constellation)
 // ---------------------------------------------------------------------------
 
 function renderConstellationSkyMap(data) {
@@ -2021,13 +2050,13 @@ function renderConstellationSkyMap(data) {
     container.innerHTML = '';
     svgCanvas.innerHTML = '';
 
-    // Calculate default coordinate fallbacks if not given
+    // 5-Star celestial crescent/W coordinates layout
     const defaultCoords = [
-        { x: 22, y: 70 },
-        { x: 50, y: 28 },
-        { x: 80, y: 64 },
-        { x: 35, y: 40 },
-        { x: 68, y: 45 }
+        { x: 18, y: 68 },
+        { x: 36, y: 32 },
+        { x: 52, y: 72 },
+        { x: 68, y: 28 },
+        { x: 84, y: 62 }
     ];
 
     // 1. Draw SVG Connecting Lines between stars
@@ -2051,7 +2080,8 @@ function renderConstellationSkyMap(data) {
     // 2. Render Interactive Star Orbs
     stars.forEach((star, idx) => {
         const coords = star.coordinates || defaultCoords[idx % defaultCoords.length];
-        const spectralColor = star.spectral_color || (idx === 0 ? '#d4af37' : idx === 1 ? '#38bdf8' : '#ec4899');
+        const spectralColors = ['#d4af37', '#38bdf8', '#818cf8', '#f59e0b', '#ec4899'];
+        const spectralColor = star.spectral_color || spectralColors[idx % spectralColors.length];
         const posterUrl = star.poster_url || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop";
 
         const orb = document.createElement('div');
@@ -2067,7 +2097,7 @@ function renderConstellationSkyMap(data) {
                 <img src="${posterUrl}" alt="${star.title}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80'">
             </div>
             <div class="star-label-badge" style="background: rgba(10, 8, 6, 0.85); border-color: ${spectralColor};">
-                <span class="star-num">STAR 0${idx + 1}</span>
+                <span class="star-num">STAR 0${idx + 1} &bull; ${star.harmonic_chord_name || 'CHORD'}</span>
                 <span class="star-name">${star.title || 'Cinema Star'}</span>
             </div>
         `;
@@ -2084,7 +2114,7 @@ function renderConstellationSkyMap(data) {
         stepper.innerHTML = stars.map((s, idx) => `
             <button type="button" class="star-step-btn ${idx === 0 ? 'active' : ''}" onclick="selectConstellationStar(${idx}, true)" style="--step-color: ${s.spectral_color || '#d4af37'}">
                 <span class="step-dot"></span>
-                <span>Star 0${idx + 1}: ${s.title || 'Film'}</span>
+                <span>Star 0${idx + 1}: ${s.title || 'Film'} (${s.harmonic_chord_name || s.emotional_valence || ''})</span>
             </button>
         `).join('');
     }
@@ -2124,18 +2154,18 @@ function selectConstellationStar(starIndex, playSound = true) {
     if (posterEl) posterEl.src = star.poster_url || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop";
 
     if (pillEl) {
-        pillEl.innerText = `STAR 0${starIndex + 1} • ${(star.emotional_valence || 'RESONANCE').toUpperCase()}`;
+        pillEl.innerText = `STAR 0${starIndex + 1} • ${(star.harmonic_chord_name ? star.harmonic_chord_name + ' • ' : '')}${(star.emotional_valence || 'RESONANCE').toUpperCase()}`;
         pillEl.style.color = star.spectral_color || '#d4af37';
         pillEl.style.borderColor = star.spectral_color || 'rgba(212, 175, 55, 0.4)';
     }
 
-    const freqVal = star.audio_frequency || [293.66, 392.00, 523.25][starIndex % 3];
-    if (freqEl) freqEl.innerHTML = `<i class="fas fa-wave-square"></i> ${freqVal} Hz`;
+    const freqVal = star.audio_frequency || [293.66, 329.63, 392.00, 440.00, 587.33][starIndex % 5];
+    if (freqEl) freqEl.innerHTML = `<i class="fas fa-wave-square"></i> ${freqVal} Hz (${star.harmonic_chord_name || 'Harmonic'})`;
 
     if (emotionalBeatEl) emotionalBeatEl.innerText = star.emotional_valence || "Emotional Elevation";
     if (resonanceNoteEl) resonanceNoteEl.innerText = star.resonance_note || star.director_note || "Harmonic stellar alignment in the emotional sky.";
 
-    // Play star harmonic chord
+    // Play star mood-harmonic chord
     if (playSound) {
         playLyriaAcousticStarSound(freqVal, star.chord_notes || [freqVal * 0.5, freqVal * 0.75, freqVal, freqVal * 1.5]);
     }
@@ -2147,7 +2177,7 @@ function playActiveStarChord() {
     if (!currentConstellationData || !currentConstellationData.stars) return;
     const star = currentConstellationData.stars[activeStarIndex];
     if (!star) return;
-    const freqVal = star.audio_frequency || [293.66, 392.00, 523.25][activeStarIndex % 3];
+    const freqVal = star.audio_frequency || [293.66, 329.63, 392.00, 440.00, 587.33][activeStarIndex % 5];
     playLyriaAcousticStarSound(freqVal, star.chord_notes || [freqVal * 0.5, freqVal * 0.75, freqVal, freqVal * 1.5]);
 }
 
@@ -2188,7 +2218,7 @@ function startLyriaAmbientPad(key = "D Minor", tempo = "64 BPM") {
         filter.connect(ctx.destination);
 
         // Ambient chord frequencies based on key
-        const baseChord = [146.83, 220.00, 293.66, 349.23]; // Dm (D3, A3, D4, F4)
+        const baseChord = [146.83, 220.00, 293.66, 349.23, 440.00]; // Dm9 (D3, A3, D4, F4, A4)
 
         baseChord.forEach((freq, i) => {
             const osc = ctx.createOscillator();
@@ -2275,14 +2305,27 @@ function playLyriaAcousticStarSound(rootFreq, chordNotes) {
 }
 
 function playChordIndex(index) {
-    const chords = [
-        [146.83, 220.00, 293.66, 349.23, 440.00], // Dm9
-        [116.54, 174.61, 233.08, 293.66, 349.23], // BbMaj7
-        [196.00, 261.63, 293.66, 349.23, 440.00], // Gm11
-        [220.00, 293.66, 329.63, 440.00, 523.25]  // Asus4
+    const defaultChords = [
+        [146.83, 220.00, 293.66, 349.23, 440.00], // Dm9 (Solitude)
+        [174.61, 261.63, 329.63, 369.99, 523.25], // FMaj7#11 (Wonder)
+        [164.81, 246.94, 329.63, 392.00, 493.88], // Em9 (Awe)
+        [196.00, 246.94, 293.66, 392.00, 440.00], // Gmaj9 (Joy)
+        [146.83, 220.00, 293.66, 369.99, 587.33]  // Dadd9 (Catharsis)
     ];
-    const notes = chords[index % chords.length];
+
+    let notes = defaultChords[index % defaultChords.length];
+
+    if (currentConstellationData && currentConstellationData.ambient_soundscape) {
+        const prog = currentConstellationData.ambient_soundscape.harmonic_progression;
+        if (prog && prog[index] && prog[index].frequencies) {
+            notes = prog[index].frequencies;
+        }
+    }
+
     playLyriaAcousticStarSound(notes[0], notes);
+
+    // Also select matching star in constellation map
+    selectConstellationStar(index, false);
 
     // Visual button ripple
     const buttons = document.querySelectorAll('.harmonic-chords-row .chord-pill');
