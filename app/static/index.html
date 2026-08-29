@@ -356,26 +356,54 @@
                         </div>
                     </div>
 
-                    <!-- Filing Cabinet Drawer Tabs -->
-                    <div class="drawer-cabinet" id="drawer-cabinet">
-                        <button class="drawer-tab active" data-drawer="ALL">
-                            <i class="fas fa-folder-open"></i> All Records
-                        </button>
-                        <button class="drawer-tab" data-drawer="Stressed">
-                            <i class="fas fa-coffee"></i> Stressed & Overworked
-                        </button>
-                        <button class="drawer-tab" data-drawer="Sad">
-                            <i class="fas fa-cloud-rain"></i> Melancholic & Sad
-                        </button>
-                        <button class="drawer-tab" data-drawer="Tired">
-                            <i class="fas fa-bed"></i> Tired & Seeking Rest
-                        </button>
-                        <button class="drawer-tab" data-drawer="Excited">
-                            <i class="fas fa-bolt"></i> Excited & Energetic
-                        </button>
-                        <button class="drawer-tab" data-drawer="Curious">
-                            <i class="fas fa-compass"></i> Curious & Cinephile
-                        </button>
+                    <!-- Filing Cabinet Controls: Drawers & Sorter -->
+                    <div class="archive-toolbar">
+                        <!-- Drawer Filter Tabs -->
+                        <div class="drawer-cabinet" id="drawer-cabinet">
+                            <button class="drawer-tab active" data-drawer="ALL">
+                                <i class="fas fa-folder-open"></i> All Records
+                            </button>
+                            <button class="drawer-tab" data-drawer="WATCHED">
+                                <i class="fas fa-check-circle" style="color: #a8e6cf;"></i> Watched Only
+                            </button>
+                            <button class="drawer-tab" data-drawer="UNWATCHED">
+                                <i class="fas fa-eye" style="color: #f3d069;"></i> Unwatched
+                            </button>
+                            <button class="drawer-tab" data-drawer="TOP_RATED">
+                                <i class="fas fa-star" style="color: #f3d069;"></i> 5★ Top Rated
+                            </button>
+                            <button class="drawer-tab" data-drawer="Stressed">
+                                <i class="fas fa-coffee"></i> Stressed
+                            </button>
+                            <button class="drawer-tab" data-drawer="Sad">
+                                <i class="fas fa-cloud-rain"></i> Melancholic
+                            </button>
+                            <button class="drawer-tab" data-drawer="Tired">
+                                <i class="fas fa-bed"></i> Tired &amp; Rest
+                            </button>
+                            <button class="drawer-tab" data-drawer="Excited">
+                                <i class="fas fa-bolt"></i> Excited
+                            </button>
+                            <button class="drawer-tab" data-drawer="Curious">
+                                <i class="fas fa-compass"></i> Curious
+                            </button>
+                        </div>
+
+                        <!-- Sort Selector Dropdown -->
+                        <div class="archive-sort-wrapper">
+                            <label for="archive-sort-select" class="archive-sort-label">
+                                <i class="fas fa-arrow-down-short-wide"></i> Sort:
+                            </label>
+                            <select id="archive-sort-select" class="archive-sort-select" onchange="onArchiveSortChange(this.value)">
+                                <option value="recent_desc" selected>⏱️ Most Recent First</option>
+                                <option value="recent_asc">⏳ Oldest First</option>
+                                <option value="rating_desc">⭐ Highest Rated First</option>
+                                <option value="watched_first">🎬 Watched First</option>
+                                <option value="unwatched_first">👁️ Unwatched First</option>
+                                <option value="title_asc">🔤 Title (A to Z)</option>
+                                <option value="director_asc">🎬 Director (A to Z)</option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Archive Cards Grid -->

@@ -1709,11 +1709,68 @@ button:disabled {
     color: #ffcccc;
 }
 
+.archive-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed rgba(212, 175, 55, 0.2);
+}
+
 .drawer-cabinet {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-bottom: 1.5rem;
+    flex: 1;
+    min-width: 260px;
+    margin-bottom: 0;
+}
+
+.archive-sort-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(18, 15, 13, 0.7);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.archive-sort-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    color: var(--accent);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.archive-sort-select {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 0.78rem;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.archive-sort-select:focus,
+.archive-sort-select:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.archive-sort-select option {
+    background: #1a1714;
+    color: #fff;
 }
 
 .drawer-tab {

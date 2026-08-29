@@ -1148,11 +1148,19 @@ function initFeedbackControls() {
 
 let allArchiveRecords = [];
 let activeArchiveDrawer = 'ALL';
+let activeArchiveSort = 'recent_desc';
 let isArchiveExpanded = false;
 let currentBiopicStoryboard = null;
 let currentBiopicActIndex = 0;
 let biopicPlaybackTimer = null;
 let isBiopicPlaying = false;
+
+function onArchiveSortChange(sortVal) {
+    activeArchiveSort = sortVal;
+    renderCinematheque();
+}
+
+window.onArchiveSortChange = onArchiveSortChange;
 
 // Watched IDs & Film Ratings Storage
 function getWatchedFilmIds() {
@@ -1355,17 +1363,53 @@ function renderCinematheque() {
 
     if (!grid) return;
 
-    // Filter by drawer tab
-    let filtered = allArchiveRecords;
-    if (activeArchiveDrawer !== 'ALL') {
-        filtered = allArchiveRecords.filter(r => {
+    // 1. Filter by active drawer tab
+    let filtered = [...allArchiveRecords];
+    if (activeArchiveDrawer === 'WATCHED') {
+        filtered = filtered.filter(r => watchedIds.includes(r.session_id));
+    } else if (activeArchiveDrawer === 'UNWATCHED') {
+        filtered = filtered.filter(r => !watchedIds.includes(r.session_id));
+    } else if (activeArchiveDrawer === 'TOP_RATED') {
+        filtered = filtered.filter(r => (ratings[r.session_id] || 0) === 5);
+    } else if (activeArchiveDrawer !== 'ALL') {
+        filtered = filtered.filter(r => {
             const mood = (r.primary_mood || '').toLowerCase();
             const tags = (r.detected_tags || []).join(' ').toLowerCase();
             const shift = (r.desired_shift || '').toLowerCase();
+            const input = (r.user_input || '').toLowerCase();
             const target = activeArchiveDrawer.toLowerCase();
-            return mood.includes(target) || tags.includes(target) || shift.includes(target);
+            return mood.includes(target) || tags.includes(target) || shift.includes(target) || input.includes(target);
         });
     }
+
+    // 2. Sort filtered records
+    filtered.sort((a, b) => {
+        const ratingA = ratings[a.session_id] || 0;
+        const ratingB = ratings[b.session_id] || 0;
+        const isWatchedA = watchedIds.includes(a.session_id) ? 1 : 0;
+        const isWatchedB = watchedIds.includes(b.session_id) ? 1 : 0;
+
+        switch (activeArchiveSort) {
+            case 'rating_desc':
+                if (ratingB !== ratingA) return ratingB - ratingA;
+                return 0;
+            case 'watched_first':
+                if (isWatchedB !== isWatchedA) return isWatchedB - isWatchedA;
+                return 0;
+            case 'unwatched_first':
+                if (isWatchedA !== isWatchedB) return isWatchedA - isWatchedB;
+                return 0;
+            case 'title_asc':
+                return (a.title || '').localeCompare(b.title || '');
+            case 'director_asc':
+                return (a.director || a.film_director || '').localeCompare(b.director || b.film_director || '');
+            case 'recent_asc':
+                return (a.timestamp || '').localeCompare(b.timestamp || '');
+            case 'recent_desc':
+            default:
+                return 0; // Natural order is already most recent
+        }
+    });
 
     if (countBadge) {
         countBadge.innerText = `${allArchiveRecords.length} Curations Preserved`;
