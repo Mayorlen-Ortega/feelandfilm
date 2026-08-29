@@ -436,6 +436,7 @@ def discover_live_tmdb_film(
     # Fallback movie if TMDB network fails completely
     title = "Cinema Paradiso"
     director = "Giuseppe Tornatore"
+    cast = ["Philippe Noiret", "Salvatore Cascio", "Jacques Perrin", "Marco Leonardi"]
     runtime = 124
     synopsis = "A celebrated filmmaker returns to his Sicilian village and reminisces about the magical local cinema and the projectionist who shaped his youth."
     vote_avg = 8.5
@@ -457,6 +458,12 @@ def discover_live_tmdb_film(
                 directors = [c.get("name") for c in crew if c.get("job") == "Director"]
                 if directors:
                     director = directors[0]
+                
+                # Extract Lead Actors / Protagonists
+                cast_raw = det_data.get("credits", {}).get("cast", [])
+                lead_cast = [c.get("name") for c in cast_raw[:4] if c.get("name")]
+                if lead_cast:
+                    cast = lead_cast
         except Exception:
             pass
 
@@ -491,6 +498,7 @@ def discover_live_tmdb_film(
     return {
         "title": title,
         "director": director,
+        "cast": cast,
         "runtime": runtime,
         "intensity": min(9, max(4, int(vote_avg))),
         "mood_tags": [region_label, desired_atmosphere or "Curated"],

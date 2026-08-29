@@ -954,8 +954,27 @@ button:disabled {
 .package-meta {
     font-size: 0.95rem;
     color: var(--accent);
-    margin-bottom: 12px;
+    margin-bottom: 6px;
     font-style: italic;
+}
+
+.package-cast {
+    font-size: 0.88rem;
+    color: #e2e8f0;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.package-cast i {
+    color: var(--accent);
+}
+
+.package-cast strong {
+    color: var(--accent);
+    font-weight: 600;
 }
 
 .package-tags {

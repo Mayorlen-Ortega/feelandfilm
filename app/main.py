@@ -575,6 +575,10 @@ VALID_AGES = ["Kids (0-12)", "Teens (13-17)", "Adults (18+)", "Mixed Family"]
 
 @app.get("/api/cinematheque")
 async def get_cinematheque(user_email: str = ""):
+    # If not logged in (guest), the archive is private and empty
+    if not user_email or user_email.strip().lower() in ["", "guest"]:
+        return {"status": "success", "count": 0, "records": []}
+
     host = os.getenv("CLICKHOUSE_HOST", "")
     if not host or host == "mock":
         return {"status": "success", "count": 0, "records": []}
@@ -588,11 +592,8 @@ async def get_cinematheque(user_email: str = ""):
             secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
         )
         
-        where_clauses = ["film_title != ''"]
-        params = {}
-        if user_email and user_email.strip():
-            where_clauses.append("user_email = %(user_email)s")
-            params["user_email"] = user_email.strip()
+        where_clauses = ["film_title != ''", "user_email = %(user_email)s"]
+        params = {"user_email": user_email.strip()}
         
         where_str = " AND ".join(where_clauses)
         query = f"""

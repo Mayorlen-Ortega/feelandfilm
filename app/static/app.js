@@ -14,7 +14,18 @@ let isArchiveExpanded = false;
 
 async function loadCinematheque() {
     try {
-        const userEmail = (currentUser && currentUser.email) ? encodeURIComponent(currentUser.email) : '';
+        if (!currentUser || !currentUser.email) {
+            allArchiveRecords = [];
+            const countBadge = document.getElementById('archive-records-count');
+            if (countBadge) {
+                countBadge.innerText = `Private Vault (Sign In Required)`;
+            }
+            renderCinematheque();
+            refreshScreeningPills();
+            return;
+        }
+
+        const userEmail = encodeURIComponent(currentUser.email);
         const response = await fetch(`/api/cinematheque?user_email=${userEmail}`);
         const data = await response.json();
         
@@ -35,6 +46,7 @@ async function loadCinematheque() {
         }
         
         renderCinematheque();
+        refreshScreeningPills();
     } catch (e) {
         console.error("Failed to load Cinémathèque archive", e);
     }
@@ -61,6 +73,20 @@ function renderCinematheque() {
     if (!grid) return;
     
     grid.innerHTML = '';
+
+    // Guest Mode: Archive is strictly private
+    if (!currentUser || !currentUser.email) {
+        if (expandWrapper) expandWrapper.classList.add('hidden');
+        if (emptyState) {
+            emptyState.classList.remove('hidden');
+            const emptyTitle = document.getElementById('empty-title');
+            const emptyDesc = document.getElementById('empty-desc');
+            if (emptyTitle) emptyTitle.innerText = "Private Cinémathèque Vault";
+            if (emptyDesc) emptyDesc.innerHTML = 'Your Cinémathèque Archive is private to your personal Google account. <br><button type="button" class="btn" style="width: auto; display: inline-flex; margin-top: 12px; padding: 7px 18px; font-size: 0.85rem;" onclick="openAuthModal()"><i class="fab fa-google"></i> Sign In with Google to Unlock Vault</button>';
+        }
+        return;
+    }
+
     const filtered = allArchiveRecords.filter(r => matchesDrawer(r, activeArchiveDrawer));
     
     if (filtered.length === 0) {
@@ -536,25 +562,7 @@ function initScreeningInterviewModal() {
     }
 
     // 6. Quick Suggestion Pills
-    const pills = document.querySelectorAll('.scene-pill');
-    pills.forEach(pill => {
-        pill.addEventListener('click', () => {
-            const targetId = pill.dataset.target;
-            const val = pill.dataset.val;
-            const targetEl = document.getElementById(targetId);
-            if (targetEl) {
-                if (targetEl.tagName === 'SELECT') {
-                    targetEl.value = val;
-                } else {
-                    targetEl.value = val;
-                }
-                // Visual pulse on target
-                targetEl.focus();
-                targetEl.style.borderColor = 'var(--accent)';
-                setTimeout(() => { targetEl.style.borderColor = ''; }, 800);
-            }
-        });
-    });
+    attachPillClickListeners();
 
     // 7. Global Keyboard Navigation (Enter to advance, Esc to close)
     document.addEventListener('keydown', (e) => {
@@ -595,11 +603,133 @@ function initScreeningInterviewModal() {
     }, 350);
 }
 
+function attachPillClickListeners() {
+    const pills = document.querySelectorAll('.scene-pill');
+    pills.forEach(pill => {
+        pill.onclick = () => {
+            const targetId = pill.dataset.target;
+            const val = pill.dataset.val;
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                if (targetEl.tagName === 'SELECT') {
+                    targetEl.value = val;
+                } else {
+                    targetEl.value = val;
+                }
+                // Visual pulse on target
+                targetEl.focus();
+                targetEl.style.borderColor = 'var(--accent)';
+                setTimeout(() => { targetEl.style.borderColor = ''; }, 800);
+            }
+        };
+    });
+}
+
+function refreshScreeningPills() {
+    // 1. Scene I: Initial Moods (Adaptive to past states)
+    const moodContainer = document.getElementById('scene-0-pills');
+    if (moodContainer) {
+        const pastMoods = (allArchiveRecords || []).map(r => r.primary_mood || r.initial_mood).filter(Boolean);
+        const uniquePastMoods = Array.from(new Set(pastMoods));
+        
+        const moodPool = [
+            { label: "Exhausted & Need Comfort", val: "Exhausted after a long week, craving comfort and peaceful warmth" },
+            { label: "Melancholic & Reflective", val: "Melancholic and contemplative, looking for deep emotional beauty" },
+            { label: "Stressed & Craving Escape", val: "Stressed from daily routine, seeking gripping escape" },
+            { label: "Curious & Adventurous", val: "Curious and adventurous, open to mind-bending stories" },
+            { label: "Cozy & Introspective", val: "Cozy evening at home, wanting quiet and thoughtful storytelling" },
+            { label: "Energetic & Playful", val: "High energy, looking for witty fun and vibrant rhythm" }
+        ];
+
+        let finalMoods = [...moodPool];
+        if (uniquePastMoods.length > 0) {
+            const topMood = uniquePastMoods[0];
+            finalMoods.unshift({ label: `✨ Feel like (${topMood}) again`, val: `In the mood for ${topMood}, looking for restorative cinema` });
+        }
+        
+        moodContainer.innerHTML = `
+            <span class="suggestion-label"><i class="fas fa-sparkles"></i> Quick feelings:</span>
+            ${finalMoods.slice(0, 5).map(m => `
+                <button type="button" class="scene-pill" data-target="initial_mood" data-val="${m.val}">${m.label}</button>
+            `).join('')}
+        `;
+    }
+
+    // 2. Scene II: Desired Atmospheres (Curated rotating pool)
+    const atmContainer = document.getElementById('scene-1-pills');
+    if (atmContainer) {
+        const atmPool = [
+            { label: "Cozy & Uplifting", val: "Cozy, uplifting comfort and warm laughter" },
+            { label: "Poetic & Philosophical", val: "Deep philosophical thought and poetic cinematography" },
+            { label: "Suspense & Mystery", val: "High-tension mystery and psychological suspense" },
+            { label: "Heartwarming Romance", val: "Warm, heartwarming romance and emotional comfort" },
+            { label: "Surreal & Mind-Bending", val: "Surreal visuals, time-twists, and mind-bending puzzle storytelling" },
+            { label: "Atmospheric Neo-Noir", val: "Moody neo-noir, rainy neon streets, and deep jazz atmosphere" }
+        ];
+
+        atmContainer.innerHTML = `
+            <span class="suggestion-label"><i class="fas fa-sparkles"></i> Destinations:</span>
+            ${atmPool.slice(0, 5).map(a => `
+                <button type="button" class="scene-pill" data-target="desired_atmosphere" data-val="${a.val}">${a.label}</button>
+            `).join('')}
+        `;
+    }
+
+    // 3. Scene IV: Directors, Studios, Eras & Genres (Dynamic from history + rotating)
+    const nuancContainer = document.getElementById('scene-3-pills');
+    if (nuancContainer) {
+        const pastDirectors = (allArchiveRecords || []).map(r => r.film_director).filter(d => d && d !== 'TMDB' && d !== 'Unknown' && d !== 'Cinematic Visionary');
+        const uniqueDirectors = Array.from(new Set(pastDirectors));
+
+        const globalAuteurs = [
+            { label: "🌸 Studio Ghibli", val: "Studio Ghibli" },
+            { label: "📼 Años 80", val: "años 80" },
+            { label: "🎞️ Años 90", val: "años 90" },
+            { label: "🎬 Alfonso Cuarón", val: "Alfonso Cuarón" },
+            { label: "📽️ Quentin Tarantino", val: "Quentin Tarantino" },
+            { label: "⚡ A24 Indie", val: "A24" },
+            { label: "🌎 Cine Latinoamericano", val: "cine latinoamericano" },
+            { label: "🎷 Neo-Noir & Jazz", val: "neo-noir jazz aesthetic" },
+            { label: "🐉 Hayao Miyazaki", val: "Hayao Miyazaki" },
+            { label: "⏳ Denis Villeneuve", val: "Denis Villeneuve" },
+            { label: "👁️ Guillermo del Toro", val: "Guillermo del Toro" },
+            { label: "🇫🇷 Cine Francés", val: "cine frances de autor" },
+            { label: "🍜 Cine Japonés", val: "cine japones" },
+            { label: "🌌 Christopher Nolan", val: "Christopher Nolan" }
+        ];
+
+        let personalizedList = [];
+        
+        // Prioritize up to 2 past explored directors
+        uniqueDirectors.slice(0, 2).forEach(dir => {
+            personalizedList.push({ label: `🎬 ${dir}`, val: dir });
+        });
+
+        // Add non-duplicate rotating suggestions
+        const remaining = globalAuteurs.filter(g => !personalizedList.some(p => p.val.toLowerCase() === g.val.toLowerCase()));
+        
+        // Shuffle remaining to keep suggestions freshly rotating
+        const shuffled = remaining.sort(() => 0.5 - Math.random());
+        
+        const finalList = [...personalizedList, ...shuffled].slice(0, 7);
+
+        nuancContainer.innerHTML = `
+            <span class="suggestion-label"><i class="fas fa-film"></i> ${uniqueDirectors.length > 0 ? 'Adapted to your taste:' : 'Quick filters:'}</span>
+            ${finalList.map(n => `
+                <button type="button" class="scene-pill" data-target="theme" data-val="${n.val}">${n.label}</button>
+            `).join('')}
+        `;
+    }
+
+    attachPillClickListeners();
+}
+
 function openScreeningModal() {
     const modal = document.getElementById('screening-modal');
     if (!modal) return;
     updateModalIdentityBar();
     updateSceneAuthBox();
+    refreshScreeningPills();
     modal.classList.remove('hidden');
     goToScene(0);
 }
@@ -847,6 +977,7 @@ function renderCinemaNightPackage(response) {
                     <div>
                         <h3 class="package-title">${film.title}</h3>
                         <div class="package-meta">Directed by ${film.director || 'Cinematic Visionary'} &bull; ${film.runtime || 110} min</div>
+                        ${(film.cast && Array.isArray(film.cast) && film.cast.length > 0) ? `<div class="package-cast"><i class="fas fa-users-viewfinder"></i> <strong>Starring:</strong> ${film.cast.join(', ')}</div>` : ''}
                     </div>
                 </div>
                 <div class="package-tags">${tagsHtml}</div>
