@@ -1510,7 +1510,7 @@ function updateBiopicMilestone() {
     if (genBtn) {
         if (count >= target) {
             genBtn.disabled = false;
-            genBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate My Emotional Movie';
+            genBtn.innerHTML = '<i class="fas fa-book-open-reader"></i> Open Director\'s Storyboard';
         } else {
             genBtn.disabled = true;
             genBtn.innerHTML = `<i class="fas fa-lock"></i> Mark ${target - count} more to unlock`;
@@ -1519,7 +1519,7 @@ function updateBiopicMilestone() {
 }
 
 // ---------------------------------------------------------------------------
-// Google Veo & Lyria Biopic Trailer Playback Engine
+// Google Gemma 2, Veo & Lyria 35mm Director's Storyboard Engine
 // ---------------------------------------------------------------------------
 
 async function generateBiopicTrailer(isDemoMode = false) {
@@ -1529,7 +1529,7 @@ async function generateBiopicTrailer(isDemoMode = false) {
 
     const originalHtml = triggerBtn.innerHTML;
     triggerBtn.disabled = true;
-    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Google Veo & Lyria Directing...';
+    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Compiling 35mm Storyboard...';
 
     const watchedIds = getWatchedFilmIds();
     let targetFilms = allArchiveRecords.filter(r => watchedIds.includes(r.session_id));
@@ -1562,44 +1562,55 @@ async function generateBiopicTrailer(isDemoMode = false) {
 
         const data = await res.json();
         if (data.status === 'success' && data.storyboard) {
-            openBiopicTheater(data.storyboard);
+            openDirectorStoryboard(data.storyboard);
         } else {
-            alert("Could not generate trailer at this time. Please try again.");
+            alert("Could not load storyboard at this time. Please try again.");
         }
     } catch (e) {
-        console.error("Biopic trailer generation error:", e);
-        alert("Error generating trailer. Please check console.");
+        console.error("Director storyboard generation error:", e);
+        alert("Error loading storyboard. Please check console.");
     } finally {
         triggerBtn.disabled = false;
         triggerBtn.innerHTML = originalHtml;
     }
 }
 
-function openBiopicTheater(storyboard) {
+let isAmbientHarmonyEnabled = true;
+
+function openDirectorStoryboard(storyboard) {
     currentBiopicStoryboard = storyboard;
     currentBiopicActIndex = 0;
 
     const modal = document.getElementById('biopic-trailer-modal');
     const titleEl = document.getElementById('biopic-story-title');
+    const archetypeEl = document.getElementById('storyboard-archetype-text');
+    const prefaceEl = document.getElementById('storyboard-preface-text');
+    const paletteBar = document.getElementById('storyboard-palette-bar');
     const creditsEl = document.getElementById('biopic-credits-text');
 
-    if (titleEl) titleEl.innerText = storyboard.story_title || "The Emotional Odyssey";
-    if (creditsEl) creditsEl.innerHTML = storyboard.director_credits || "Powered by Google Veo & Lyria Engine";
+    if (titleEl) titleEl.innerText = storyboard.story_title || "The 35mm Emotional Chronicles";
+    if (archetypeEl) archetypeEl.innerText = storyboard.curator_archetype || "The Contemplative Neorealist";
+    if (prefaceEl) prefaceEl.innerText = storyboard.director_preface || "An auteur dialogue mapping the emotional transformation across cinema.";
+    if (creditsEl) creditsEl.innerText = storyboard.climax_quote || "Cinema translates what our soul needed to understand.";
+
+    // Render palette swatches
+    if (paletteBar && storyboard.color_palette) {
+        paletteBar.innerHTML = storyboard.color_palette.map(c => 
+            `<span class="color-dot" style="background: ${c.hex};" title="${c.name || 'Color'}"></span>`
+        ).join('');
+    }
 
     if (modal) modal.classList.remove('hidden');
 
-    displayBiopicAct(0);
-    startBiopicPlayback();
+    displayStoryboardAct(0);
 }
 
-function closeBiopicTheater() {
-    stopBiopicPlayback();
+function closeDirectorStoryboard() {
     const modal = document.getElementById('biopic-trailer-modal');
     if (modal) modal.classList.add('hidden');
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
 }
 
-function displayBiopicAct(actIndex) {
+function displayStoryboardAct(actIndex) {
     if (!currentBiopicStoryboard || !currentBiopicStoryboard.acts) return;
     const acts = currentBiopicStoryboard.acts;
     if (actIndex < 0 || actIndex >= acts.length) return;
@@ -1607,26 +1618,57 @@ function displayBiopicAct(actIndex) {
     currentBiopicActIndex = actIndex;
     const act = acts[actIndex];
 
+    // Frame Elements
     const posterEl = document.getElementById('biopic-active-poster');
+    const filmTitleEl = document.getElementById('storyboard-film-title');
+    const filmDirectorEl = document.getElementById('storyboard-film-director');
+    const frameNumEl = document.getElementById('storyboard-frame-num');
+    const stockLabelEl = document.getElementById('storyboard-stock-label');
+
+    // Editorial Dossier Elements
     const actPill = document.getElementById('biopic-act-pill');
+    const emotionalBeatEl = document.getElementById('storyboard-emotional-beat');
     const actName = document.getElementById('biopic-act-name');
-    const voiceoverText = document.getElementById('biopic-voiceover-text');
-    const veoPrompt = document.getElementById('biopic-veo-prompt');
-    const lyriaPrompt = document.getElementById('biopic-lyria-prompt');
+    const directorNoteEl = document.getElementById('biopic-voiceover-text');
+
+    // Veo Specs
+    const veoAspectEl = document.getElementById('veo-spec-aspect');
+    const veoLensEl = document.getElementById('veo-spec-lens');
+    const veoLightingEl = document.getElementById('veo-spec-lighting');
+    const veoPromptEl = document.getElementById('biopic-veo-prompt');
+
+    // Lyria Specs
+    const lyriaKeyEl = document.getElementById('lyria-spec-key');
+    const lyriaTempoEl = document.getElementById('lyria-spec-tempo');
+    const lyriaPromptEl = document.getElementById('biopic-lyria-prompt');
 
     if (posterEl) {
-        posterEl.classList.remove('ken-burns');
         posterEl.src = act.poster_url || "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80";
-        setTimeout(() => posterEl.classList.add('ken-burns'), 50);
     }
+    if (filmTitleEl) filmTitleEl.innerText = act.featured_film || act.title || "Cinema Selection";
+    if (filmDirectorEl) filmDirectorEl.innerText = act.featured_director || act.director || "Auteur Director";
+    if (frameNumEl) frameNumEl.innerText = `FRAME 0${actIndex + 1} / 0${acts.length}`;
 
-    if (actPill) actPill.innerText = `ACT ${act.act_number || actIndex + 1} • ${act.emotional_beat || 'EMOTION'}`;
-    if (actName) actName.innerText = act.act_name || `Chapter ${actIndex + 1}`;
-    if (voiceoverText) voiceoverText.innerText = `"${act.voiceover_line || ''}"`;
-    if (veoPrompt) veoPrompt.innerText = (act.veo_video_prompt || '').slice(0, 90) + '...';
-    if (lyriaPrompt) lyriaPrompt.innerText = (act.lyria_music_cue || '').slice(0, 90) + '...';
+    const veo = act.veo_cinematography || {};
+    const lyria = act.lyria_score || {};
 
-    // Update stepper dots
+    if (stockLabelEl) stockLabelEl.innerText = (veo.film_stock || "KODAK 500T 35MM").toUpperCase();
+
+    if (actPill) actPill.innerText = `ACT ${act.act_number || actIndex + 1} • ${((act.act_title || '').split(':')[0] || 'CHAPTER').toUpperCase()}`;
+    if (emotionalBeatEl) emotionalBeatEl.innerHTML = `<i class="fas fa-heart-pulse"></i> ${act.emotional_state || act.emotional_beat || 'Emotional Beat'}`;
+    if (actName) actName.innerText = act.act_title || `Chapter ${actIndex + 1}`;
+    if (directorNoteEl) directorNoteEl.innerText = act.director_note || act.voiceover_line || "A reflective observation on this cinematic chapter.";
+
+    if (veoAspectEl) veoAspectEl.innerText = veo.aspect_ratio || "2.39:1 Anamorphic";
+    if (veoLensEl) veoLensEl.innerText = veo.lens || "50mm Prime";
+    if (veoLightingEl) veoLightingEl.innerText = veo.lighting || "Golden Hour";
+    if (veoPromptEl) veoPromptEl.innerText = veo.camera_movement || act.veo_video_prompt || "Cinematic composition framed in 35mm film stock.";
+
+    if (lyriaKeyEl) lyriaKeyEl.innerText = lyria.key || "D Minor";
+    if (lyriaTempoEl) lyriaTempoEl.innerText = lyria.tempo || "68 BPM";
+    if (lyriaPromptEl) lyriaPromptEl.innerText = (lyria.instrumentation ? `${lyria.instrumentation} — ${lyria.vibe || ''}` : (act.lyria_music_cue || "Harmonic leitmotif score"));
+
+    // Update stepper
     const stepperDots = document.querySelectorAll('#biopic-act-stepper .act-step');
     stepperDots.forEach((dot, idx) => {
         if (idx === actIndex) {
@@ -1636,17 +1678,10 @@ function displayBiopicAct(actIndex) {
         }
     });
 
-    // Voiceover Narration via Web Speech API
-    if ('speechSynthesis' in window && act.voiceover_line) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(act.voiceover_line);
-        utterance.rate = 0.9;
-        utterance.pitch = 0.95;
-        window.speechSynthesis.speak(utterance);
+    // Play subtle harmonic chord if enabled
+    if (isAmbientHarmonyEnabled) {
+        playLyriaHarmonicChord(actIndex);
     }
-
-    // Play subtle ambient harmonic chord via Web Audio API (Lyria simulation)
-    playLyriaHarmonicChord(actIndex);
 }
 
 function playLyriaHarmonicChord(actIndex) {
@@ -1655,51 +1690,42 @@ function playLyriaHarmonicChord(actIndex) {
         if (!AudioContext) return;
         const ctx = new AudioContext();
 
-        const frequencies = [
-            [220, 261.63, 329.63], // A minor (melancholy catalyst)
-            [261.63, 329.63, 392.00], // C major (discovery & wonder)
-            [293.66, 369.99, 440.00]  // D major (triumphant elevation)
+        const chords = [
+            [220, 261.63, 329.63, 392.00], // Am7 (melancholic warmth)
+            [261.63, 329.63, 392.00, 523.25], // Cmaj7 (discovery & wonder)
+            [293.66, 369.99, 440.00, 587.33]  // Dmaj7 (cathartic elevation)
         ][actIndex % 3];
 
-        frequencies.forEach(freq => {
+        chords.forEach(freq => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            gain.gain.setValueAtTime(0.015, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 4.5);
+            gain.gain.setValueAtTime(0.012, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 3.8);
             osc.connect(gain);
             gain.connect(ctx.destination);
             osc.start();
-            osc.stop(ctx.currentTime + 4.5);
+            osc.stop(ctx.currentTime + 3.8);
         });
     } catch (e) {}
 }
 
-function startBiopicPlayback() {
-    isBiopicPlaying = true;
+function toggleAmbientHarmony() {
+    isAmbientHarmonyEnabled = !isAmbientHarmonyEnabled;
+    const btnText = document.getElementById('ambient-audio-text');
     const playBtn = document.getElementById('biopic-play-pause-btn');
-    if (playBtn) playBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Trailer';
 
-    if (biopicPlaybackTimer) clearInterval(biopicPlaybackTimer);
+    if (btnText) {
+        btnText.innerText = isAmbientHarmonyEnabled ? "Ambient Harmony: On" : "Ambient Harmony: Muted";
+    }
+    if (playBtn) {
+        playBtn.innerHTML = isAmbientHarmonyEnabled ? '<i class="fas fa-volume-high"></i> <span id="ambient-audio-text">Ambient Harmony: On</span>' : '<i class="fas fa-volume-xmark"></i> <span id="ambient-audio-text">Ambient Harmony: Muted</span>';
+    }
 
-    biopicPlaybackTimer = setInterval(() => {
-        if (!currentBiopicStoryboard || !currentBiopicStoryboard.acts) return;
-        const totalActs = currentBiopicStoryboard.acts.length;
-        if (currentBiopicActIndex < totalActs - 1) {
-            displayBiopicAct(currentBiopicActIndex + 1);
-        } else {
-            // Reached end of trailer
-            displayBiopicAct(0);
-        }
-    }, 7000);
-}
-
-function stopBiopicPlayback() {
-    isBiopicPlaying = false;
-    if (biopicPlaybackTimer) clearInterval(biopicPlaybackTimer);
-    const playBtn = document.getElementById('biopic-play-pause-btn');
-    if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i> Play Trailer';
+    if (isAmbientHarmonyEnabled) {
+        playLyriaHarmonicChord(currentBiopicActIndex);
+    }
 }
 
 function initBiopicTrailerControls() {
@@ -1710,13 +1736,13 @@ function initBiopicTrailerControls() {
     if (demoBtn) demoBtn.addEventListener('click', () => generateBiopicTrailer(true));
 
     const closeBtn = document.getElementById('close-biopic-btn');
-    if (closeBtn) closeBtn.addEventListener('click', closeBiopicTheater);
+    if (closeBtn) closeBtn.addEventListener('click', closeDirectorStoryboard);
 
     const prevBtn = document.getElementById('biopic-prev-act-btn');
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
             if (currentBiopicActIndex > 0) {
-                displayBiopicAct(currentBiopicActIndex - 1);
+                displayStoryboardAct(currentBiopicActIndex - 1);
             }
         });
     }
@@ -1725,26 +1751,20 @@ function initBiopicTrailerControls() {
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
             if (currentBiopicStoryboard && currentBiopicActIndex < currentBiopicStoryboard.acts.length - 1) {
-                displayBiopicAct(currentBiopicActIndex + 1);
+                displayStoryboardAct(currentBiopicActIndex + 1);
             }
         });
     }
 
-    const playPauseBtn = document.getElementById('biopic-play-pause-btn');
-    if (playPauseBtn) {
-        playPauseBtn.addEventListener('click', () => {
-            if (isBiopicPlaying) {
-                stopBiopicPlayback();
-            } else {
-                startBiopicPlayback();
-            }
-        });
+    const ambientBtn = document.getElementById('biopic-play-pause-btn');
+    if (ambientBtn) {
+        ambientBtn.addEventListener('click', toggleAmbientHarmony);
     }
 
     const stepperDots = document.querySelectorAll('#biopic-act-stepper .act-step');
     stepperDots.forEach((dot, idx) => {
         dot.addEventListener('click', () => {
-            displayBiopicAct(idx);
+            displayStoryboardAct(idx);
         });
     });
 }

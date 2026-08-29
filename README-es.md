@@ -27,7 +27,7 @@ Los sistemas tradicionales de recomendación de películas se limitan a filtros 
 4. **Buscador de Streaming Regional (*Where to Watch*):** Detección instantánea de plataformas disponibles (*Netflix, Prime Video, Apple TV, Max*) con datos de JustWatch.
 5. **Memoria Activa y Aprendizaje Continuo:** Aprende activamente del feedback del usuario a lo largo de las sesiones, generando notas colaborativas explícitas (*"He recordado que prefieres maridajes sin alcohol..."*).
 6. **The Cinémathèque Archive y Registro de Vistas:** Bóveda vintage de gavetas de bronce con ordenamiento multicriterio (*Más recientes, Más antiguas, Mejor calificadas, Vistas primero, No vistas primero, Título A-Z, Director A-Z*) y gavetas de filtro (*Vistas, No vistas, 5★ Top Rated, Estados de ánimo*).
-7. **Motor de Tráiler Biopic "Mira Tu Propia Película" (Google Veo, Lyria y Gemma 2):** Barra de hitos (3 películas vistas) que desbloquea un tráiler cinemático en 3 Actos a pantalla completa con transiciones Ken Burns, locución por voz y partitura armónica.
+7. **Cuaderno de Dirección en 35mm (*Director's Storyboard & Visual Notebook*):** Barra de hitos (3 películas vistas) que desbloquea un cuaderno editorial de dirección en celuloide de 35mm con notas de autor de **Google Gemma 2**, especificaciones de cinematografía de **Google Veo**, motivos musicales de **Google Lyria** y paleta cromática de tu viaje emocional.
 
 ---
 
