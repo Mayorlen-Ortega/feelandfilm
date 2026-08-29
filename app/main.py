@@ -547,54 +547,90 @@ async def curate_experience(request: MoodRequest):
         err_str = str(e)
         print("Curate experience handled exception:", err_str)
         now_str = datetime.now().strftime("%H:%M:%S")
-        is_quota = any(k in err_str for k in ["429", "RESOURCE_EXHAUSTED", "depleted", "Quota", "credits", "Rate limit", "API_KEY"])
-        battery_msg = "🔋 ¡Nuestra tripulación de agentes se quedó temporalmente sin batería (cuota de créditos de Google Gemini agotada)! Mientras recargan energía, el sistema activó el archivo de reserva de alta curaduría para que tu noche de cine no se detenga." if is_quota else "🔋 Los agentes tomaron un breve respiro de conexión. Hemos preparado una excelente curaduría de cine de autor para ti."
+        is_quota = any(k in err_str for k in ["429", "RESOURCE_EXHAUSTED", "depleted", "Quota", "credits", "Rate limit", "API_KEY", "quota"])
+        battery_msg = "🔋 Our AI agent crew is currently resting/recharging (Google Gemini quota or connection rest). We have engaged the reserve high-curation archive so your cinema night is seamless!" if is_quota else "🔋 The AI agents took a brief breather. We have curated a guaranteed auteur cinema experience for you."
         
-        fallback_pack = discover_live_tmdb_film(
-            initial_mood=request.initial_mood,
-            desired_atmosphere=request.desired_atmosphere,
-            theme=request.theme,
-            audience_age_range=request.audience_age_range,
-            dietary_prefs=mem.get("dietary_restrictions", []),
-            excluded=combined_excluded
-        )
+        try:
+            fallback_pack = discover_live_tmdb_film(
+                initial_mood=request.initial_mood,
+                desired_atmosphere=request.desired_atmosphere,
+                theme=request.theme,
+                audience_age_range=request.audience_age_range,
+                dietary_prefs=mem.get("dietary_restrictions", []),
+                excluded=combined_excluded
+            )
+        except Exception as fbe:
+            print("Fallback discovery error:", fbe)
+            fallback_pack = {
+                "title": "Arrival",
+                "director": "Denis Villeneuve",
+                "runtime": 116,
+                "intensity": "Contemplative & Mind-Bending",
+                "mood_tags": ["Atmospheric", "Poetic", "Sci-Fi"],
+                "synopsis": "A linguist is recruited to communicate with extraterrestrial visitors.",
+                "fun_fact": "Denis Villeneuve crafted a custom non-linear visual language for the film.",
+                "reasoning": "Introspective visual poetry and transcendent soundscapes to elevate and heal your emotional state.",
+                "confidence_score": 0.98,
+                "soundtrack": {
+                    "composer": "Jóhann Jóhannsson",
+                    "standout_track": "On the Nature of Daylight",
+                    "vibe": "Haunting cello textures and neoclassical contemplation."
+                },
+                "sommelier": {
+                    "beverage": "Jasmine Lavender Tea / Cold Brew Hibiscus",
+                    "snack": "White Truffle & Sea Salt Popcorn",
+                    "pairing_reasoning": "Calms the nervous system and heightens emotional resonance."
+                }
+            }
+
         selected_film = {
-            "title": fallback_pack["title"],
-            "director": fallback_pack["director"],
-            "runtime": fallback_pack["runtime"],
-            "intensity": fallback_pack["intensity"],
-            "mood_tags": fallback_pack["mood_tags"],
-            "synopsis": fallback_pack["synopsis"],
-            "fun_fact": fallback_pack["fun_fact"],
-            "reasoning": fallback_pack["reasoning"],
-            "confidence_score": fallback_pack["confidence_score"]
+            "title": fallback_pack.get("title", "Arrival"),
+            "director": fallback_pack.get("director", "Denis Villeneuve"),
+            "runtime": fallback_pack.get("runtime", 116),
+            "intensity": fallback_pack.get("intensity", "Poetic & Contemplative"),
+            "mood_tags": fallback_pack.get("mood_tags", ["Cinema", "Auteur"]),
+            "synopsis": fallback_pack.get("synopsis", "An acclaimed cinematic journey."),
+            "fun_fact": fallback_pack.get("fun_fact", "Celebrated worldwide for its profound visual and emotional impact."),
+            "reasoning": fallback_pack.get("reasoning", "Harmonizes with your emotional inquiry."),
+            "confidence_score": fallback_pack.get("confidence_score", 0.96)
         }
         movie_title = selected_film["title"]
-        poster_url = await fetch_poster_url_internal(movie_title)
-        watch_data = await fetch_watch_providers_internal(movie_title, request.country or "US")
+        try:
+            poster_url = await fetch_poster_url_internal(movie_title)
+        except Exception:
+            poster_url = "https://image.tmdb.org/t/p/w200/pEzNVQfdzYDzVK0XqxERIw2x2se.jpg"
+            
+        try:
+            watch_data = await fetch_watch_providers_internal(movie_title, request.country or "US")
+        except Exception:
+            watch_data = {"status": "success", "streaming": ["Available on Major Streaming Platforms"], "rent": [], "buy": []}
+            
         session_id = str(uuid.uuid4())
 
         # Record evaluation analytics entry for fallback curation
-        record_alignment_evaluation(
-            user_email=request.user_email,
-            initial_mood=request.initial_mood,
-            desired_atmosphere=request.desired_atmosphere,
-            theme_directives=request.theme or "",
-            film_data=selected_film,
-            reasoning=selected_film.get("reasoning", ""),
-            poster_url=poster_url
-        )
+        try:
+            record_alignment_evaluation(
+                user_email=request.user_email or "",
+                initial_mood=request.initial_mood,
+                desired_atmosphere=request.desired_atmosphere,
+                theme_directives=request.theme or "",
+                film_data=selected_film,
+                reasoning=selected_film.get("reasoning", ""),
+                poster_url=poster_url
+            )
+        except Exception as eval_e:
+            print("Eval logging error:", eval_e)
 
         return {
             "status": "success",
             "session_id": session_id,
-            "detected_mood_tags": fallback_pack["mood_tags"],
+            "detected_mood_tags": fallback_pack.get("mood_tags", ["Cinema"]),
             "primary_mood": request.initial_mood,
             "target_shift": request.desired_atmosphere,
             "film": selected_film,
             "poster_url": poster_url,
-            "soundtrack": fallback_pack["soundtrack"],
-            "sommelier": fallback_pack["sommelier"],
+            "soundtrack": fallback_pack.get("soundtrack", {}),
+            "sommelier": fallback_pack.get("sommelier", {}),
             "watch_providers": watch_data,
             "collaborative_note": f"Collaborative Partner Note: {battery_msg}",
             "ai_battery_warning": battery_msg,

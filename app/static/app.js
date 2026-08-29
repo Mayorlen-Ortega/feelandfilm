@@ -806,8 +806,30 @@ async function executeCinemaOrchestration() {
         }
 
     } catch (error) {
-        alert("Failed to orchestrate cinema night: " + error.message);
-        console.error(error);
+        console.error("Curate experience error:", error);
+        closeScreeningModal();
+        if (resultsSection) resultsSection.classList.remove('hidden');
+        const container = document.getElementById('slate-container');
+        if (container) {
+            container.innerHTML = `
+                <div class="card" style="text-align: center; border: 1.5px solid #f59e0b; background: rgba(245, 158, 11, 0.08); padding: 35px 25px; border-radius: 12px;">
+                    <div style="font-size: 2.8rem; color: #f59e0b; margin-bottom: 14px;"><i class="fas fa-battery-half"></i></div>
+                    <h3 style="font-family: 'Cinzel', serif; color: #fef3c7; margin-bottom: 10px; font-size: 1.4rem;">AI Crew Resting &amp; Recharging</h3>
+                    <p style="color: #cbd5e1; max-width: 580px; margin: 0 auto 20px; font-size: 0.95rem; line-height: 1.5;">
+                        Our multi-agent crew is currently taking a power nap (Google Gemini API credit quota or temporary connection pause). While they recharge, you can explore our Cinémathèque vault or retry in a moment!
+                    </p>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button type="button" class="btn" style="width: auto; padding: 10px 22px; font-size: 0.9rem;" onclick="openScreeningModal();">
+                            <i class="fas fa-redo"></i> Retry Screening / Reintentar
+                        </button>
+                        <button type="button" class="btn btn-secondary" style="width: auto; padding: 10px 22px; font-size: 0.9rem;" onclick="document.getElementById('archive-container')?.scrollIntoView({ behavior: 'smooth' });">
+                            <i class="fas fa-box-archive"></i> Explore Cinémathèque Vault
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
     } finally {
         if (submitBtn) submitBtn.disabled = false;
         if (btnText) btnText.classList.remove('hidden');
@@ -1169,7 +1191,22 @@ async function curateAnotherRecommendationSameMood() {
 
     } catch (err) {
         console.error("Re-roll recommendation error:", err);
-        alert("Could not load another recommendation right now: " + err.message);
+        const container = document.getElementById('slate-container');
+        if (container) {
+            const existingAlert = document.getElementById('reroll-battery-alert');
+            if (!existingAlert) {
+                const banner = document.createElement('div');
+                banner.id = 'reroll-battery-alert';
+                banner.className = 'ai-battery-banner';
+                banner.style.marginBottom = '16px';
+                banner.innerHTML = `
+                    <i class="fas fa-battery-half"></i>
+                    <span><strong>AI Agents Resting:</strong> Our multi-agent crew is momentarily resting/recharging credits. Explore our Cinémathèque vault or try another mood in a moment!</span>
+                `;
+                container.prepend(banner);
+                banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
     } finally {
         if (rerollBtn) {
             rerollBtn.disabled = false;
