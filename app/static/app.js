@@ -518,7 +518,22 @@ function refreshScreeningPills() {
         `;
     }
 
-    // 3. Scene IV: Directors, Studios, Eras & Genres (Dynamic from history + rotating)
+    // 3. Scene III: Dietary Preferences & Palate Tags
+    const dietContainer = document.getElementById('scene-2-pills');
+    if (dietContainer) {
+        dietContainer.innerHTML = `
+            <span class="suggestion-label">
+                <i class="fas fa-utensils"></i> Instant dietary tags 
+                <span class="suggestion-badge"><i class="fas fa-brain"></i> Generated from your interactions</span>:
+            </span>
+            <button type="button" class="scene-pill" data-target="dietary_preference" data-val="Non-alcoholic pairings only">🚫 Non-alcoholic only</button>
+            <button type="button" class="scene-pill" data-target="dietary_preference" data-val="Vegan food only">🌱 Vegan snacks only</button>
+            <button type="button" class="scene-pill" data-target="dietary_preference" data-val="Sweet concession pairing">🍿 Sweet treats</button>
+            <button type="button" class="scene-pill" data-target="dietary_preference" data-val="Savory gourmet pairing">🧀 Savory gourmet</button>
+        `;
+    }
+
+    // 4. Scene IV: Directors, Studios, Eras & Genres (Dynamic from history + rotating)
     const nuancContainer = document.getElementById('scene-3-pills');
     if (nuancContainer) {
         const pastDirectors = (allArchiveRecords || []).map(r => r.film_director).filter(d => d && d !== 'TMDB' && d !== 'Unknown' && d !== 'Cinematic Visionary');
