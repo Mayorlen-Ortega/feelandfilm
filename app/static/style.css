@@ -465,6 +465,36 @@ h1 {
     background: rgba(212, 175, 55, 0.3);
 }
 
+.header-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-vault-btn {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: var(--accent);
+    padding: 5px 12px;
+    border-radius: 14px;
+    font-size: 0.78rem;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    width: auto;
+    margin: 0;
+}
+
+.modal-vault-btn:hover {
+    background: rgba(212, 175, 55, 0.25);
+    border-color: var(--accent);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
 .modal-close-btn {
     background: none;
     border: none;

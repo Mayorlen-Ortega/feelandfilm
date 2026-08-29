@@ -521,13 +521,26 @@ function initScreeningInterviewModal() {
         });
     }
 
-    // 2. Browse Vault Shortcut
+    // 2. Browse Vault Shortcuts (Checks auth first)
+    function navigateToCinemathequeVault(e) {
+        if (e) e.preventDefault();
+        if (!currentUser || !currentUser.email) {
+            openAuthModal();
+            return;
+        }
+        closeScreeningModal();
+        const archiveSection = document.getElementById('cinematheque-section');
+        if (archiveSection) {
+            archiveSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
     if (browseVaultBtn) {
-        browseVaultBtn.addEventListener('click', () => {
-            closeScreeningModal();
-            const archiveSection = document.getElementById('cinematheque-section');
-            if (archiveSection) archiveSection.scrollIntoView({ behavior: 'smooth' });
-        });
+        browseVaultBtn.addEventListener('click', navigateToCinemathequeVault);
+    }
+    const modalBrowseVaultBtn = document.getElementById('modal-browse-vault-btn');
+    if (modalBrowseVaultBtn) {
+        modalBrowseVaultBtn.addEventListener('click', navigateToCinemathequeVault);
     }
 
     // 3. Close Modal Trigger
