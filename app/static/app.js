@@ -887,6 +887,12 @@ function renderCinemaNightPackage(response) {
     const card = document.createElement('div');
     card.className = 'package-card';
     card.innerHTML = `
+        ${response.ai_battery_warning ? `
+            <div class="ai-battery-banner">
+                <i class="fas fa-battery-half"></i> ${response.ai_battery_warning}
+            </div>
+        ` : ''}
+
         <div class="package-top">
             <div class="package-poster-wrapper">
                 <img class="package-poster" src="${posterUrl}" alt="${film.title} Poster" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80'">
@@ -948,13 +954,18 @@ function renderCinemaNightPackage(response) {
             </div>
         </div>
 
-        <!-- Action Row: Email Dispatch & Behind the Scenes -->
-        <div style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <button type="button" class="btn-email-dispatch" onclick="openCinemaEmailModal()">
-                <i class="fas fa-envelope-open-text"></i> <strong>Send Package to My Email</strong>
-            </button>
+        <!-- Action Row: Re-roll, Email Dispatch & Behind the Scenes -->
+        <div class="package-actions-toolbar">
+            <div class="package-actions-left">
+                <button type="button" class="btn btn-reroll-same-mood" id="reroll-same-mood-btn" onclick="curateAnotherRecommendationSameMood()" title="Discover another movie for this exact same emotional state without re-filling the form">
+                    <i class="fas fa-dice"></i> <strong>Suggest Another Film</strong> (Same Mood)
+                </button>
+                <button type="button" class="btn btn-email-dispatch" onclick="openCinemaEmailModal()">
+                    <i class="fas fa-envelope-open-text"></i> <strong>Send to My Email</strong>
+                </button>
+            </div>
             <button type="button" class="inspect-crew-btn" onclick="scrollToTrace()">
-                <i class="fas fa-clapperboard"></i> <strong>Behind the Scenes:</strong> See how your 4 agents collaborated
+                <i class="fas fa-clapperboard"></i> <strong>Behind the Scenes:</strong> See how your agents collaborated
             </button>
         </div>
     `;
@@ -975,6 +986,73 @@ function renderCinemaNightPackage(response) {
     // 5. Render Live Agent Trace in Terminal
     renderAgentTrace(response.agent_trace || []);
 }
+
+// ---------------------------------------------------------------------------
+// Re-roll Another Recommendation (Keep Same Mood)
+// ---------------------------------------------------------------------------
+
+async function curateAnotherRecommendationSameMood() {
+    const rerollBtn = document.getElementById('reroll-same-mood-btn');
+    if (!currentSessionData || !currentSessionData.film) return;
+
+    const currentTitle = currentSessionData.film.title;
+    if (currentTitle && !allExcluded.includes(currentTitle)) {
+        allExcluded.push(currentTitle);
+    }
+
+    let originalHtml = "";
+    if (rerollBtn) {
+        originalHtml = rerollBtn.innerHTML;
+        rerollBtn.disabled = true;
+        rerollBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exploring Alternative Film...';
+    }
+
+    const userEmail = (currentUser && currentUser.email) ? currentUser.email : "guest";
+    const savedDietary = localStorage.getItem('feel_film_dietary') || null;
+
+    const requestData = {
+        initial_mood: document.getElementById('initial_mood')?.value || currentSessionData.primary_mood || "Seeking inspiration",
+        desired_atmosphere: document.getElementById('desired_atmosphere')?.value || currentSessionData.target_shift || "Uplifting comfort",
+        audience_age_range: document.getElementById('audience_age_range')?.value || "Adults (18+)",
+        dietary_preference: document.getElementById('dietary_preference')?.value || savedDietary || null,
+        theme: document.getElementById('theme') ? document.getElementById('theme').value : "",
+        slots: 1,
+        excluded_films: allExcluded,
+        country: detectUserCountry(),
+        user_email: userEmail
+    };
+
+    try {
+        const response = await fetch('/api/curate-experience', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server status ${response.status}`);
+        }
+
+        const data = await response.json();
+        currentSessionData = data;
+        renderCinemaNightPackage(data);
+        loadCinematheque();
+
+        const slate = document.getElementById('slate-container');
+        if (slate) slate.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+        console.error("Re-roll recommendation error:", err);
+        alert("Could not load another recommendation right now: " + err.message);
+    } finally {
+        if (rerollBtn) {
+            rerollBtn.disabled = false;
+            rerollBtn.innerHTML = originalHtml;
+        }
+    }
+}
+
+window.curateAnotherRecommendationSameMood = curateAnotherRecommendationSameMood;
 
 // ---------------------------------------------------------------------------
 // Cinema Courier & Email Dispatch Modal Handlers

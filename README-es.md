@@ -29,6 +29,7 @@ Los sistemas tradicionales de recomendación de películas se limitan a filtros 
 6. **The Cinémathèque Archive y Registro de Vistas:** Bóveda vintage de gavetas de bronce con ordenamiento multicriterio (*Más recientes, Más antiguas, Mejor calificadas, Vistas primero, No vistas primero, Título A-Z, Director A-Z*) y gavetas de filtro (*Vistas, No vistas, 5★ Top Rated, Estados de ánimo*).
 7. **Cuaderno de Dirección en 35mm (*Director's Storyboard & Visual Notebook*):** Barra de hitos (3 películas vistas) que desbloquea un cuaderno editorial de dirección en celuloide de 35mm con notas de autor de **Google Gemma 2**, especificaciones de cinematografía de **Google Veo**, motivos musicales de **Google Lyria** y paleta cromática de tu viaje emocional.
 8. **Agente Mayordomo de Correo (*Cinema Courier & Epistle Agent*):** Genera y despacha cartas editoriales personalizadas a tu correo con la justificación del curador, la receta paso a paso del cóctel/snack para tu cocina y la guía de streaming para organizar tu noche de cine en 1 clic.
+9. **Exploración Rápida en 1-Clic (*Instant Re-roll*) y Modo de Batería Segura:** Botón directo para pedir otra película alternativa manteniendo el mismo mood sin repetir formularios, con tolerancia a fallos y modo *Batería Segura* (cero errores HTTP 500 si la cuota de IA se agota).
 
 ---
 

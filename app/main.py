@@ -27,6 +27,7 @@ from app.agent import (
     orchestrate_cinematic_experience,
     generate_emotional_biopic_storyboard,
     generate_cinema_epistle,
+    discover_live_tmdb_film,
     run_adk_agent,
     parse_json_safely
 )
@@ -449,8 +450,63 @@ async def curate_experience(request: MoodRequest):
         }
 
     except Exception as e:
-        print("Curate experience error:", e)
-        raise HTTPException(status_code=500, detail=str(e))
+        err_str = str(e)
+        print("Curate experience handled exception:", err_str)
+        now_str = datetime.now().strftime("%H:%M:%S")
+        is_quota = any(k in err_str for k in ["429", "RESOURCE_EXHAUSTED", "depleted", "Quota", "credits", "Rate limit", "API_KEY"])
+        battery_msg = "🔋 ¡Nuestra tripulación de agentes se quedó temporalmente sin batería (cuota de créditos de Google Gemini agotada)! Mientras recargan energía, el sistema activó el archivo de reserva de alta curaduría para que tu noche de cine no se detenga." if is_quota else "🔋 Los agentes tomaron un breve respiro de conexión. Hemos preparado una excelente curaduría de cine de autor para ti."
+        
+        fallback_pack = discover_live_tmdb_film(
+            initial_mood=request.initial_mood,
+            desired_atmosphere=request.desired_atmosphere,
+            theme=request.theme,
+            audience_age_range=request.audience_age_range,
+            dietary_prefs=mem.get("dietary_restrictions", []),
+            excluded=combined_excluded
+        )
+        selected_film = {
+            "title": fallback_pack["title"],
+            "director": fallback_pack["director"],
+            "runtime": fallback_pack["runtime"],
+            "intensity": fallback_pack["intensity"],
+            "mood_tags": fallback_pack["mood_tags"],
+            "synopsis": fallback_pack["synopsis"],
+            "fun_fact": fallback_pack["fun_fact"],
+            "reasoning": fallback_pack["reasoning"],
+            "confidence_score": fallback_pack["confidence_score"]
+        }
+        movie_title = selected_film["title"]
+        poster_url = await fetch_poster_url_internal(movie_title)
+        watch_data = await fetch_watch_providers_internal(movie_title, request.country or "US")
+        session_id = str(uuid.uuid4())
+
+        return {
+            "status": "success",
+            "session_id": session_id,
+            "detected_mood_tags": fallback_pack["mood_tags"],
+            "primary_mood": request.initial_mood,
+            "target_shift": request.desired_atmosphere,
+            "film": selected_film,
+            "poster_url": poster_url,
+            "soundtrack": fallback_pack["soundtrack"],
+            "sommelier": fallback_pack["sommelier"],
+            "watch_providers": watch_data,
+            "collaborative_note": f"Collaborative Partner Note: {battery_msg}",
+            "ai_battery_warning": battery_msg,
+            "user_memory": {
+                "total_curations": mem.get("total_curations", 0),
+                "learned_preferences": mem.get("learned_preferences", []),
+                "dietary_restrictions": mem.get("dietary_restrictions", [])
+            },
+            "agent_trace": [
+                {
+                    "timestamp": now_str,
+                    "agent": "MasterOrchestrator",
+                    "action": "AI Battery Safe Mode Activated",
+                    "details": battery_msg
+                }
+            ]
+        }
 
 
 # ---------------------------------------------------------------------------
