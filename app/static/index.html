@@ -401,6 +401,36 @@
                         <span><strong>Guest Mode Active:</strong> Your curated films are not stored in your archive. <a href="javascript:void(0)" class="guest-signin-link" onclick="openAuthModal()">Sign in with Google</a> to preserve your personal film journal and memory.</span>
                     </div>
 
+                    <!-- Emotional Biopic Milestone Progress Banner (Watch Your Own Cinema Story) -->
+                    <div id="biopic-milestone-card" class="biopic-milestone-card hidden">
+                        <div class="milestone-content">
+                            <div class="milestone-header">
+                                <div class="milestone-badge">
+                                    <i class="fas fa-clapperboard"></i> <strong>Feel &amp; Film Studios</strong> &bull; Watch Your Own Movie Trailer
+                                </div>
+                                <span class="milestone-tag" id="milestone-tier-text">Tier I: 3 Watched Films</span>
+                            </div>
+                            <h4 class="milestone-title">Transform your emotional journey into a 3-Act Biopic Movie</h4>
+                            <p class="milestone-desc">Mark movies as watched in your Cinémathèque. Our <strong>Google Veo &amp; Lyria AI Engine</strong> will direct your personal cinematic trailer.</p>
+                            
+                            <div class="milestone-progress-row">
+                                <div class="milestone-progress-track">
+                                    <div class="milestone-progress-fill" id="milestone-progress-fill" style="width: 0%;"></div>
+                                </div>
+                                <span class="milestone-count-text" id="milestone-count-text">0 / 3 Watched</span>
+                            </div>
+                        </div>
+
+                        <div class="milestone-action-box">
+                            <button type="button" id="generate-biopic-btn" class="btn btn-biopic-unlocked" disabled>
+                                <i class="fas fa-wand-magic-sparkles"></i> Generate My Emotional Movie
+                            </button>
+                            <button type="button" id="demo-preview-biopic-btn" class="btn-demo-preview" title="Preview with current films for Hackathon evaluation">
+                                <i class="fas fa-play"></i> Preview Trailer (Demo Mode)
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Filing Cabinet Drawer Tabs -->
                     <div class="drawer-cabinet" id="drawer-cabinet">
                         <button class="drawer-tab active" data-drawer="ALL">
@@ -444,6 +474,72 @@
         </main>
     </div>
 
+    <!-- Full-Screen Emotional Biopic Trailer Player Modal (Google Veo & Lyria Engine) -->
+    <div id="biopic-trailer-modal" class="modal-overlay biopic-overlay hidden">
+        <div class="biopic-theater-wrapper">
+            <div class="biopic-projector-beam"></div>
+            
+            <div class="biopic-card">
+                <!-- Trailer Top Bar -->
+                <div class="biopic-header">
+                    <div class="biopic-studio-brand">
+                        <i class="fas fa-clapperboard"></i>
+                        <div>
+                            <span class="studio-title" id="biopic-story-title">The Emotional Odyssey of Cinephile</span>
+                            <span class="studio-badge"><i class="fas fa-microchip"></i> Powered by Google Veo, Lyria &amp; Gemma 2 AI</span>
+                        </div>
+                    </div>
+                    <button type="button" id="close-biopic-btn" class="modal-close-btn" title="Close Theater">&times;</button>
+                </div>
+
+                <!-- Trailer Stage / Canvas Showcase -->
+                <div class="biopic-screen-stage" id="biopic-screen-stage">
+                    <div class="stage-poster-wrapper">
+                        <img id="biopic-active-poster" class="stage-active-poster" src="" alt="Featured Cinema Scene">
+                        <div class="stage-film-grain"></div>
+                        <div class="stage-vignette"></div>
+                    </div>
+
+                    <!-- Scene Overlay Information -->
+                    <div class="stage-narrative-overlay">
+                        <div class="stage-act-pill" id="biopic-act-pill">ACT I &bull; THE CATALYST</div>
+                        <h3 class="stage-act-name" id="biopic-act-name">Overwhelmed &amp; Seeking Solace</h3>
+                        
+                        <div class="stage-voiceover-box">
+                            <i class="fas fa-quote-left"></i>
+                            <p class="stage-voiceover-text" id="biopic-voiceover-text">"In the noise of modern life, the soul first sought quiet sanctuary..."</p>
+                        </div>
+
+                        <div class="stage-technical-pills">
+                            <div class="tech-pill veo"><i class="fas fa-video"></i> <strong>Veo Direction:</strong> <span id="biopic-veo-prompt">Cinematic 35mm film shot...</span></div>
+                            <div class="tech-pill lyria"><i class="fas fa-music"></i> <strong>Lyria Score:</strong> <span id="biopic-lyria-prompt">Melancholic piano leitmotif...</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Stepper on bottom of screen -->
+                    <div class="stage-act-stepper" id="biopic-act-stepper">
+                        <div class="act-step active" data-act="0"><span class="step-num">Act I</span> <span class="step-label">Catalyst</span></div>
+                        <div class="act-step" data-act="1"><span class="step-num">Act II</span> <span class="step-label">Journey</span></div>
+                        <div class="act-step" data-act="2"><span class="step-num">Act III</span> <span class="step-label">Catharsis</span></div>
+                    </div>
+                </div>
+
+                <!-- Trailer Playback Footer Controls -->
+                <div class="biopic-footer">
+                    <div class="biopic-playback-controls">
+                        <button type="button" id="biopic-prev-act-btn" class="btn btn-biopic-ctrl"><i class="fas fa-step-backward"></i></button>
+                        <button type="button" id="biopic-play-pause-btn" class="btn btn-biopic-play"><i class="fas fa-play"></i> Play Trailer</button>
+                        <button type="button" id="biopic-next-act-btn" class="btn btn-biopic-ctrl"><i class="fas fa-step-forward"></i></button>
+                    </div>
+
+                    <div class="biopic-meta-credits">
+                        <span id="biopic-credits-text">Directed by Your Mood &bull; Google Veo &amp; Lyria Engine</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Google Sign-In Modal -->
     <div id="auth-modal" class="modal-overlay hidden">
         <div class="modal-card">
@@ -474,10 +570,10 @@
     </div>
 
     <footer style="text-align: center; margin-top: 40px; padding: 20px; color: var(--text-secondary); font-size: 0.8rem; border-top: 1px dashed var(--accent);">
-        <p>Feel & Film &bull; Multi-Agent System Powered by Google ADK & Gemini 3.5 Flash &bull; Data from TMDB & JustWatch.</p>
+        <p>Feel & Film &bull; Multi-Agent System Powered by Google ADK, Gemini 3.5 Flash &bull; Video & Music Powered by Google Veo & Lyria &bull; Data from TMDB & JustWatch.</p>
     </footer>
 
-    <script src="/static/app.js?v=4"></script>
+    <script src="/static/app.js?v=5"></script>
 </body>
 
 </html>

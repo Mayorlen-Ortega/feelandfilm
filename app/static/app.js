@@ -1318,6 +1318,466 @@ function initFeedbackControls() {
 }
 
 // ---------------------------------------------------------------------------
+// The Cinémathèque Archive & Biopic Trailer Engine (Google Veo, Lyria & Gemma)
+// ---------------------------------------------------------------------------
+
+let allArchiveRecords = [];
+let activeArchiveDrawer = 'ALL';
+let isArchiveExpanded = false;
+let currentBiopicStoryboard = null;
+let currentBiopicActIndex = 0;
+let biopicPlaybackTimer = null;
+let isBiopicPlaying = false;
+
+// Watched IDs Storage
+function getWatchedFilmIds() {
+    try {
+        const stored = localStorage.getItem('feelandfilm_watched_ids');
+        return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveWatchedFilmIds(ids) {
+    try {
+        localStorage.setItem('feelandfilm_watched_ids', JSON.stringify(ids));
+    } catch (e) {}
+}
+
+async function toggleWatchedFilm(sessionId) {
+    if (!currentUser || !currentUser.email) {
+        openAuthModal();
+        return;
+    }
+
+    let watchedIds = getWatchedFilmIds();
+    const isNowWatched = !watchedIds.includes(sessionId);
+
+    if (isNowWatched) {
+        watchedIds.push(sessionId);
+    } else {
+        watchedIds = watchedIds.filter(id => id !== sessionId);
+    }
+    saveWatchedFilmIds(watchedIds);
+
+    // Sync with backend API
+    try {
+        await fetch('/api/cinematheque/toggle-watched', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: sessionId, is_watched: isNowWatched })
+        });
+    } catch (e) {
+        console.error("Failed to sync watched status:", e);
+    }
+
+    renderCinematheque();
+    updateBiopicMilestone();
+}
+
+window.toggleWatchedFilm = toggleWatchedFilm;
+
+async function deleteCinemathequeItem(sessionId) {
+    if (!confirm("Are you sure you want to remove this curated film from your archive?")) return;
+
+    try {
+        const res = await fetch(`/api/cinematheque/${sessionId}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.status === 'success') {
+            allArchiveRecords = allArchiveRecords.filter(r => r.session_id !== sessionId);
+            let watchedIds = getWatchedFilmIds().filter(id => id !== sessionId);
+            saveWatchedFilmIds(watchedIds);
+            renderCinematheque();
+            updateBiopicMilestone();
+        }
+    } catch (e) {
+        console.error("Delete cinematheque item error:", e);
+    }
+}
+
+window.deleteCinemathequeItem = deleteCinemathequeItem;
+
+async function loadCinematheque() {
+    const userEmail = (currentUser && currentUser.email) ? currentUser.email : "guest";
+    const guestBanner = document.getElementById('archive-guest-banner');
+    const milestoneCard = document.getElementById('biopic-milestone-card');
+
+    if (userEmail === "guest") {
+        if (guestBanner) guestBanner.classList.remove('hidden');
+        if (milestoneCard) milestoneCard.classList.add('hidden');
+        allArchiveRecords = [];
+        renderCinematheque();
+        return;
+    }
+
+    if (guestBanner) guestBanner.classList.add('hidden');
+    if (milestoneCard) milestoneCard.classList.remove('hidden');
+
+    try {
+        const res = await fetch(`/api/cinematheque?user_email=${encodeURIComponent(userEmail)}`);
+        const data = await res.json();
+        if (data.status === 'success') {
+            allArchiveRecords = data.records || [];
+            renderCinematheque();
+            updateBiopicMilestone();
+            refreshScreeningPills();
+        }
+    } catch (e) {
+        console.error("Failed to load Cinémathèque:", e);
+    }
+}
+
+function renderCinematheque() {
+    const grid = document.getElementById('archive-grid');
+    const emptyState = document.getElementById('archive-empty-state');
+    const countBadge = document.getElementById('archive-records-count');
+    const expandWrapper = document.getElementById('archive-expand-wrapper');
+    const expandText = document.getElementById('archive-expand-text');
+    const watchedIds = getWatchedFilmIds();
+
+    if (!grid) return;
+
+    // Filter by drawer tab
+    let filtered = allArchiveRecords;
+    if (activeArchiveDrawer !== 'ALL') {
+        filtered = allArchiveRecords.filter(r => {
+            const mood = (r.primary_mood || '').toLowerCase();
+            const tags = (r.detected_tags || []).join(' ').toLowerCase();
+            const shift = (r.desired_shift || '').toLowerCase();
+            const target = activeArchiveDrawer.toLowerCase();
+            return mood.includes(target) || tags.includes(target) || shift.includes(target);
+        });
+    }
+
+    if (countBadge) {
+        countBadge.innerText = `${allArchiveRecords.length} Curations Preserved`;
+    }
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        if (expandWrapper) expandWrapper.classList.add('hidden');
+        return;
+    }
+
+    if (emptyState) emptyState.classList.add('hidden');
+
+    const displayRecords = isArchiveExpanded ? filtered : filtered.slice(0, 6);
+
+    grid.innerHTML = displayRecords.map(r => {
+        const isWatched = watchedIds.includes(r.session_id);
+        const posterUrl = r.poster_url || "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80";
+        const tags = (r.detected_tags || []).slice(0, 3);
+
+        return `
+            <div class="archive-record-card" id="record-${r.session_id}">
+                <div class="archive-card-top">
+                    <img src="${posterUrl}" alt="${r.title}" class="archive-poster" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80'">
+                    <div class="archive-meta">
+                        <div class="archive-meta-header">
+                            <div>
+                                <h4 class="archive-title">${r.title}</h4>
+                                <div class="archive-director"><i class="fas fa-video"></i> ${r.director || 'Auteur Director'}</div>
+                            </div>
+                            <button type="button" class="archive-delete-btn" onclick="deleteCinemathequeItem('${r.session_id}')" title="Delete from archive">
+                                <i class="fas fa-trash-can"></i>
+                            </button>
+                        </div>
+                        <div class="archive-date"><i class="far fa-clock"></i> ${r.timestamp || 'Recent'}</div>
+                        <div class="archive-tags">
+                            ${tags.map(t => `<span class="tag-pill">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                ${r.user_input ? `<div class="archive-quote-box">"${r.user_input.slice(0, 75)}..."</div>` : ''}
+
+                <div class="archive-card-actions">
+                    <button type="button" class="archive-watched-btn ${isWatched ? 'is-watched' : ''}" onclick="toggleWatchedFilm('${r.session_id}')">
+                        <i class="fas ${isWatched ? 'fa-check-circle' : 'fa-eye'}"></i> ${isWatched ? 'Watched ★★★★★' : 'Mark as Watched'}
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    if (expandWrapper) {
+        if (filtered.length > 6) {
+            expandWrapper.classList.remove('hidden');
+            if (expandText) {
+                expandText.innerText = isArchiveExpanded ? `Show Less (Showing ${filtered.length})` : `Show All Curations (${filtered.length})`;
+            }
+        } else {
+            expandWrapper.classList.add('hidden');
+        }
+    }
+}
+
+function updateBiopicMilestone() {
+    const milestoneCard = document.getElementById('biopic-milestone-card');
+    const fill = document.getElementById('milestone-progress-fill');
+    const countText = document.getElementById('milestone-count-text');
+    const genBtn = document.getElementById('generate-biopic-btn');
+
+    if (!currentUser || !currentUser.email) {
+        if (milestoneCard) milestoneCard.classList.add('hidden');
+        return;
+    }
+    if (milestoneCard) milestoneCard.classList.remove('hidden');
+
+    const watchedIds = getWatchedFilmIds();
+    const watchedInArchive = allArchiveRecords.filter(r => watchedIds.includes(r.session_id));
+    const count = watchedInArchive.length;
+    const target = 3;
+    const pct = Math.min(100, Math.round((count / target) * 100));
+
+    if (fill) fill.style.width = `${pct}%`;
+    if (countText) countText.innerText = `${count} / ${target} Watched`;
+
+    if (genBtn) {
+        if (count >= target) {
+            genBtn.disabled = false;
+            genBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate My Emotional Movie';
+        } else {
+            genBtn.disabled = true;
+            genBtn.innerHTML = `<i class="fas fa-lock"></i> Mark ${target - count} more to unlock`;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Google Veo & Lyria Biopic Trailer Playback Engine
+// ---------------------------------------------------------------------------
+
+async function generateBiopicTrailer(isDemoMode = false) {
+    const genBtn = document.getElementById('generate-biopic-btn');
+    const demoBtn = document.getElementById('demo-preview-biopic-btn');
+    const triggerBtn = isDemoMode ? demoBtn : genBtn;
+
+    const originalHtml = triggerBtn.innerHTML;
+    triggerBtn.disabled = true;
+    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Google Veo & Lyria Directing...';
+
+    const watchedIds = getWatchedFilmIds();
+    let targetFilms = allArchiveRecords.filter(r => watchedIds.includes(r.session_id));
+
+    if (isDemoMode && targetFilms.length < 3) {
+        // In demo mode for judges, supplement with any available archive films or sample films
+        targetFilms = allArchiveRecords.slice(0, 3);
+        if (targetFilms.length === 0) {
+            targetFilms = [
+                { title: "Cinema Paradiso", director: "Giuseppe Tornatore", primary_mood: "Melancholic", desired_atmosphere: "Comforting Warmth", poster_url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80" },
+                { title: "Spirited Away", director: "Hayao Miyazaki", primary_mood: "Curious & Adventurous", desired_atmosphere: "Wonder", poster_url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300&q=80" },
+                { title: "Roma", director: "Alfonso Cuarón", primary_mood: "Contemplative", desired_atmosphere: "Catharsis", poster_url: "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=300&q=80" }
+            ];
+        }
+    }
+
+    try {
+        const userName = currentUser ? currentUser.name : "Cinephile";
+        const userEmail = currentUser ? currentUser.email : "guest";
+
+        const res = await fetch('/api/generate-biopic-trailer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_email: userEmail,
+                user_name: userName,
+                films: targetFilms
+            })
+        });
+
+        const data = await res.json();
+        if (data.status === 'success' && data.storyboard) {
+            openBiopicTheater(data.storyboard);
+        } else {
+            alert("Could not generate trailer at this time. Please try again.");
+        }
+    } catch (e) {
+        console.error("Biopic trailer generation error:", e);
+        alert("Error generating trailer. Please check console.");
+    } finally {
+        triggerBtn.disabled = false;
+        triggerBtn.innerHTML = originalHtml;
+    }
+}
+
+function openBiopicTheater(storyboard) {
+    currentBiopicStoryboard = storyboard;
+    currentBiopicActIndex = 0;
+
+    const modal = document.getElementById('biopic-trailer-modal');
+    const titleEl = document.getElementById('biopic-story-title');
+    const creditsEl = document.getElementById('biopic-credits-text');
+
+    if (titleEl) titleEl.innerText = storyboard.story_title || "The Emotional Odyssey";
+    if (creditsEl) creditsEl.innerHTML = storyboard.director_credits || "Powered by Google Veo & Lyria Engine";
+
+    if (modal) modal.classList.remove('hidden');
+
+    displayBiopicAct(0);
+    startBiopicPlayback();
+}
+
+function closeBiopicTheater() {
+    stopBiopicPlayback();
+    const modal = document.getElementById('biopic-trailer-modal');
+    if (modal) modal.classList.add('hidden');
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+function displayBiopicAct(actIndex) {
+    if (!currentBiopicStoryboard || !currentBiopicStoryboard.acts) return;
+    const acts = currentBiopicStoryboard.acts;
+    if (actIndex < 0 || actIndex >= acts.length) return;
+
+    currentBiopicActIndex = actIndex;
+    const act = acts[actIndex];
+
+    const posterEl = document.getElementById('biopic-active-poster');
+    const actPill = document.getElementById('biopic-act-pill');
+    const actName = document.getElementById('biopic-act-name');
+    const voiceoverText = document.getElementById('biopic-voiceover-text');
+    const veoPrompt = document.getElementById('biopic-veo-prompt');
+    const lyriaPrompt = document.getElementById('biopic-lyria-prompt');
+
+    if (posterEl) {
+        posterEl.classList.remove('ken-burns');
+        posterEl.src = act.poster_url || "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80";
+        setTimeout(() => posterEl.classList.add('ken-burns'), 50);
+    }
+
+    if (actPill) actPill.innerText = `ACT ${act.act_number || actIndex + 1} • ${act.emotional_beat || 'EMOTION'}`;
+    if (actName) actName.innerText = act.act_name || `Chapter ${actIndex + 1}`;
+    if (voiceoverText) voiceoverText.innerText = `"${act.voiceover_line || ''}"`;
+    if (veoPrompt) veoPrompt.innerText = (act.veo_video_prompt || '').slice(0, 90) + '...';
+    if (lyriaPrompt) lyriaPrompt.innerText = (act.lyria_music_cue || '').slice(0, 90) + '...';
+
+    // Update stepper dots
+    const stepperDots = document.querySelectorAll('#biopic-act-stepper .act-step');
+    stepperDots.forEach((dot, idx) => {
+        if (idx === actIndex) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+
+    // Voiceover Narration via Web Speech API
+    if ('speechSynthesis' in window && act.voiceover_line) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(act.voiceover_line);
+        utterance.rate = 0.9;
+        utterance.pitch = 0.95;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // Play subtle ambient harmonic chord via Web Audio API (Lyria simulation)
+    playLyriaHarmonicChord(actIndex);
+}
+
+function playLyriaHarmonicChord(actIndex) {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+
+        const frequencies = [
+            [220, 261.63, 329.63], // A minor (melancholy catalyst)
+            [261.63, 329.63, 392.00], // C major (discovery & wonder)
+            [293.66, 369.99, 440.00]  // D major (triumphant elevation)
+        ][actIndex % 3];
+
+        frequencies.forEach(freq => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.015, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 4.5);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 4.5);
+        });
+    } catch (e) {}
+}
+
+function startBiopicPlayback() {
+    isBiopicPlaying = true;
+    const playBtn = document.getElementById('biopic-play-pause-btn');
+    if (playBtn) playBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Trailer';
+
+    if (biopicPlaybackTimer) clearInterval(biopicPlaybackTimer);
+
+    biopicPlaybackTimer = setInterval(() => {
+        if (!currentBiopicStoryboard || !currentBiopicStoryboard.acts) return;
+        const totalActs = currentBiopicStoryboard.acts.length;
+        if (currentBiopicActIndex < totalActs - 1) {
+            displayBiopicAct(currentBiopicActIndex + 1);
+        } else {
+            // Reached end of trailer
+            displayBiopicAct(0);
+        }
+    }, 7000);
+}
+
+function stopBiopicPlayback() {
+    isBiopicPlaying = false;
+    if (biopicPlaybackTimer) clearInterval(biopicPlaybackTimer);
+    const playBtn = document.getElementById('biopic-play-pause-btn');
+    if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i> Play Trailer';
+}
+
+function initBiopicTrailerControls() {
+    const genBtn = document.getElementById('generate-biopic-btn');
+    if (genBtn) genBtn.addEventListener('click', () => generateBiopicTrailer(false));
+
+    const demoBtn = document.getElementById('demo-preview-biopic-btn');
+    if (demoBtn) demoBtn.addEventListener('click', () => generateBiopicTrailer(true));
+
+    const closeBtn = document.getElementById('close-biopic-btn');
+    if (closeBtn) closeBtn.addEventListener('click', closeBiopicTheater);
+
+    const prevBtn = document.getElementById('biopic-prev-act-btn');
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentBiopicActIndex > 0) {
+                displayBiopicAct(currentBiopicActIndex - 1);
+            }
+        });
+    }
+
+    const nextBtn = document.getElementById('biopic-next-act-btn');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentBiopicStoryboard && currentBiopicActIndex < currentBiopicStoryboard.acts.length - 1) {
+                displayBiopicAct(currentBiopicActIndex + 1);
+            }
+        });
+    }
+
+    const playPauseBtn = document.getElementById('biopic-play-pause-btn');
+    if (playPauseBtn) {
+        playPauseBtn.addEventListener('click', () => {
+            if (isBiopicPlaying) {
+                stopBiopicPlayback();
+            } else {
+                startBiopicPlayback();
+            }
+        });
+    }
+
+    const stepperDots = document.querySelectorAll('#biopic-act-stepper .act-step');
+    stepperDots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => {
+            displayBiopicAct(idx);
+        });
+    });
+}
+
+// ---------------------------------------------------------------------------
 // Document Initialization
 // ---------------------------------------------------------------------------
 
@@ -1326,6 +1786,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCinematheque();
     initFeedbackControls();
     initScreeningInterviewModal();
+    initBiopicTrailerControls();
 
     const drawerTabs = document.querySelectorAll('.drawer-tab');
     drawerTabs.forEach(tab => {

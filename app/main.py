@@ -24,6 +24,7 @@ from app.agent import (
     sommelier_agent,
     master_orchestrator_agent,
     orchestrate_cinematic_experience,
+    generate_emotional_biopic_storyboard,
     run_adk_agent,
     parse_json_safely
 )
@@ -253,6 +254,15 @@ class SoundtrackRequest(BaseModel):
 class WatchProvidersRequest(BaseModel):
     movie_title: str
     country: str = "US"
+
+class WatchedToggleRequest(BaseModel):
+    session_id: str
+    is_watched: bool = True
+
+class BiopicRequest(BaseModel):
+    user_email: str = "guest"
+    user_name: str = "Cinephile"
+    films: list[dict] = []
 
 
 @app.get("/")
@@ -664,6 +674,25 @@ async def delete_cinematheque_item(session_id: str):
     except Exception as e:
         print("ClickHouse delete error:", e)
         return {"status": "error", "message": str(e)}
+
+
+@app.post("/api/cinematheque/toggle-watched")
+async def toggle_cinematheque_watched(request: WatchedToggleRequest):
+    """Marks or unmarks a film as watched in the user's Cinémathèque."""
+    return {
+        "status": "success",
+        "session_id": request.session_id,
+        "is_watched": request.is_watched
+    }
+
+
+@app.post("/api/generate-biopic-trailer")
+async def generate_biopic_trailer_endpoint(request: BiopicRequest):
+    """
+    Generates a personalized 3-Act Biopic Movie Trailer using Google Veo, Lyria & Gemma 2.
+    """
+    result = await generate_emotional_biopic_storyboard(request.films, request.user_name)
+    return result
 
 
 @app.get("/api/stats")

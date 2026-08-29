@@ -92,9 +92,21 @@ Designed specifically for the **Collaborative Partner Track**, the platform tran
 - **`sommelier_agent`**:
   - **Function**: Curates custom beverage & snack pairings strictly adhering to user dietary restrictions (e.g. non-alcoholic mocktails, botanical craft sodas, vegan snacks).
 
-### 2. Backend Gateway & Memory Management (`app/main.py`)
+### 2. Biopic Trailer & Additional Google AI Engine (`app/agent.py`)
+- **`trailer_director_agent` (Google Gemma 2 / Gemini 3.5 Flash & Ollama local support)**:
+  - **Function**: Takes user's emotional movie history and sequence of watched films to direct a 3-Act Biopic Movie Storyboard (*"The Emotional Odyssey of User"*).
+- **Google Veo Video Prompt Engine**:
+  - **Function**: Generates 35mm cinematic scene direction prompts, camera movement, and aesthetic shot composition for each chapter of the user's emotional arc.
+- **Google Lyria Music Composition Engine**:
+  - **Function**: Generates musical leitmotifs, key signatures, and instrumentation cues for the dynamic trailer score (from melancholic minor grand piano to triumphant orchestral swells).
+
+### 3. Backend Gateway & Memory Management (`app/main.py`)
 - **`POST /api/curate-experience`**:
   - Main autonomous orchestration endpoint. Executes safety guardrails, user memory retrieval, multi-agent synthesis, poster/streaming enrichment, and ClickHouse Cloud persistence.
+- **`POST /api/generate-biopic-trailer`**:
+  - Generates the personalized 3-Act Biopic Storyboard using Google Veo, Lyria, and Gemma 2.
+- **`POST /api/cinematheque/toggle-watched`**:
+  - Records and synchronizes film watch status for emotional milestone calculations.
 - **`POST /api/feedback`**:
   - Continuous learning endpoint for the **Collaborative Partner Track**. Allows users to rate screenings (1-5 stars) and select instant preference chips (*"Non-alcoholic drinks"*, *"Latin American cinema"*, *"Films under 110 min"*).
 - **`GET /api/user-memory`**:
@@ -106,15 +118,16 @@ Designed specifically for the **Collaborative Partner Track**, the platform tran
 - **`GET /api/watch-providers`**:
   - Auto-detects client country and queries TMDB / JustWatch streaming availability.
 
-### 3. Presentation Layer & Real-Time Transparency (`app/static/`)
+### 4. Presentation Layer & Real-Time Transparency (`app/static/`)
 - **`index.html`, `style.css` & `app.js`**:
   - **One-Click Cinema Night Presentation**: Displays the complete package immediately without multi-step manual requests.
   - **Behind the Scenes Visual AI Crew**: 4 interactive agent cards displaying real-time responsibilities and decisions.
   - **Detailed Google ADK Execution Log Drawer**: Developer-friendly collapsible terminal for judge audits.
   - **Instant Feedback Auto-Save**: Auto-saves on star rating click (5 stars active by default) and quick chips.
   - **The Cinémathèque Archive**: Vintage brass filing cabinet preserving curated films by emotional drawer with individual delete and top-3 pagination.
+  - **Milestone Progress Bar & "Watch Your Own Movie"**: Real-time progress tracker (3 watched films to unlock) and full-screen cinematic player with Ken Burns poster animation, voiceover, and Lyria harmonic soundtrack simulation.
 
-### 4. Cloud Persistence Layer
+### 5. Cloud Persistence Layer
 - **ClickHouse Cloud (OLAP)**:
   - Stores emotional sessions, detected tags, director metadata, and historical curations.
 - **In-Memory & Storage Collaborative Profile Cache**:

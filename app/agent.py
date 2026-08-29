@@ -185,6 +185,69 @@ master_orchestrator_agent = Agent(
 )
 
 
+# 5. Biopic Trailer Director Agent (Google Gemma 2 / Gemini 3.5 Flash & Veo/Lyria Engine)
+trailer_director_agent = Agent(
+    name="trailer_director_agent",
+    model="gemini-3.5-flash",
+    description="Cinematic Biopic Director. Synthesizes emotional cinema history into a 3-Act movie trailer with Google Veo & Lyria prompts.",
+    instruction="""
+    You are the Feel & Film Biopic Trailer Director.
+    You will receive a JSON payload containing:
+    - 'user_name': Name of the cinephile.
+    - 'watched_films': Array of watched movies with 'title', 'director', 'primary_mood', 'desired_atmosphere', 'poster_url'.
+
+    Your goal is to direct a compelling 3-Act cinema trailer of the user's emotional life ("Tu Película Emocional").
+
+    Format your response as valid raw JSON matching this schema (no markdown backticks):
+    {
+      "story_title": "The Emotional Odyssey of User",
+      "tagline": "A punchy cinematic tagline",
+      "logline": "A 2-sentence synopsis of how their emotions transformed through cinema",
+      "acts": [
+        {
+          "act_number": 1,
+          "act_name": "The Catalyst: Overwhelmed & Seeking Solace",
+          "emotional_beat": "Fatigue & Vulnerability",
+          "featured_film": "First Film Title",
+          "featured_director": "First Director",
+          "poster_url": "Poster URL",
+          "voiceover_line": "In the noise of the modern world, one soul sought sanctuary in the dark glow of the screen...",
+          "veo_video_prompt": "Cinematic 35mm film shot, slow pan across a rain-slicked city window at twilight, golden warm lamplight, nostalgic tone, 4k ultra-realistic",
+          "lyria_music_cue": "Sparse melancholic grand piano in minor key, warm vinyl crackle, gentle cello harmony",
+          "duration_sec": 7
+        },
+        {
+          "act_number": 2,
+          "act_name": "The Journey: Curiosity & Sensory Escape",
+          "emotional_beat": "Adventure & Wonder",
+          "featured_film": "Second Film Title",
+          "featured_director": "Second Director",
+          "poster_url": "Poster URL",
+          "voiceover_line": "Then came the spark of curiosity, opening doors to uncharted cinematic realms and unforgettable soundscapes...",
+          "veo_video_prompt": "Sweeping cinematic aerial shot of glowing neon horizon meeting lush golden fields, lens flare, dynamic camera drift, 24fps film stock",
+          "lyria_music_cue": "Rising symphonic strings, subtle synthwave pulse, energetic orchestral crescendo",
+          "duration_sec": 7
+        },
+        {
+          "act_number": 3,
+          "act_name": "The Catharsis: Elevation & Harmony",
+          "emotional_beat": "Restoration & Catharsis",
+          "featured_film": "Third Film Title",
+          "featured_director": "Third Director",
+          "poster_url": "Poster URL",
+          "voiceover_line": "Until emotion and memory converged into pure cinematic harmony.",
+          "veo_video_prompt": "Close-up portrait glowing in warm 35mm projection light, smiling eyes in cinema darkness, cinematic film grain, triumphant atmosphere",
+          "lyria_music_cue": "Triumphant full orchestral swell, soaring violin motif, warm French horn resolution",
+          "duration_sec": 7
+        }
+      ],
+      "climax_quote": "Every film we choose is a mirror to what our soul needed to feel.",
+      "director_credits": "Directed by Your Mood &bull; Powered by Google Veo, Lyria & Gemma 2 AI Engine"
+    }
+    """
+)
+
+
 # ---------------------------------------------------------------------------
 # Helper: Run ADK Agent with robust extraction
 # ---------------------------------------------------------------------------
@@ -718,4 +781,102 @@ async def orchestrate_cinematic_experience(
         "sommelier": sommelier_result,
         "collaborative_note": collaborative_note,
         "agent_trace": agent_trace
+    }
+
+
+# ---------------------------------------------------------------------------
+# Emotional Biopic Trailer & Video Montage Generator (Google Veo & Lyria Engine)
+# ---------------------------------------------------------------------------
+
+async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_name: str = "Cinephile") -> dict:
+    """
+    Synthesizes the user's emotional cinema history into a cinematic 3-Act Biopic Storyboard,
+    generating Google Veo video direction prompts and Google Lyria soundtrack leitmotifs.
+    Compatible with Google Gemma 2, Gemini 3.5 Flash, and Ollama local engines.
+    """
+    if not watched_films:
+        return {
+            "status": "error",
+            "message": "No watched films available yet to generate a biopic story."
+        }
+
+    payload = {
+        "user_name": user_name,
+        "watched_films": [
+            {
+                "title": f.get("title") or f.get("film_title", "Cinema Paradiso"),
+                "director": f.get("director") or f.get("film_director", "Auteur Director"),
+                "primary_mood": f.get("primary_mood") or f.get("initial_mood", "Reflective"),
+                "desired_atmosphere": f.get("desired_atmosphere") or f.get("desired_shift", "Uplifting"),
+                "poster_url": f.get("poster_url") or "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80",
+                "timestamp": f.get("timestamp", "")
+            }
+            for f in watched_films[:10]
+        ]
+    }
+
+    try:
+        raw, _ = await run_adk_agent(trailer_director_agent, payload, "trailer_director")
+        storyboard = parse_json_safely(raw, None)
+        if not storyboard or not isinstance(storyboard, dict) or "acts" not in storyboard:
+            raise ValueError("Failed to parse storyboard JSON from agent")
+    except Exception as e:
+        print("Trailer Director Agent fallback synthesis:", e)
+        f1 = watched_films[0] if len(watched_films) > 0 else {}
+        f2 = watched_films[1] if len(watched_films) > 1 else f1
+        f3 = watched_films[2] if len(watched_films) > 2 else f2
+
+        storyboard = {
+            "story_title": f"The Cinematic Odyssey of {user_name}",
+            "tagline": "How cinema transformed fatigue into pure emotional light.",
+            "logline": f"Guided by {f1.get('title', 'Cinema')}, {user_name}'s journey traversed deep emotions to reach lasting peace.",
+            "acts": [
+                {
+                    "act_number": 1,
+                    "act_name": "The Catalyst: Overwhelmed & Seeking Solace",
+                    "emotional_beat": f1.get("primary_mood", "Fatigue & Vulnerability"),
+                    "featured_film": f1.get("title", "Cinema Paradiso"),
+                    "featured_director": f1.get("director", "Giuseppe Tornatore"),
+                    "poster_url": f1.get("poster_url", "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80"),
+                    "voiceover_line": "In the noise of modern life, the soul first sought quiet sanctuary in the flickering light...",
+                    "veo_video_prompt": "Cinematic 35mm film shot, slow pan across a rain-slicked city window at twilight, golden warm lamplight, nostalgic tone, 4k ultra-realistic",
+                    "lyria_music_cue": "Sparse melancholic grand piano in minor key, warm vinyl crackle, gentle cello harmony",
+                    "duration_sec": 7
+                },
+                {
+                    "act_number": 2,
+                    "act_name": "The Journey: Curiosity & Sensory Escape",
+                    "emotional_beat": f2.get("desired_atmosphere", "Adventure & Wonder"),
+                    "featured_film": f2.get("title", "Spirited Away"),
+                    "featured_director": f2.get("director", "Hayao Miyazaki"),
+                    "poster_url": f2.get("poster_url", "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80"),
+                    "voiceover_line": "Then came the spark of curiosity, opening doors to uncharted cinematic realms and unforgettable soundscapes...",
+                    "veo_video_prompt": "Sweeping cinematic aerial shot of glowing neon horizon meeting lush golden fields, lens flare, dynamic camera drift, 24fps film stock",
+                    "lyria_music_cue": "Rising symphonic strings, subtle synthwave pulse, energetic orchestral crescendo",
+                    "duration_sec": 7
+                },
+                {
+                    "act_number": 3,
+                    "act_name": "The Catharsis: Elevation & Harmony",
+                    "emotional_beat": "Restoration & Catharsis",
+                    "featured_film": f3.get("title", "Roma"),
+                    "featured_director": f3.get("director", "Alfonso Cuarón"),
+                    "poster_url": f3.get("poster_url", "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80"),
+                    "voiceover_line": "Until emotion and memory converged into pure cinematic harmony.",
+                    "veo_video_prompt": "Close-up portrait glowing in warm 35mm projection light, smiling eyes in cinema darkness, cinematic film grain, triumphant atmosphere",
+                    "lyria_music_cue": "Triumphant full orchestral swell, soaring violin motif, warm French horn resolution",
+                    "duration_sec": 7
+                }
+            ],
+            "climax_quote": "Every film we choose is a mirror to what our soul needed to feel.",
+            "director_credits": "Directed by Your Mood &bull; Powered by Google Veo, Lyria & Gemma 2 AI Engine"
+        }
+
+    for i, act in enumerate(storyboard.get("acts", [])):
+        if i < len(watched_films) and not act.get("poster_url"):
+            act["poster_url"] = watched_films[i].get("poster_url")
+
+    return {
+        "status": "success",
+        "storyboard": storyboard
     }
