@@ -1148,7 +1148,9 @@ async function handleSendCinemaEmail(e) {
             }
 
             if (statusText) {
-                statusText.innerText = data.dispatched ? `Dispatched live to ${targetEmail}!` : `Epistle drafted by AI Concierge (Ready to copy).`;
+                statusText.innerHTML = data.dispatched 
+                    ? `<i class="fas fa-paper-plane"></i> <strong>Dispatched live to ${targetEmail}!</strong>`
+                    : `<i class="fas fa-file-pen"></i> <strong>Epistle Drafted by AI Concierge</strong> (Ready to copy below. To send directly via SMTP, add SMTP credentials in .env).`;
             }
 
             if (form) form.classList.add('hidden');
