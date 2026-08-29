@@ -4,7 +4,10 @@
 
 > **Agentic Cinema: The Blockbuster Hackathon**  
 > **Track:** *Collaborative Partner*  
-> **LLM Engine:** Google Gemini 3.5 Flash  
+> **Core LLM Engine:** Google Gemini 3.5 Flash  
+> **Screenplay & Biopic Director:** Google Gemma 2 (with local Ollama support)  
+> **Cinematography & Video Engine:** Google Veo (35mm Film Prompt Engine)  
+> **Music & Leitmotif Engine:** Google Lyria (Harmonic Soundtrack Composition)  
 > **Agent Framework:** Google Agent Development Kit (`google-adk`)  
 > **Database & Storage:** ClickHouse Cloud (OLAP Archival Vault)  
 > **Authentication:** Google Identity Services (OAuth 2.0 / GIS)  
@@ -23,13 +26,14 @@ Traditional movie recommenders rely on rigid dropdowns or generic collaborative 
 3. **Tailored Concession Pairing:** Artisanal food and beverage curation adhering strictly to user dietary rules (*100% alcohol-free mocktails, botanical sodas, vegan snacks*).
 4. **Where to Watch Streaming Finder:** Instant regional streaming availability across Netflix, Prime Video, Apple TV, Max, etc., powered by JustWatch data.
 5. **Continuous Memory & Learning Loop:** Actively learns user feedback across sessions, generating explicit collaborative notes (*"I remembered you prefer non-alcoholic pairings..."*).
-6. **The Cinémathèque Archive:** Vintage brass drawers indexed by emotional state and persisted in **ClickHouse Cloud**.
+6. **The Cinémathèque Archive & Watched Tracker:** Vintage brass filing vault with multi-criteria sorting (*Recent, Oldest, Highest Rated, Watched First, Unwatched First, Title A-Z*) and emotional drawer filters (*Watched, Unwatched, 5★ Rated, Moods*).
+7. **"Watch Your Own Movie" Biopic Trailer Engine (Google Veo, Lyria & Gemma 2):** Milestone progress bar (3 watched films) unlocking a personalized 3-Act full-screen cinema trailer with Ken Burns animations, voiceover narration, and harmonic Lyria score.
 
 ---
 
 ## 📐 Architecture Diagram & System Design
 
-The architecture illustrates how **Google Gemini 3.5 Flash** connects with the multi-agent backend, ClickHouse Cloud, external APIs, and the frontend presentation layer:
+The architecture illustrates how **Google Gemini 3.5 Flash, Gemma 2, Veo, and Lyria** connect with the multi-agent backend, ClickHouse Cloud, external APIs, and the frontend presentation layer:
 
 ![Feel & Film System Architecture Diagram](app/static/architecture_diagram.svg)
 
@@ -73,12 +77,6 @@ For complete technical mapping and component specifications, see [ARCHITECTURE.m
                            └─────────────────┬─────────────────┘
                                              │
                                              ▼
-                           ┌───────────────────────────────────┐
-                           │  Live Agent Execution Trace       │
-                           │  & Behind-the-Scenes Crew Cards   │
-                           └─────────────────┬─────────────────┘
-                                             │
-                                             ▼
         ┌────────────────────────────────────────────────────────────────────────┐
         │                 Complete Cinema Night Experience                       │
         │   • Film + Director + Runtime + Synopsis + Fun Fact + Poster           │
@@ -90,37 +88,56 @@ For complete technical mapping and component specifications, see [ARCHITECTURE.m
                                              ▼
                     ┌─────────────────────────────────────────────────┐
                     │    The Cinémathèque Archive (ClickHouse Cloud)  │
-                    │    • Indexed Emotional Drawers                  │
-                    │    • Individual Card Deletion                   │
-                    │    • Top-3 Pagination & Historical Sync         │
+                    │    • Multi-Criteria Sort & Emotional Drawers    │
+                    │    • 1-Click "Mark as Watched" & Star Ratings   │
+                    │    • Instant Deletion (🗑️) & Historical Sync   │
+                    └────────────────────────┬────────────────────────┘
+                                             │ (3 Watched Milestone Unlocked)
+                                             ▼
+                    ┌─────────────────────────────────────────────────┐
+                    │   Biopic Trailer Engine (Google Veo/Lyria/Gemma)│
+                    │   • 3-Act Cinematic Screenplay (Google Gemma 2) │
+                    │   • 35mm Video Direction Prompts (Google Veo)   │
+                    │   • Harmonic Leitmotif Soundtrack (Google Lyria)│
+                    │   • Full-Screen Player with Ken Burns & Voice   │
+                    └────────────────────────┬────────────────────────┘
+                                             │
+                                             ▼
+                    ┌─────────────────────────────────────────────────┐
+                    │       Behind-the-Scenes AI Crew Pipeline        │
+                    │       • 4 Specialist Agent Decision Cards       │
+                    │       • Developer / Judge Terminal Trace Drawer │
                     └─────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🛠️ Technology Stack & Details
+## 🛠️ Stack Tecnológico & Additional Google AI Models
 
-* **Core Agent Framework:** Google Agent Development Kit (`google-adk`)
-* **LLM Engine:** Google Gemini 3.5 Flash (`gemini-3.5-flash` via Google GenAI SDK / Vertex AI)
-* **Backend API & Web Server:** FastAPI (Python 3.11+) with Uvicorn ASGI
+* **Multi-Agent Framework:** Google Agent Development Kit (`google-adk`)
+* **Primary Autonomous LLM:** Google Gemini 3.5 Flash (`gemini-3.5-flash` via Google GenAI SDK / Vertex AI)
+* **Screenplay & Biopic Director:** Google Gemma 2 (`gemma2` / local Ollama support)
+* **Cinematic Video Engine:** Google Veo (35mm Composition & Scene Prompt Architecture)
+* **Soundtrack Composition:** Google Lyria (Harmonic Score & Leitmotif Architecture)
+* **Backend API & Web Server:** FastAPI (Python 3.11+) with ASGI Uvicorn
 * **Database & OLAP Memory:** ClickHouse Cloud (via `clickhouse-connect` driver)
-* **Authentication:** Google Identity Services (GIS / OAuth 2.0 JWT Verification)
-* **Live Catalog & Streaming:** The Movie Database (TMDB API v3/v4) & JustWatch data integration
-* **Frontend:** Vanilla HTML5, Modern CSS3 (Glassmorphism & Cinema-Noir design system), Vanilla JavaScript ES6+
-* **Containerization & Hosting:** Docker, Google Cloud Run
+* **Authentication:** Google Identity Services (GIS / OAuth 2.0 JWT Token Verification)
+* **Live Catalog & Streaming:** The Movie Database (TMDB v3/v4 API) and JustWatch data
+* **Frontend:** Vanilla HTML5, Modern CSS3 (Glassmorphism & Cinema-Noir Aesthetic), ES6+ JavaScript
+* **Containerization & Deployment:** Docker, Google Cloud Run
 
 ---
 
-## 🚀 Step-by-Step Spin-Up Guide (Local Reproduction)
+## 🚀 Step-by-Step Getting Started (Local Reproduction)
 
-Follow this exact step-by-step walkthrough to clone, configure, and execute the project from scratch in under 3 minutes.
+Follow these steps to set up and run the application locally in less than 3 minutes:
 
 ### 1. Prerequisites
 - **Python:** 3.10, 3.11, or 3.12 installed ([python.org](https://www.python.org/downloads/))
 - **Git:** Installed on your system
 - **API Keys:**
-  - **Google Gemini API Key:** Free from [Google AI Studio](https://aistudio.google.com/)
-  - **TMDB API Key:** Free from [The Movie Database](https://www.themoviedb.org/settings/api)
+  - **Google Gemini API Key:** Free at [Google AI Studio](https://aistudio.google.com/)
+  - **TMDB API Key:** Free at [The Movie Database](https://www.themoviedb.org/settings/api)
 
 ---
 
@@ -132,15 +149,15 @@ cd feelandfilm
 
 ---
 
-### 3. Create & Activate a Virtual Environment
+### 3. Create and Activate a Virtual Environment
 
-**On Windows (PowerShell / Command Prompt):**
+**Windows (PowerShell / Command Prompt):**
 ```powershell
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-**On macOS / Linux (bash / zsh):**
+**macOS / Linux (bash / zsh):**
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
@@ -157,7 +174,7 @@ pip install -r requirements.txt
 ---
 
 ### 5. Configure Environment Variables (`.env`)
-Create your local `.env` file from the provided template:
+Create your `.env` file from the example template:
 
 **Windows:**
 ```powershell
@@ -169,18 +186,18 @@ copy .env.example .env
 cp .env.example .env
 ```
 
-Edit `.env` and fill in your keys:
+Edit `.env` with your credentials:
 ```ini
 # 1. Google Gemini API Key (Required)
-GEMINI_API_KEY=your_gemini_api_key_from_ai_studio
+GEMINI_API_KEY=your_gemini_api_key_here
 
-# 2. TMDB API Key (Required for live movie metadata & streaming)
-TMDB_API_KEY=your_tmdb_api_key_or_bearer_token
+# 2. TMDB API Key (Required for live movie catalog & streaming)
+TMDB_API_KEY=your_tmdb_api_key_here
 
-# 3. Google Sign-In Client ID (Optional for OAuth login)
+# 3. Google Client ID (Optional for Google OAuth Sign-in)
 GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 
-# 4. ClickHouse Cloud (Optional - defaults to in-memory vault if empty)
+# 4. ClickHouse Cloud (Optional - falls back to local memory if empty)
 CLICKHOUSE_HOST=
 CLICKHOUSE_PORT=8443
 CLICKHOUSE_USER=default
@@ -191,49 +208,49 @@ CLICKHOUSE_SECURE=True
 ---
 
 ### 6. Run the Application
-Start the FastAPI server with auto-reload:
+Start the FastAPI server with hot-reloading:
 ```bash
 python -m uvicorn app.main:app --reload --port 8000
 ```
 
-Open your browser and navigate to:  
+Open your browser at:  
 👉 **`http://localhost:8000`**
 
 ---
 
 ### 7. Run Automated Tests
-Verify that all multi-agent workflows, safety guardrails, and API endpoints pass 100%:
+Verify multi-agent orchestrator workflows, safety guardrails, and API endpoints:
 
 ```bash
-# 1. Test Autonomous Multi-Agent Orchestrator & Collaborative Memory Loop
+# 1. Test Multi-Agent Orchestrator & Collaborative Memory Loop
 python test_orchestrator.py
 
-# 2. Test API Endpoints, Cinémathèque, Posters & Watch Providers
+# 2. Test API Endpoints, Cinémathèque, Posters & Streaming
 python test_api.py
 ```
 
 ---
 
-## ☁️ Deployment Instructions
+## ☁️ Cloud Deployment Instructions
 
-### Option A: 1-Click Deployment to Google Cloud Run (Recommended)
+### Option A: 1-Click Continuous Deployment on Google Cloud Run (Recommended)
 
-Feel & Film is fully containerized with a production-ready `Dockerfile`.
+Feel & Film includes a production-ready `Dockerfile`.
 
-1. Open **[Google Cloud Console](https://console.cloud.google.com/run)** and navigate to **Cloud Run**.
+1. Go to the **[Google Cloud Console](https://console.cloud.google.com/run)** and navigate to **Cloud Run**.
 2. Click **Create Service** ➡️ **Continuously deploy from a repository**.
-3. Select your GitHub repository (`feelandfilm`) and choose the `feature/agentic-orchestrator` branch.
-4. Under **Build Configuration**, choose **Dockerfile** (path: `/Dockerfile`).
+3. Select your GitHub repository (`feelandfilm`) and select the branch `main` (or `feature/agentic-orchestrator`).
+4. Under **Build configuration**, select **Dockerfile** (path: `/Dockerfile`).
 5. Under **Authentication**, select **Allow unauthenticated invocations**.
 6. Under **Container, Variables & Secrets**, add your environment variables (`GEMINI_API_KEY`, `TMDB_API_KEY`, `GOOGLE_CLIENT_ID`, `CLICKHOUSE_HOST`, etc.).
-7. Click **Create** to deploy. Cloud Run will build the container and provide a secure live `https://*.run.app` URL.
+7. Click **Create**. Cloud Run will automatically build and deploy the container, providing a secure `https://*.run.app` URL.
 
-### Option B: Deploy using Docker locally
+### Option B: Local Docker Deployment
 ```bash
-# 1. Build Docker image
+# 1. Build the Docker image
 docker build -t feelandfilm .
 
-# 2. Run Docker container
+# 2. Run the Docker container
 docker run -p 8000:8000 --env-file .env feelandfilm
 ```
 
@@ -241,35 +258,45 @@ docker run -p 8000:8000 --env-file .env feelandfilm
 
 ## 🌟 Key Features & Innovations
 
-* **1-Click Autonomous Multi-Agent Orchestration:** Complete cinema night plan generated in a single cycle without fragmented requests.
-* **100% Dynamic Live TMDB Discovery Engine:** Real-time query engine searching across 800,000+ movies on TMDB with smart multi-routing for:
-  - *Directors* (official directing credits)
-  - *Studios & Companies* (Studio Ghibli, A24, Pixar, Marvel)
-  - *Eras & Decades* (80s, 90s, 70s, 60s)
-  - *Thematic Keywords* & international cinema (Latin American, Asian, Nordic, French, etc.)
-* **Active Memory & Continuous Learning (*Collaborative Partner Track*):** The agent remembers past ratings and dietary restrictions across sessions, generating explicit collaborative notes (*"I remembered your preference for (Non-alcoholic pairings only)..."*).
-* **"Behind the Scenes" Visual AI Crew Pipeline:** Visual 4-agent workflow display with collapsible raw Google ADK execution logs.
-* **Responsible AI Multilingual Safety Guardrail:** Intercepts and mitigates NSFW, gore, and extreme violence across Spanish, English, French, Portuguese, Italian, German, and Japanese before execution.
-* **The Cinémathèque Archive (ClickHouse Cloud):** Vintage brass drawers (`[All Records]`, `[Stressed]`, `[Sad]`, `[Tired]`, `[Excited]`, `[Curious]`) with individual card deletion and top-3 pagination collapse.
-* **Google Federated Authentication (GIS):** Sign in with Google OAuth 2.0 and JWT verification to sync persistent personal memory.
-* **Where to Watch Streaming Integration:** Direct regional streaming availability powered by TMDB and JustWatch data.
+* **One-Click Autonomous Orchestration:** Generates the complete cinema night package in a single pass without disjointed multi-step prompts.
+* **100% Live TMDB Discovery Engine:** Real-time semantic discovery across 800,000+ titles with dedicated routing for:
+  - *Auteur Directors* (official crew verification)
+  - *Film Studios* (Studio Ghibli, A24, Pixar, Marvel)
+  - *Eras & Decades* (80s, 90s, 70s, classic cinema)
+  - *International Themes* (Latin American, Japanese, French auteur, etc.)
+* **Continuous Memory & Collaborative Learning (*Collaborative Partner*):** Remembers dietary restrictions and style feedback across sessions, generating explicit collaborative notes (*"I remembered you prefer non-alcoholic drinks..."*).
+* **"Watch Your Own Movie" Biopic Trailer Engine:**
+  - **Google Gemma 2**: Screenplay and narrative direction across 3 Acts (*Catalyst, Journey, Catharsis*).
+  - **Google Veo**: 35mm cinematic video direction prompts with camera and lighting cues.
+  - **Google Lyria**: Leitmotif music composition and atmospheric score cues.
+  - **Full-Screen Cinema Player**: Real-time Ken Burns photo transitions, Web Speech voiceover narration, and Web Audio harmonic score simulation.
+  - **Hackathon Demo Mode**: Allows judges to preview the trailer immediately with 1 click.
+* **The Cinémathèque Archive (ClickHouse Cloud):** Vintage filing cabinet with:
+  - **Multi-Criteria Sorting**: Most Recent, Oldest, Highest Rated (5★), Watched First, Unwatched First, Title (A-Z), Director (A-Z).
+  - **Drawer Filters**: Watched Only, Unwatched/Watchlist, 5★ Top Rated, Stressed, Melancholic, Tired, Excited, Curious.
+  - **Interactive Watched Toggle & Separate 5-Star Ratings**: Track your viewing milestones and rate films post-viewing.
+  - **Instant Optimistic Deletion (`🗑️`)**: Smooth card removal with synchronized ClickHouse cleanup.
+* **Visual AI Crew Pipeline & Developer Trace Terminal:** 4 interactive specialist agent cards at the bottom of the page with a collapsible raw ADK log terminal for judge audits.
+* **Multilingual Responsible AI Content Guardrail:** Filters NSFW, gore, and explicit violence in English, Spanish, French, Portuguese, Italian, German, and Japanese.
+* **Federated Authentication (GIS):** Sign in with Google (OAuth 2.0 / JWT) to sync and protect your personal film vault.
+* **Regional Streaming Finder (*Where to Watch*):** Displays real-time streaming availability across Netflix, Prime Video, Apple TV, Max, etc., via TMDB and JustWatch data.
 
 ---
 
-## 📜 Third-Party Code, Disclosures & Credits
+## 📜 Third-Party Code, Disclosures & Attribution
 
-In compliance with hackathon transparency guidelines, here is the full disclosure of third-party libraries, services, and assets utilized in this project:
+In compliance with the Hackathon Transparency Guidelines, all third-party libraries, services, and assets are attributed below:
 
-1. **Google Agent Development Kit (`google-adk`):** Multi-agent orchestration, agent state management, and runner execution engine by Google.
-2. **Google GenAI SDK (`google-genai`):** Model interface for Google Gemini 3.5 Flash.
-3. **The Movie Database (TMDB API):** Live movie metadata, director credits, and HD poster assets. *(This product uses the TMDB API but is not endorsed or certified by TMDB).*
-4. **JustWatch Data Integration (via TMDB Watch Providers):** Regional streaming availability detection.
-5. **ClickHouse Python Driver (`clickhouse-connect`):** High-performance OLAP database connectivity for the Cinémathèque Archive.
-6. **FastAPI & Uvicorn:** Modern Python asynchronous web framework and ASGI server.
-7. **Pydantic:** Data validation and schema enforcement.
-8. **FontAwesome 6 & Google Fonts (Cinzel, Playfair Display, Outfit, Fira Code):** Typography and UI iconography used under standard open licenses.
+1. **Google Agent Development Kit (`google-adk`):** Google's agent framework for state control, multi-agent runners, and orchestration.
+2. **Google GenAI SDK (`google-genai`):** Client library for Google Gemini 3.5 Flash and Google Gemma 2.
+3. **The Movie Database (TMDB API):** Live movie metadata, director credits, and HD posters. *(This product uses the TMDB API but is not endorsed or certified by TMDB).*
+4. **JustWatch Data (via TMDB Watch Providers):** Regional streaming availability detection.
+5. **ClickHouse Python Driver (`clickhouse-connect`):** High-performance OLAP connectivity with ClickHouse Cloud.
+6. **FastAPI & Uvicorn:** Asynchronous Python web framework and ASGI server.
+7. **Pydantic:** Type validation and structured data parsing.
+8. **FontAwesome 6 & Google Fonts (Cinzel, Playfair Display, Outfit, Fira Code):** Open-source typography and iconography.
 
 ---
 
 ## 📄 License
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is open source and licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
