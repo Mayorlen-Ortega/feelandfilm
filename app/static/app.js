@@ -221,6 +221,40 @@ function updateAuthUI() {
         loggedInView.classList.add('hidden');
         if (archiveGuestBanner) archiveGuestBanner.classList.remove('hidden');
     }
+
+    updateModalIdentityBar();
+}
+
+function updateModalIdentityBar() {
+    const bar = document.getElementById('modal-identity-bar');
+    if (!bar) return;
+
+    if (currentUser && currentUser.email) {
+        bar.innerHTML = `
+            <div class="modal-auth-badge logged-in">
+                <i class="fas fa-user-check"></i>
+                <span>${currentUser.name || currentUser.email}</span>
+                <span class="badge-tag">Memory Active</span>
+            </div>
+        `;
+    } else {
+        bar.innerHTML = `
+            <div class="modal-auth-badge guest">
+                <i class="fas fa-user-clock"></i>
+                <span>Guest Mode</span>
+            </div>
+            <button type="button" id="modal-login-chip-btn" class="modal-login-chip">
+                <i class="fab fa-google"></i> Sign in with Google
+            </button>
+        `;
+        const chipBtn = document.getElementById('modal-login-chip-btn');
+        if (chipBtn) {
+            chipBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openAuthModal();
+            });
+        }
+    }
 }
 
 function openAuthModal() {
@@ -494,18 +528,12 @@ function initScreeningInterviewModal() {
         });
     }
 
-    // Automatically launch screening modal on fresh session
-    setTimeout(() => {
-        const resultsSection = document.getElementById('results');
-        if (resultsSection && resultsSection.classList.contains('hidden')) {
-            openScreeningModal();
-        }
-    }, 400);
 }
 
 function openScreeningModal() {
     const modal = document.getElementById('screening-modal');
     if (!modal) return;
+    updateModalIdentityBar();
     modal.classList.remove('hidden');
     goToScene(0);
 }

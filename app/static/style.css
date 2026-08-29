@@ -336,10 +336,75 @@ h1 {
 .screening-modal-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     padding-bottom: 18px;
     margin-bottom: 24px;
+}
+
+.header-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-identity-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+}
+
+.modal-auth-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    padding: 3px 12px;
+    border-radius: 14px;
+    color: #bbb;
+    font-family: 'Playfair Display', serif;
+}
+
+.modal-auth-badge.logged-in {
+    background: rgba(39, 174, 96, 0.12);
+    border-color: rgba(39, 174, 96, 0.4);
+    color: #a8e6cf;
+}
+
+.modal-auth-badge .badge-tag {
+    background: var(--accent);
+    color: #111;
+    font-size: 0.68rem;
+    font-weight: bold;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 4px;
+    font-family: 'Cinzel', serif;
+}
+
+.modal-login-chip {
+    background: #111;
+    color: #f3d069;
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    padding: 3px 11px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: 'Playfair Display', serif;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: auto;
+    margin: 0;
+}
+
+.modal-login-chip:hover {
+    background: rgba(212, 175, 55, 0.2);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+    transform: translateY(-1px);
 }
 
 .screening-stepper {
