@@ -1,45 +1,89 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
-from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService
-from google.genai.types import Content, Part
 import json
 import os
+import uuid
 import clickhouse_connect
 from dotenv import load_dotenv
 import urllib.request
+import urllib.parse
 import urllib.error
 import asyncio
+import time
+from datetime import datetime
 
 load_dotenv(override=True)
 
-from app.agent import agent, soundtrack_agent, sommelier_agent
+from app.agent import (
+    agent, 
+    film_curator_agent,
+    soundtrack_agent, 
+    sommelier_agent,
+    master_orchestrator_agent,
+    orchestrate_cinematic_experience,
+    run_adk_agent,
+    parse_json_safely
+)
 
-async def query_ollama_fallback(prompt: str, system_prompt: str, format_json: bool = True) -> str:
-    def fetch():
-        url = "http://localhost:11434/api/generate"
-        data = {
-            "model": "llama3.2:3b",
-            "prompt": prompt,
-            "system": system_prompt,
-            "stream": False
+app = FastAPI(title="Feel & Film - Autonomous Agentic Cinema")
+
+# ---------------------------------------------------------------------------
+# In-Memory User Memory Store (collaborative partner state cache)
+# ---------------------------------------------------------------------------
+USER_MEMORY_STORE: Dict[str, Dict[str, Any]] = {}
+
+def get_or_create_user_memory(user_email: str) -> Dict[str, Any]:
+    email_key = user_email.strip().lower() if user_email else "guest"
+    if email_key not in USER_MEMORY_STORE:
+        USER_MEMORY_STORE[email_key] = {
+            "user_email": email_key,
+            "learned_preferences": [],
+            "dietary_restrictions": [],
+            "music_preferences": "",
+            "excluded_films": [],
+            "past_feedbacks": [],
+            "total_curations": 0
         }
-        if format_json:
-            data["format"] = "json"
-        req = urllib.request.Request(url, data=json.dumps(data).encode("utf-8"), headers={"Content-Type": "application/json"})
-        try:
-            with urllib.request.urlopen(req) as response:
-                result = json.loads(response.read().decode("utf-8"))
-                return result.get("response", "{}" if format_json else "")
-        except Exception as e:
-            print("Ollama Error:", e)
-            return "{}" if format_json else ""
-    return await asyncio.to_thread(fetch)
+    return USER_MEMORY_STORE[email_key]
 
-app = FastAPI(title="Feel & Film")
+
+def sync_user_memory_from_db(user_email: str):
+    """Hydrates memory from ClickHouse historical sessions and feedbacks."""
+    if not user_email:
+        return
+    email_key = user_email.strip().lower()
+    mem = get_or_create_user_memory(email_key)
+    
+    host = os.getenv("CLICKHOUSE_HOST", "")
+    if not host or host == "mock":
+        return
+
+    try:
+        client = clickhouse_connect.get_client(
+            host=host, 
+            port=int(os.getenv("CLICKHOUSE_PORT", "8123")), 
+            username=os.getenv("CLICKHOUSE_USER", "default"), 
+            password=os.getenv("CLICKHOUSE_PASSWORD", ""), 
+            secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
+        )
+        res = client.query(
+            "SELECT film_title, primary_mood, desired_atmosphere, reasoning FROM audience_sessions WHERE user_email = %(email)s ORDER BY timestamp DESC LIMIT 10",
+            parameters={"email": email_key}
+        )
+        for row in res.result_rows:
+            film_title = row[0]
+            if film_title and film_title not in mem["excluded_films"]:
+                mem["excluded_films"].append(film_title)
+    except Exception as e:
+        print("ClickHouse memory sync notice:", e)
+
+
+# ---------------------------------------------------------------------------
+# TMDB & External API Helpers
+# ---------------------------------------------------------------------------
 
 async def fetch_poster_url_internal(title: str) -> str:
     tmdb_key = os.getenv("TMDB_API_KEY")
@@ -47,7 +91,6 @@ async def fetch_poster_url_internal(title: str) -> str:
         return ""
     
     def fetch():
-        import urllib.parse
         query = urllib.parse.quote(title)
         url = f"https://api.themoviedb.org/3/search/movie?query={query}"
         req = urllib.request.Request(url, headers={
@@ -67,13 +110,13 @@ async def fetch_poster_url_internal(title: str) -> str:
         return ""
     return await asyncio.to_thread(fetch)
 
+
 async def fetch_watch_providers_internal(title: str, country: str = "US") -> dict:
     tmdb_key = os.getenv("TMDB_API_KEY")
     if not tmdb_key:
         return {"status": "error", "message": "TMDB_API_KEY not configured", "streaming": [], "rent": [], "buy": []}
 
     def fetch():
-        import urllib.parse
         query = urllib.parse.quote(title)
         search_url = f"https://api.themoviedb.org/3/search/movie?query={query}"
         headers = {"Authorization": f"Bearer {tmdb_key}", "accept": "application/json"}
@@ -139,22 +182,6 @@ async def fetch_watch_providers_internal(title: str, country: str = "US") -> dic
 
     return await asyncio.to_thread(fetch)
 
-@app.get("/api/watch-providers")
-async def get_watch_providers(title: str, country: str = "US"):
-    return await fetch_watch_providers_internal(title, country)
-
-class WatchProvidersRequest(BaseModel):
-    movie_title: str
-    country: str = "US"
-
-@app.post("/api/watch-providers")
-async def post_watch_providers(request: WatchProvidersRequest):
-    return await fetch_watch_providers_internal(request.movie_title, request.country)
-
-@app.get("/api/poster")
-async def get_poster(title: str):
-    url = await fetch_poster_url_internal(title)
-    return {"poster_url": url}
 
 # Serve static files for the frontend
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -179,10 +206,13 @@ async def auth_google(request: GoogleAuthRequest):
             padded = parts[1] + "=" * ((4 - len(parts[1]) % 4) % 4)
             payload_json = base64.urlsafe_b64decode(padded).decode("utf-8")
             payload = json.loads(payload_json)
+            email = payload.get("email", "")
+            if email:
+                sync_user_memory_from_db(email)
             return {
                 "status": "success",
                 "user": {
-                    "email": payload.get("email", ""),
+                    "email": email,
                     "name": payload.get("name", "Cinephile"),
                     "picture": payload.get("picture", ""),
                     "sub": payload.get("sub", "")
@@ -192,18 +222,38 @@ async def auth_google(request: GoogleAuthRequest):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
+
+# ---------------------------------------------------------------------------
+# Request Schemas
+# ---------------------------------------------------------------------------
+
 class MoodRequest(BaseModel):
     initial_mood: str
     desired_atmosphere: str
-    audience_age_range: str
+    audience_age_range: str = "Adults (18+)"
     theme: str = ""
-    slots: int
+    slots: int = 1
     excluded_films: list[str] = []
     user_email: Optional[str] = None
     user_name: Optional[str] = None
+    country: Optional[str] = "US"
+    dietary_preference: Optional[str] = None
+
+class FeedbackRequest(BaseModel):
+    user_email: str
+    session_id: Optional[str] = None
+    movie_title: str
+    rating: int = 5  # 1 to 5
+    category: str = "general" # 'dietary', 'soundtrack', 'film_pacing', 'general'
+    feedback_text: str
 
 class SoundtrackRequest(BaseModel):
     movie_title: str
+
+class WatchProvidersRequest(BaseModel):
+    movie_title: str
+    country: str = "US"
+
 
 @app.get("/")
 async def read_index():
@@ -216,293 +266,326 @@ async def get_status():
     is_mock = not host or host == "mock"
     return {"mock_mode": is_mock}
 
+
+# ---------------------------------------------------------------------------
+# Responsible AI & Safety Guardrail Filter
+# ---------------------------------------------------------------------------
+
+UNSAFE_PATTERNS = [
+    # Explicit Sexual, Adult & NSFW Multilingual Roots (EN, ES, FR, PT, IT, DE, JA)
+    "sex", "sexe", "sesso", "sexual", "oral", "anal", "porno", "porn", "xxx", "erotic", "erotico", "érot", 
+    "chup", "mamada", "orgasm", "desnud", "nude", "naked", "nackt", "nu ", "nuda", "nudo", 
+    "penis", "pene", "vagina", "clitor", "tetas", "boobs", "tits", "blowjob", "handjob", "cunnilingus", 
+    "fetish", "fetich", "bdsm", "hardcore", "hentai", "ecchi", "incest", "masturb", "milf", "dildo", 
+    "consolador", "escort", "prostitut", "puta", "puto", "pajer", "coito", "intercourse", "nsfw", 
+    "lust", "horny", "caliente", "cojer", "coger", "follar", "fuck", "bitch", "cock", "dick", "pussy",
+    "baiser", "foder", "ficken", "scopar", "cazzo", "buceta",
+    # Real Violence, Murders & Illicit Multilingual Roots
+    "asesin", "murder", "kill", "meurtre", "omicidi", "mord", "töten", "tuer", "matar", 
+    "snuff", "gore", "sangre real", "tortur", "folter", "suicid", "selbstmord", "pedofil", 
+    "pédophil", "child abuse", "violaci", "violación", "rape", "estupro", "vergewaltigung", 
+    "decapita", "how to kill", "matar gente", "hitman", "terroris"
+]
+
+def check_content_safety(*texts: str) -> bool:
+    combined = " ".join([str(t).lower() for t in texts if t])
+    for bad in UNSAFE_PATTERNS:
+        if bad in combined:
+            return False
+    return True
+
+
+# ---------------------------------------------------------------------------
+# Unified Autonomous Orchestration Endpoint (1-Click Complete Package)
+# ---------------------------------------------------------------------------
+
+@app.post("/api/curate-experience")
+async def curate_experience(request: MoodRequest):
+    """
+    MASTER ORCHESTRATION ENDPOINT:
+    Executes the entire multi-agent workflow in a single autonomous cycle.
+    1. Validates Responsible AI Safety Guardrails.
+    2. Retrieves/synthesizes user memory profile.
+    3. Runs Master Orchestrator (Curator -> Soundtrack + Sommelier).
+    4. Fetches poster and watch providers in parallel.
+    5. Records session into ClickHouse & in-memory cache.
+    6. Returns unified Cinema Night Package with live agent trace.
+    """
+    # 0. Safety Guardrail Check
+    if not check_content_safety(request.initial_mood, request.desired_atmosphere, request.theme):
+        now_str = datetime.now().strftime("%H:%M:%S")
+        return {
+            "status": "safety_warning",
+            "message": "Feel & Film is dedicated to cultural, cinematic, and emotionally restorative experiences. We strictly filter out NSFW, real-world violence, gore, or adult content. Please choose an emotional atmosphere that inspires, heals, or entertains!",
+            "film": None,
+            "agent_trace": [
+                {
+                    "timestamp": now_str,
+                    "agent": "MasterOrchestrator",
+                    "action": "Safety Guardrail Engaged",
+                    "details": "Restricted content query detected and safely mitigated."
+                }
+            ]
+        }
+
+    user_email = request.user_email or ""
+    mem = get_or_create_user_memory(user_email)
+    
+    # Merge client excluded films with memory excluded films
+    combined_excluded = list(set(request.excluded_films + mem.get("excluded_films", [])))
+    
+    # If user provided explicit dietary preference in request, register it
+    if request.dietary_preference and request.dietary_preference.strip():
+        if request.dietary_preference.strip() not in mem["dietary_restrictions"]:
+            mem["dietary_restrictions"].append(request.dietary_preference.strip())
+
+    try:
+        # Run autonomous multi-agent orchestration
+        result = await orchestrate_cinematic_experience(
+            initial_mood=request.initial_mood,
+            desired_atmosphere=request.desired_atmosphere,
+            audience_age_range=request.audience_age_range,
+            theme=request.theme,
+            excluded_films=combined_excluded,
+            user_memory_profile=mem,
+            user_email=user_email
+        )
+
+        if result.get("status") == "not_found" or not result.get("film"):
+            return result
+
+        selected_film = result["film"]
+        movie_title = selected_film.get("title", "")
+        
+        # Parallel enrichment: Poster + Watch Providers
+        poster_task = fetch_poster_url_internal(movie_title)
+        watch_task = fetch_watch_providers_internal(movie_title, request.country or "US")
+        
+        poster_url, watch_data = await asyncio.gather(poster_task, watch_task)
+        
+        # Update user memory
+        if movie_title and movie_title not in mem["excluded_films"]:
+            mem["excluded_films"].append(movie_title)
+        mem["total_curations"] = mem.get("total_curations", 0) + 1
+
+        # Persist session to ClickHouse
+        session_id = str(uuid.uuid4())
+        host = os.getenv("CLICKHOUSE_HOST", "")
+        if host and host != "mock":
+            try:
+                client = clickhouse_connect.get_client(
+                    host=host, 
+                    port=int(os.getenv("CLICKHOUSE_PORT", "8123")), 
+                    username=os.getenv("CLICKHOUSE_USER", "default"), 
+                    password=os.getenv("CLICKHOUSE_PASSWORD", ""), 
+                    secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
+                )
+                db_mood = result.get("primary_mood", request.initial_mood)
+                db_atm = result.get("target_shift", request.desired_atmosphere)
+                detected_tags = result.get("detected_mood_tags", [db_mood])
+
+                client.insert(
+                    'audience_sessions',
+                    [[
+                        session_id, 
+                        db_mood, 
+                        db_atm, 
+                        request.audience_age_range, 
+                        user_email,
+                        movie_title,
+                        selected_film.get("director", ""),
+                        poster_url or "",
+                        selected_film.get("reasoning", ""),
+                        detected_tags,
+                        db_mood
+                    ]],
+                    column_names=[
+                        'session_id', 
+                        'initial_mood', 
+                        'desired_atmosphere', 
+                        'audience_age_range', 
+                        'user_email',
+                        'film_title',
+                        'film_director',
+                        'poster_url',
+                        'reasoning',
+                        'detected_tags',
+                        'primary_mood'
+                    ]
+                )
+            except Exception as dbe:
+                print("ClickHouse insertion error:", dbe)
+
+        return {
+            "status": "success",
+            "session_id": session_id,
+            "detected_mood_tags": result.get("detected_mood_tags", []),
+            "primary_mood": result.get("primary_mood"),
+            "target_shift": result.get("target_shift"),
+            "film": selected_film,
+            "poster_url": poster_url,
+            "soundtrack": result.get("soundtrack"),
+            "sommelier": result.get("sommelier"),
+            "watch_providers": watch_data,
+            "collaborative_note": result.get("collaborative_note"),
+            "user_memory": {
+                "total_curations": mem["total_curations"],
+                "learned_preferences": mem.get("learned_preferences", []),
+                "dietary_restrictions": mem.get("dietary_restrictions", [])
+            },
+            "agent_trace": result.get("agent_trace", [])
+        }
+
+    except Exception as e:
+        print("Curate experience error:", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ---------------------------------------------------------------------------
+# Collaborative Partner Feedback Endpoint
+# ---------------------------------------------------------------------------
+
+@app.post("/api/feedback")
+async def submit_feedback(request: FeedbackRequest):
+    """
+    Stores user feedback and updates the agent's learned memory model.
+    Enables true Collaborative Partner continuous learning.
+    """
+    mem = get_or_create_user_memory(request.user_email)
+    
+    entry = {
+        "timestamp": time.strftime("%Y-%m-%d %H:%M"),
+        "session_id": request.session_id,
+        "movie_title": request.movie_title,
+        "rating": request.rating,
+        "category": request.category,
+        "text": request.feedback_text
+    }
+    mem["past_feedbacks"].append(entry)
+    
+    # Auto-extract preferences from feedback text
+    txt_lower = request.feedback_text.lower()
+    if any(k in txt_lower for k in ["no alcohol", "sin alcohol", "mocktail", "non-alcoholic", "no bebo", "no tomo"]):
+        if "Non-alcoholic pairings only" not in mem["dietary_restrictions"]:
+            mem["dietary_restrictions"].append("Non-alcoholic pairings only")
+    if any(k in txt_lower for k in ["vegan", "vegano", "plant-based"]):
+        if "Vegan food only" not in mem["dietary_restrictions"]:
+            mem["dietary_restrictions"].append("Vegan food only")
+    if any(k in txt_lower for k in ["corta", "short", "demasiado larga", "too long", "< 100", "menos de 2 horas", "under 110", "110 min", "shorter"]):
+        if "Prefers films under 110 minutes" not in mem["learned_preferences"]:
+            mem["learned_preferences"].append("Prefers films under 110 minutes")
+    if any(k in txt_lower for k in ["latino", "latin american", "cine latino", "argentin", "mexic", "colombia", "chile", "brazil"]):
+        if "Prefers Latin American cinema" not in mem["learned_preferences"]:
+            mem["learned_preferences"].append("Prefers Latin American cinema")
+    if any(k in txt_lower for k in ["asia", "asian", "cine asiático", "anime", "korea", "japan"]):
+        if "Prefers Asian cinema" not in mem["learned_preferences"]:
+            mem["learned_preferences"].append("Prefers Asian cinema")
+    if any(k in txt_lower for k in ["me gustó el jazz", "loved jazz", "synthwave", "instrumental", "soundtrack", "music"]):
+        pref = f"Liked {request.feedback_text.strip()}"
+        if pref not in mem["learned_preferences"]:
+            mem["learned_preferences"].append(pref)
+
+    return {
+        "status": "success",
+        "message": "Collaborative memory updated successfully.",
+        "learned_profile": {
+            "learned_preferences": mem["learned_preferences"],
+            "dietary_restrictions": mem["dietary_restrictions"]
+        }
+    }
+
+
+@app.get("/api/user-memory")
+async def get_user_memory(user_email: str = ""):
+    """Returns the agent's memory graph for the active user."""
+    mem = get_or_create_user_memory(user_email)
+    return {
+        "status": "success",
+        "user_email": mem["user_email"],
+        "memory": mem
+    }
+
+
+# ---------------------------------------------------------------------------
+# Backward Compatibility Endpoints (for unit tests / legacy callers)
+# ---------------------------------------------------------------------------
+
+@app.post("/api/recommend")
+async def get_recommendation(request: MoodRequest):
+    # Direct wrapper around curate-experience
+    curated = await curate_experience(request)
+    if curated.get("status") == "not_found":
+        return {"status": "success", "data": {"not_found_message": curated.get("message", ""), "slate": []}}
+    
+    slate = [curated["film"]] if curated.get("film") else []
+    data = {
+        "detected_mood_tags": curated.get("detected_mood_tags", []),
+        "primary_mood": curated.get("primary_mood", ""),
+        "target_shift": curated.get("target_shift", ""),
+        "slate": slate,
+        "overall_evidence": curated.get("collaborative_note", "")
+    }
+    return {
+        "status": "success",
+        "data": data,
+        "agent_audit_trail": [f"{t['agent']}: {t['action']}" for t in curated.get("agent_trace", [])]
+    }
+
+@app.post("/api/soundtrack")
+async def get_soundtrack(request: SoundtrackRequest):
+    raw, _ = await run_adk_agent(soundtrack_agent, {"movie_title": request.movie_title}, "soundtrack")
+    data = parse_json_safely(raw, {
+        "composer": "Original Score",
+        "vibe": "Evocative cinematic soundtrack.",
+        "standout_track": "Main Theme"
+    })
+    return {"status": "success", "data": data}
+
+@app.post("/api/sommelier")
+async def get_sommelier(request: SoundtrackRequest):
+    raw, _ = await run_adk_agent(sommelier_agent, {"movie_title": request.movie_title, "dietary_preferences": []}, "sommelier")
+    parsed = parse_json_safely(raw, None)
+    if isinstance(parsed, dict) and "pairing_reasoning" in parsed:
+        rec = f"{parsed.get('beverage', '')} & {parsed.get('snack', '')}. {parsed.get('pairing_reasoning', '')}"
+    else:
+        rec = raw.replace('"', '').replace('{', '').replace('}', '').strip() or "A delightful craft pairing to match the film."
+    return {"status": "success", "recommendation": rec}
+
+@app.get("/api/watch-providers")
+async def get_watch_providers(title: str, country: str = "US"):
+    return await fetch_watch_providers_internal(title, country)
+
+@app.post("/api/watch-providers")
+async def post_watch_providers(request: WatchProvidersRequest):
+    return await fetch_watch_providers_internal(request.movie_title, request.country)
+
+@app.get("/api/poster")
+async def get_poster(title: str):
+    url = await fetch_poster_url_internal(title)
+    return {"poster_url": url}
+
+
+# ---------------------------------------------------------------------------
+# Cinémathèque & Statistics (ClickHouse)
+# ---------------------------------------------------------------------------
+
 VALID_MOODS = ["Stressed", "Bored", "Excited", "Sad", "Curious"]
 VALID_ATMOSPHERES = ["Relaxing", "Thrilling", "Uplifting", "Thought-provoking"]
 VALID_AGES = ["Kids (0-12)", "Teens (13-17)", "Adults (18+)", "Mixed Family"]
 
-@app.get("/api/stats")
-async def get_stats():
-    host = os.getenv("CLICKHOUSE_HOST", "")
-    port = int(os.getenv("CLICKHOUSE_PORT", "8123"))
-    user = os.getenv("CLICKHOUSE_USER", "default")
-    password = os.getenv("CLICKHOUSE_PASSWORD", "")
-    secure = os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
-
-    if not host or host == "mock":
-        return {
-            "labels": VALID_MOODS,
-            "data": [0] * len(VALID_MOODS),
-            "moods": {"labels": VALID_MOODS, "data": [0] * len(VALID_MOODS)},
-            "atmospheres": {"labels": VALID_ATMOSPHERES, "data": [0] * len(VALID_ATMOSPHERES)},
-            "demographics": {"labels": VALID_AGES, "data": [0] * len(VALID_AGES)},
-            "matrix": {},
-            "kpis": {"top_mood": "N/A", "top_atmosphere": "N/A", "top_demographic": "N/A", "total_sessions": 0}
-        }
-    
-    try:
-        client = clickhouse_connect.get_client(
-            host=host, port=port, username=user, password=password, secure=secure
-        )
-        
-        # 1. Initial Mood Distribution
-        m_res = client.query(
-            "SELECT initial_mood, count() as total FROM audience_sessions "
-            "WHERE initial_mood IN ('Stressed', 'Bored', 'Excited', 'Sad', 'Curious') "
-            "GROUP BY initial_mood"
-        )
-        m_counts = {row[0]: row[1] for row in m_res.result_rows}
-        mood_data = [m_counts.get(m, 0) for m in VALID_MOODS]
-        total_sessions = sum(mood_data)
-        
-        # 2. Desired Atmosphere Distribution
-        a_res = client.query(
-            "SELECT desired_atmosphere, count() as total FROM audience_sessions "
-            "WHERE desired_atmosphere IN ('Relaxing', 'Thrilling', 'Uplifting', 'Thought-provoking') "
-            "GROUP BY desired_atmosphere"
-        )
-        a_counts = {row[0]: row[1] for row in a_res.result_rows}
-        atm_data = [a_counts.get(a, 0) for a in VALID_ATMOSPHERES]
-        
-        # 3. Audience Demographics
-        d_res = client.query("SELECT audience_age_range, count() as total FROM audience_sessions GROUP BY audience_age_range")
-        d_raw = {row[0]: row[1] for row in d_res.result_rows}
-        d_counts = {
-            "Kids (0-12)": d_raw.get("Kids (0-12)", 0),
-            "Teens (13-17)": d_raw.get("Teens (13-17)", 0) + d_raw.get("Teen", 0),
-            "Adults (18+)": d_raw.get("Adults (18+)", 0) + d_raw.get("Adult", 0),
-            "Mixed Family": d_raw.get("Mixed Family", 0) + d_raw.get("Family", 0),
-        }
-        demo_data = [d_counts.get(k, 0) for k in VALID_AGES]
-        
-        # 4. Emotional Transition Matrix (Initial Mood -> Desired Atmosphere)
-        t_res = client.query(
-            "SELECT initial_mood, desired_atmosphere, count() FROM audience_sessions "
-            "WHERE initial_mood IN ('Stressed', 'Bored', 'Excited', 'Sad', 'Curious') "
-            "AND desired_atmosphere IN ('Relaxing', 'Thrilling', 'Uplifting', 'Thought-provoking') "
-            "GROUP BY initial_mood, desired_atmosphere"
-        )
-        matrix = {m: {a: 0 for a in VALID_ATMOSPHERES} for m in VALID_MOODS}
-        for m, a, c in t_res.result_rows:
-            if m in matrix and a in matrix[m]:
-                matrix[m][a] = c
-                
-        # 5. Executive KPIs
-        top_m = max(m_counts.items(), key=lambda x: x[1])[0] if m_counts else "Stressed"
-        top_m_pct = round((m_counts.get(top_m, 0) / total_sessions * 100)) if total_sessions else 0
-        
-        tot_atm = sum(atm_data)
-        top_a = max(a_counts.items(), key=lambda x: x[1])[0] if a_counts else "Relaxing"
-        top_a_pct = round((a_counts.get(top_a, 0) / tot_atm * 100)) if tot_atm else 0
-        
-        top_d = max(d_counts.items(), key=lambda x: x[1])[0] if d_counts else "Adults (18+)"
-        
-        return {
-            "labels": VALID_MOODS,
-            "data": mood_data,
-            "moods": {"labels": VALID_MOODS, "data": mood_data},
-            "atmospheres": {"labels": VALID_ATMOSPHERES, "data": atm_data},
-            "demographics": {"labels": VALID_AGES, "data": demo_data},
-            "matrix": matrix,
-            "kpis": {
-                "top_mood": f"{top_m} ({top_m_pct}%)",
-                "top_atmosphere": f"{top_a} ({top_a_pct}%)",
-                "top_demographic": top_d,
-                "total_sessions": total_sessions
-            }
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-from fastapi.responses import HTMLResponse, StreamingResponse
-
-def map_to_canonical_mood(text: str) -> str:
-    t = text.lower()
-    if any(k in t for k in ["stress", "exhaust", "tired", "burn", "work", "overwhelm", "busy", "ansio", "estrés", "cansad"]):
-        return "Stressed"
-    if any(k in t for k in ["bore", "dull", "nothing", "routine", "monoton", "aburr"]):
-        return "Bored"
-    if any(k in t for k in ["excit", "happy", "party", "energy", "hype", "friday", "fun", "alegr", "emocion", "feliz"]):
-        return "Excited"
-    if any(k in t for k in ["sad", "cry", "depress", "melanchol", "blue", "down", "heartbreak", "trist", "llor"]):
-        return "Sad"
-    if any(k in t for k in ["curio", "cinephil", "weird", "art", "intellect", "interest", "indie", "cult", "aprender"]):
-        return "Curious"
-    return "Curious"
-
-def map_to_canonical_atmosphere(text: str) -> str:
-    t = text.lower()
-    if any(k in t for k in ["relax", "calm", "cozy", "peace", "chill", "unwind", "escap", "tranquil", "desconec"]):
-        return "Relaxing"
-    if any(k in t for k in ["thrill", "action", "suspense", "scary", "horror", "edge", "adrenalin", "shock", "intense", "misterio"]):
-        return "Thrilling"
-    if any(k in t for k in ["uplift", "feel-good", "happy", "laugh", "comedy", "inspire", "optimis", "warm", "joy", "reir", "alegr"]):
-        return "Uplifting"
-    if any(k in t for k in ["thought", "deep", "mind", "twist", "drama", "philosoph", "complex", "mystery", "reflex", "pensar"]):
-        return "Thought-provoking"
-    return "Relaxing"
-
-@app.post("/api/recommend")
-async def get_recommendation(request: MoodRequest):
-    try:
-        # Construct the prompt for the ADK Agent (passes the full free-form user thoughts)
-        prompt = json.dumps(request.dict())
-        data = None
-        tool_calls = []
-        
-        # Use Ollama locally if enabled via USE_OLLAMA
-        if os.getenv("USE_OLLAMA", "false").lower() == "true":
-            sys_prompt = """You are a film curator. Return exactly 1 film. Provide detailed text.
-CRITICAL: If audience_age_range is 'Kids (0-12)', NEVER recommend R-rated or mature films. Only G or PG.
-Output ONLY valid JSON matching:
-{
-  \"detected_mood_tags\": [\"Tag1\", \"Tag2\"],
-  \"primary_mood\": \"Mood\",
-  \"target_shift\": \"Atmosphere\",
-  \"slate\": [{\"title\": \"\", \"director\": \"\", \"runtime\": 0, \"mood_tags\": [], \"intensity\": 0, \"synopsis\": \"a punchy 1-2 sentence introduction\", \"fun_fact\": \"short highly interesting fun fact 1-2 sentences\", \"reasoning\": \"concise 1-2 sentence explanation of why this fits\", \"confidence_score\": 0.0}],
-  \"overall_evidence\": \"\",
-  \"not_found_message\": \"If theme and mood contradict completely, put error message here and make slate []\"
-}"""
-            raw_output = await query_ollama_fallback(prompt, sys_prompt)
-            try:
-                data = json.loads(raw_output.strip())
-            except Exception:
-                data = {"not_found_message": "Technical error in Ollama fallback.", "slate": []}
-            tool_calls = ["Ollama Used Directly"]
-        else:
-            # Default path uses Gemini via ADK agent
-            runner = Runner(agent=agent, session_service=InMemorySessionService(), app_name="film_curator", auto_create_session=True)
-            content = Content(role="user", parts=[Part(text=prompt)])
-            raw_output = ""
-            async for event in runner.run_async(user_id="default", session_id="default", new_message=content):
-                parts = []
-                if hasattr(event, "content") and event.content:
-                    parts = getattr(event.content, "parts", [])
-                elif hasattr(event, "data") and hasattr(event.data, "message"):
-                    parts = getattr(event.data.message, "parts", [])
-                    
-                for part in parts:
-                    if hasattr(part, "text") and part.text:
-                        raw_output += part.text
-                    if hasattr(part, "function_call") and part.function_call:
-                        tool_calls.append(str(part.function_call))
-                        
-            # Extract JSON block robustly
-            start_idx = raw_output.find('{')
-            end_idx = raw_output.rfind('}') + 1
-            if start_idx != -1 and end_idx != 0 and end_idx > start_idx:
-                raw_output = raw_output[start_idx:end_idx]
-                
-            data = json.loads(raw_output.strip())
-
-        # Save historical curation with multi-label emotional tags into ClickHouse
-        host = os.getenv("CLICKHOUSE_HOST", "")
-        if host and host != "mock" and data:
-            import uuid
-            client = clickhouse_connect.get_client(
-                host=host, 
-                port=int(os.getenv("CLICKHOUSE_PORT", "8123")), 
-                username=os.getenv("CLICKHOUSE_USER", "default"), 
-                password=os.getenv("CLICKHOUSE_PASSWORD", ""), 
-                secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
-            )
-            session_id = str(uuid.uuid4())
-            db_mood = request.initial_mood if request.initial_mood in VALID_MOODS else map_to_canonical_mood(request.initial_mood)
-            db_atm = request.desired_atmosphere if request.desired_atmosphere in VALID_ATMOSPHERES else map_to_canonical_atmosphere(request.desired_atmosphere)
-
-            film_title = ""
-            film_director = ""
-            film_reasoning = ""
-            if "slate" in data and len(data["slate"]) > 0:
-                film = data["slate"][0]
-                film_title = film.get("title", "")
-                film_director = film.get("director", "")
-                film_reasoning = film.get("reasoning", "")
-
-            # Extract detected emotional tags from agent
-            detected_tags = data.get("detected_mood_tags", [])
-            if not isinstance(detected_tags, list) or len(detected_tags) == 0:
-                detected_tags = [db_mood]
-
-            primary_mood = data.get("primary_mood", db_mood) or db_mood
-
-            # Fetch poster to preserve in archive
-            poster_url = await fetch_poster_url_internal(film_title) if film_title else ""
-
-            client.insert(
-                'audience_sessions',
-                [[
-                    session_id, 
-                    db_mood, 
-                    db_atm, 
-                    request.audience_age_range, 
-                    request.user_email or '',
-                    film_title,
-                    film_director,
-                    poster_url,
-                    film_reasoning,
-                    detected_tags,
-                    primary_mood
-                ]],
-                column_names=[
-                    'session_id', 
-                    'initial_mood', 
-                    'desired_atmosphere', 
-                    'audience_age_range', 
-                    'user_email',
-                    'film_title',
-                    'film_director',
-                    'poster_url',
-                    'reasoning',
-                    'detected_tags',
-                    'primary_mood'
-                ]
-            )
-        
-        return {
-            "status": "success",
-            "data": data,
-            "agent_audit_trail": tool_calls
-        }
-    except Exception as e:
-        if "429" in str(e) or "quota" in str(e).lower() or "RESOURCE_EXHAUSTED" in str(e):
-            print("Falling back to Ollama...")
-            sys_prompt = """You are a film curator. Return exactly 1 film. Provide detailed text.
-CRITICAL: If audience_age_range is 'Kids (0-12)', NEVER recommend R-rated or mature films. Only G or PG.
-Output ONLY valid JSON matching:
-{
-  "slate": [{"title": "","director": "","runtime": 0,"mood_tags": [],"intensity": 0,"synopsis": "a punchy 1-2 sentence introduction","fun_fact": "short highly interesting fun fact 1-2 sentences","reasoning": "concise 1-2 sentence explanation of why this fits","confidence_score": 0.0}],
-  "overall_evidence": "",
-  "not_found_message": "If theme and mood contradict completely, put error message here and make slate []"
-}"""
-            raw_output = await query_ollama_fallback(prompt, sys_prompt)
-            if not raw_output or raw_output.strip() == "{}":
-                data = {
-                    "not_found_message": "Cut! Our cinematic agent is resting in its dressing room (AI Quota Exceeded). Please try again in a minute.",
-                    "slate": []
-                }
-            else:
-                try:
-                    data = json.loads(raw_output.strip())
-                except:
-                    data = {"not_found_message": "Technical error in the projection booth.", "slate": []}
-                        
-            return {"status": "success", "data": data, "agent_audit_trail": ["Ollama Fallback Failed - Cinematic Error"]}
-        raise HTTPException(status_code=500, detail=str(e))
-
 @app.get("/api/cinematheque")
 async def get_cinematheque(user_email: str = ""):
     host = os.getenv("CLICKHOUSE_HOST", "")
-    port = int(os.getenv("CLICKHOUSE_PORT", "8123"))
-    user = os.getenv("CLICKHOUSE_USER", "default")
-    password = os.getenv("CLICKHOUSE_PASSWORD", "")
-    secure = os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
-
     if not host or host == "mock":
         return {"status": "success", "count": 0, "records": []}
 
     try:
         client = clickhouse_connect.get_client(
-            host=host, port=port, username=user, password=password, secure=secure
+            host=host, 
+            port=int(os.getenv("CLICKHOUSE_PORT", "8123")), 
+            username=os.getenv("CLICKHOUSE_USER", "default"), 
+            password=os.getenv("CLICKHOUSE_PASSWORD", ""), 
+            secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
         )
         
         where_clauses = ["film_title != ''"]
@@ -512,7 +595,6 @@ async def get_cinematheque(user_email: str = ""):
             params["user_email"] = user_email.strip()
         
         where_str = " AND ".join(where_clauses)
-        
         query = f"""
             SELECT 
                 session_id, 
@@ -531,14 +613,11 @@ async def get_cinematheque(user_email: str = ""):
             ORDER BY timestamp DESC 
             LIMIT 60
         """
-        
         res = client.query(query, parameters=params)
-        
         records = []
         for row in res.result_rows:
             dt = row[1]
             formatted_date = dt.strftime("%b %d, %Y - %H:%M") if hasattr(dt, 'strftime') else str(dt)
-            
             tags = row[6] if isinstance(row[6], (list, tuple)) else []
             if not tags and row[7]:
                 tags = [row[7]]
@@ -559,133 +638,105 @@ async def get_cinematheque(user_email: str = ""):
                 "user_email": row[10]
             })
             
-        return {
-            "status": "success",
-            "count": len(records),
-            "records": records
-        }
+        return {"status": "success", "count": len(records), "records": records}
     except Exception as e:
         print("Cinematheque query error:", e)
         return {"status": "error", "message": str(e), "records": []}
 
-@app.post("/api/soundtrack")
-async def get_soundtrack(request: SoundtrackRequest):
+
+@app.delete("/api/cinematheque/{session_id}")
+async def delete_cinematheque_item(session_id: str):
+    host = os.getenv("CLICKHOUSE_HOST", "")
+    if not host or host == "mock":
+        return {"status": "success", "session_id": session_id, "message": "Deleted in mock mode."}
+
     try:
-        runner = Runner(agent=soundtrack_agent, session_service=InMemorySessionService(), app_name="soundtrack_curator", auto_create_session=True)
-        content = Content(role="user", parts=[Part(text=request.movie_title)])
+        client = clickhouse_connect.get_client(
+            host=host, 
+            port=int(os.getenv("CLICKHOUSE_PORT", "8123")), 
+            username=os.getenv("CLICKHOUSE_USER", "default"), 
+            password=os.getenv("CLICKHOUSE_PASSWORD", ""), 
+            secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
+        )
+        client.command("ALTER TABLE audience_sessions DELETE WHERE session_id = %(session_id)s", parameters={"session_id": session_id})
+        return {"status": "success", "session_id": session_id}
+    except Exception as e:
+        print("ClickHouse delete error:", e)
+        return {"status": "error", "message": str(e)}
+
+
+@app.get("/api/stats")
+async def get_stats():
+    host = os.getenv("CLICKHOUSE_HOST", "")
+    if not host or host == "mock":
+        return {
+            "labels": VALID_MOODS,
+            "data": [0] * len(VALID_MOODS),
+            "moods": {"labels": VALID_MOODS, "data": [0] * len(VALID_MOODS)},
+            "atmospheres": {"labels": VALID_ATMOSPHERES, "data": [0] * len(VALID_ATMOSPHERES)},
+            "demographics": {"labels": VALID_AGES, "data": [0] * len(VALID_AGES)},
+            "matrix": {},
+            "kpis": {"top_mood": "N/A", "top_atmosphere": "N/A", "top_demographic": "N/A", "total_sessions": 0}
+        }
+    
+    try:
+        client = clickhouse_connect.get_client(
+            host=host, 
+            port=int(os.getenv("CLICKHOUSE_PORT", "8123")), 
+            username=os.getenv("CLICKHOUSE_USER", "default"), 
+            password=os.getenv("CLICKHOUSE_PASSWORD", ""), 
+            secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
+        )
         
-        raw_output = ""
-        async for event in runner.run_async(user_id="default", session_id="default", new_message=content):
-            parts = []
-            if hasattr(event, "content") and event.content:
-                parts = getattr(event.content, "parts", [])
-            elif hasattr(event, "data") and hasattr(event.data, "message"):
-                parts = getattr(event.data.message, "parts", [])
+        m_res = client.query("SELECT initial_mood, count() as total FROM audience_sessions WHERE initial_mood IN ('Stressed', 'Bored', 'Excited', 'Sad', 'Curious') GROUP BY initial_mood")
+        m_counts = {row[0]: row[1] for row in m_res.result_rows}
+        mood_data = [m_counts.get(m, 0) for m in VALID_MOODS]
+        total_sessions = sum(mood_data)
+        
+        a_res = client.query("SELECT desired_atmosphere, count() as total FROM audience_sessions WHERE desired_atmosphere IN ('Relaxing', 'Thrilling', 'Uplifting', 'Thought-provoking') GROUP BY desired_atmosphere")
+        a_counts = {row[0]: row[1] for row in a_res.result_rows}
+        atm_data = [a_counts.get(a, 0) for a in VALID_ATMOSPHERES]
+        
+        d_res = client.query("SELECT audience_age_range, count() as total FROM audience_sessions GROUP BY audience_age_range")
+        d_raw = {row[0]: row[1] for row in d_res.result_rows}
+        d_counts = {
+            "Kids (0-12)": d_raw.get("Kids (0-12)", 0),
+            "Teens (13-17)": d_raw.get("Teens (13-17)", 0) + d_raw.get("Teen", 0),
+            "Adults (18+)": d_raw.get("Adults (18+)", 0) + d_raw.get("Adult", 0),
+            "Mixed Family": d_raw.get("Mixed Family", 0) + d_raw.get("Family", 0),
+        }
+        demo_data = [d_counts.get(k, 0) for k in VALID_AGES]
+        
+        t_res = client.query("SELECT initial_mood, desired_atmosphere, count() FROM audience_sessions WHERE initial_mood IN ('Stressed', 'Bored', 'Excited', 'Sad', 'Curious') AND desired_atmosphere IN ('Relaxing', 'Thrilling', 'Uplifting', 'Thought-provoking') GROUP BY initial_mood, desired_atmosphere")
+        matrix = {m: {a: 0 for a in VALID_ATMOSPHERES} for m in VALID_MOODS}
+        for m, a, c in t_res.result_rows:
+            if m in matrix and a in matrix[m]:
+                matrix[m][a] = c
                 
-            for part in parts:
-                if hasattr(part, "text") and part.text:
-                    raw_output += part.text
-                    
-        # Extract JSON block robustly
-        start_idx = raw_output.find('{')
-        end_idx = raw_output.rfind('}') + 1
-        if start_idx != -1 and end_idx != 0 and end_idx > start_idx:
-            raw_output = raw_output[start_idx:end_idx]
-            
-        data = json.loads(raw_output.strip())
+        top_m = max(m_counts.items(), key=lambda x: x[1])[0] if m_counts else "Stressed"
+        top_m_pct = round((m_counts.get(top_m, 0) / total_sessions * 100)) if total_sessions else 0
+        tot_atm = sum(atm_data)
+        top_a = max(a_counts.items(), key=lambda x: x[1])[0] if a_counts else "Relaxing"
+        top_a_pct = round((a_counts.get(top_a, 0) / tot_atm * 100)) if tot_atm else 0
+        top_d = max(d_counts.items(), key=lambda x: x[1])[0] if d_counts else "Adults (18+)"
         
         return {
-            "status": "success",
-            "data": data
+            "labels": VALID_MOODS,
+            "data": mood_data,
+            "moods": {"labels": VALID_MOODS, "data": mood_data},
+            "atmospheres": {"labels": VALID_ATMOSPHERES, "data": atm_data},
+            "demographics": {"labels": VALID_AGES, "data": demo_data},
+            "matrix": matrix,
+            "kpis": {
+                "top_mood": f"{top_m} ({top_m_pct}%)",
+                "top_atmosphere": f"{top_a} ({top_a_pct}%)",
+                "top_demographic": top_d,
+                "total_sessions": total_sessions
+            }
         }
     except Exception as e:
-        if "429" in str(e) or "quota" in str(e).lower() or "RESOURCE_EXHAUSTED" in str(e):
-            print("Falling back to Ollama for Soundtrack...")
-            sys_prompt = """You are a Soundtrack Expert. Provide detailed text. Return ONLY valid JSON matching:
-{"composer": "","vibe": "concise vibe description 1-2 sentences","standout_track": ""}"""
-            raw_output = await query_ollama_fallback(request.movie_title, sys_prompt)
-            if not raw_output or raw_output.strip() == "{}":
-                data = {
-                    "composer": "Unknown",
-                    "vibe": "The soundtrack is on a commercial break. The musical agent is resting due to quota limits.",
-                    "standout_track": "Silence"
-                }
-            else:
-                try:
-                    data = json.loads(raw_output.strip())
-                except:
-                    data = {"composer": "Error", "vibe": "Technical error.", "standout_track": "Error"}
-            return {"status": "success", "data": data}
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/sommelier")
-async def get_sommelier(request: SoundtrackRequest):
-    # If running in a local environment, bypass Gemini and use the local model directly
-    if os.getenv("USE_OLLAMA", "false").lower() == "true":
-        sys_prompt = """You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences in English. If recommending a specific regional beverage or food, add a brief clarification in parentheses strictly in English like (cocktail) or (Cuban rum drink). DO NOT output JSON, just plain text in English."""
-        raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt, format_json=False)
-        if raw_output and raw_output.strip() not in ("{}", ""):
-            def _clean_output(text: str) -> str:
-                txt = text.strip()
-                try:
-                    data = json.loads(txt)
-                    if isinstance(data, dict):
-                        return " ".join(str(v) for v in data.values())
-                    if isinstance(data, list):
-                        return " ".join(str(v) for v in data)
-                except Exception:
-                    pass
-                if txt.startswith("{") and txt.endswith("}"):
-                    txt = txt[1:-1].strip()
-                txt = txt.strip('"')
-                return txt
-            cleaned = _clean_output(raw_output)
-            return {"status": "success", "recommendation": cleaned}
-        # Static fallback if Ollama fails
-        static_fallback = "A classic popcorn and a cold soda always make a perfect movie night pairing."
-        return {"status": "success", "recommendation": static_fallback}
-    # Default path uses Gemini via ADK agent
-    try:
-        from app.agent import sommelier_agent
-        runner = Runner(agent=sommelier_agent, session_service=InMemorySessionService(), app_name="sommelier", auto_create_session=True)
-        content = Content(role="user", parts=[Part(text=f"Movie: {request.movie_title}")])
-        raw_output = ""
-        async for event in runner.run_async(user_id="default", session_id="default", new_message=content):
-            parts = []
-            if hasattr(event, "content") and event.content:
-                parts = getattr(event.content, "parts", [])
-            elif hasattr(event, "data") and hasattr(event.data, "message"):
-                parts = getattr(event.data.message, "parts", [])
-            for part in parts:
-                if hasattr(part, "text") and part.text:
-                    raw_output += part.text
-        def _clean_output(text: str) -> str:
-            txt = text.strip()
-            try:
-                data = json.loads(txt)
-                if isinstance(data, dict):
-                    return " ".join(str(v) for v in data.values())
-                if isinstance(data, list):
-                    return " ".join(str(v) for v in data)
-            except Exception:
-                pass
-            if txt.startswith("{") and txt.endswith("}"):
-                txt = txt[1:-1].strip()
-            txt = txt.strip('"')
-            return txt
-        cleaned = _clean_output(raw_output)
-        return {"status": "success", "recommendation": cleaned}
-    except Exception as e:
-        print("Sommelier Error:", str(e))
-        error_detail = str(e)
-        if os.getenv("USE_OLLAMA", "false").lower() == "true":
-            sys_prompt = "You are a cinematic sommelier. Recommend a snack and drink for this movie in 1-2 sentences. DO NOT output JSON, just plain text."
-            raw_output = await query_ollama_fallback(f"Movie: {request.movie_title}", sys_prompt)
-            if raw_output and raw_output.strip() not in ("{}", ""):
-                cleaned = _clean_output(raw_output)
-                return {"status": "success", "recommendation": cleaned, "error_detail": error_detail}
-        static_fallback = "A classic popcorn and a cold soda always make a perfect movie night pairing."
-        return {"status": "success", "recommendation": static_fallback, "error_detail": error_detail}
 
 if __name__ == "__main__":
     import uvicorn
