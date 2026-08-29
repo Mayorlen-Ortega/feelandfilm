@@ -1707,7 +1707,7 @@ function renderCinematheque() {
 
         return `
             <div class="archive-record-card" id="record-${r.session_id}">
-                <div class="archive-card-top">
+                <div class="archive-card-top" onclick="viewArchivedRecommendation('${r.session_id}', event)" title="Click to view & relive full recommendation package" style="cursor: pointer;">
                     <img src="${posterUrl}" alt="${r.title}" class="archive-poster" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80'">
                     <div class="archive-meta">
                         <div class="archive-meta-header">
@@ -1726,9 +1726,13 @@ function renderCinematheque() {
                     </div>
                 </div>
 
-                ${r.user_input ? `<div class="archive-quote-box">"${r.user_input.slice(0, 75)}..."</div>` : ''}
+                ${r.user_input ? `<div class="archive-quote-box" onclick="viewArchivedRecommendation('${r.session_id}', event)" style="cursor: pointer;">"${r.user_input.slice(0, 75)}..."</div>` : ''}
 
                 <div class="archive-card-actions">
+                    <button type="button" class="archive-view-btn" onclick="viewArchivedRecommendation('${r.session_id}', event)" title="Relive full recommendation package with soundtrack & pairings">
+                        <i class="fas fa-film"></i> Relive Package
+                    </button>
+
                     <button type="button" class="archive-watched-btn ${isWatched ? 'is-watched' : ''}" onclick="toggleWatchedFilm('${r.session_id}')">
                         <i class="fas ${isWatched ? 'fa-check-circle' : 'fa-eye'}"></i> ${isWatched ? 'Watched' : 'Mark as Watched'}
                     </button>
@@ -1758,6 +1762,100 @@ function renderCinematheque() {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Relive Archived Recommendation from Cinémathèque Vault
+// ---------------------------------------------------------------------------
+
+async function fetchWatchProvidersInternalSafe(title, country) {
+    try {
+        const res = await fetch(`/api/watch-providers?title=${encodeURIComponent(title)}&country=${encodeURIComponent(country)}`);
+        if (res.ok) return await res.json();
+    } catch (e) {}
+    return { country: country, streaming: [], rent: [], buy: [], link: "" };
+}
+
+async function viewArchivedRecommendation(sessionId, event) {
+    if (event) {
+        if (event.target.closest('.archive-delete-btn') || event.target.closest('.archive-watched-btn') || event.target.closest('.archive-rating-stars')) {
+            return;
+        }
+    }
+
+    const record = allArchiveRecords.find(r => r.session_id === sessionId);
+    if (!record) return;
+
+    const slate = document.getElementById('slate-container');
+    if (slate) {
+        slate.innerHTML = `
+            <div class="card" style="text-align: center; border-color: var(--accent); padding: 35px 25px; border-radius: 12px; background: rgba(10, 8, 6, 0.85);">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2.2rem; color: var(--accent); margin-bottom: 14px;"></i>
+                <h4 style="font-family: 'Cinzel', serif; color: #fff; font-size: 1.3rem;">Restoring "${record.title}"...</h4>
+                <p style="color: #94a3b8; font-size: 0.9rem; max-width: 500px; margin: 6px auto 0;">Retrieving full soundtrack, sommelier concession pairing & live streaming providers from the vault.</p>
+            </div>
+        `;
+        slate.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    try {
+        const title = record.title || '';
+        const posterUrl = record.poster_url || "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&q=80";
+        const country = detectUserCountry();
+
+        const watchPromise = fetchWatchProvidersInternalSafe(title, country);
+        const soundtrackPromise = fetch('/api/soundtrack', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ movie_title: title })
+        }).then(r => r.json()).catch(() => ({ data: { composer: "Original Score", standout_track: "Main Theme", vibe: "Cinematic orchestration." } }));
+
+        const sommelierPromise = fetch('/api/sommelier', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ movie_title: title })
+        }).then(r => r.json()).catch(() => ({ recommendation: "Artisanal mocktail & Gourmet cinema popcorn. Harmonizes with the film tone." }));
+
+        const [watchData, soundtrackRes, sommelierRes] = await Promise.all([watchPromise, soundtrackPromise, sommelierPromise]);
+
+        const restoredPackage = {
+            status: "success",
+            session_id: record.session_id,
+            detected_mood_tags: record.detected_tags || [record.primary_mood || "Reflective"],
+            primary_mood: record.primary_mood || record.initial_mood || "Curated",
+            target_shift: record.desired_atmosphere || record.desired_shift || "Elevation",
+            film: {
+                title: record.title,
+                director: record.director || record.film_director || "Auteur Director",
+                runtime: record.runtime || 115,
+                confidence_score: 0.98,
+                mood_tags: record.detected_tags || [record.primary_mood || "Curated"],
+                synopsis: record.synopsis || record.reasoning || "A masterfully crafted auteur work preserved in your personal Cinémathèque vault.",
+                reasoning: record.reasoning || "Curated and preserved in your personal emotional film archive.",
+                fun_fact: record.fun_fact || "Active in your personal cinema taste profile."
+            },
+            poster_url: posterUrl,
+            soundtrack: soundtrackRes.data || { composer: "Original Score", standout_track: "Main Theme", vibe: "Evocative score." },
+            sommelier: {
+                beverage: (sommelierRes.recommendation || '').split('&')[0]?.trim() || "Artisanal beverage or craft tea",
+                snack: (sommelierRes.recommendation || '').split('&')[1]?.split('.')[0]?.trim() || "Gourmet cinema popcorn",
+                pairing_reasoning: (sommelierRes.recommendation || '').split('.').slice(1).join('.').trim() || "Harmonizes with the film's atmosphere."
+            },
+            watch_providers: watchData,
+            collaborative_note: `Collaborative Partner Note: Restored from your Cinémathèque Vault (${record.title}).`,
+            agent_trace: [
+                { timestamp: new Date().toLocaleTimeString(), agent: "CinémathèqueArchive", action: "Vault Record Restored", details: `Retrieved "${record.title}" preserved for ${record.primary_mood || 'your mood'}.` }
+            ]
+        };
+
+        currentSessionData = restoredPackage;
+        renderCinemaNightPackage(restoredPackage);
+
+    } catch (err) {
+        console.error("Error restoring archived recommendation:", err);
+    }
+}
+
+window.viewArchivedRecommendation = viewArchivedRecommendation;
+
 function updateBiopicMilestone() {
     const milestoneCard = document.getElementById('biopic-milestone-card');
     const fill = document.getElementById('milestone-progress-fill');
@@ -1782,12 +1880,13 @@ function updateBiopicMilestone() {
     if (genBtn) {
         if (count >= target) {
             genBtn.disabled = false;
-            genBtn.innerHTML = '<i class="fas fa-palette"></i> Open Ultra-HD Moodboard';
+            genBtn.innerHTML = '<i class="fas fa-meteor"></i> Open Emotional Constellation';
         } else {
             genBtn.disabled = true;
             genBtn.innerHTML = `<i class="fas fa-lock"></i> Mark ${target - count} more to unlock`;
         }
     }
+}
 // ---------------------------------------------------------------------------
 // Google Gemini & Lyria Interactive Emotional Constellation & Soundscape Engine
 // ---------------------------------------------------------------------------

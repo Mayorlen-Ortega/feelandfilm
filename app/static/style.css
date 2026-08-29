@@ -2208,6 +2208,16 @@ button:disabled {
 }
 
 /* Archive Watched Toggle Button */
+.archive-card-top {
+    transition: transform 0.2s ease, filter 0.2s ease;
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.archive-card-top:hover {
+    filter: brightness(1.08);
+}
+
 .archive-card-actions {
     display: flex;
     justify-content: space-between;
@@ -2215,6 +2225,32 @@ button:disabled {
     margin-top: 8px;
     padding-top: 8px;
     border-top: 1px dashed rgba(212, 175, 55, 0.2);
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.archive-view-btn {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+    width: auto;
+    margin: 0;
+}
+
+.archive-view-btn:hover {
+    background: var(--accent);
+    color: #111 !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
 .archive-watched-btn {
