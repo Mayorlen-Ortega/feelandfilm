@@ -849,7 +849,7 @@ function renderCinemaNightPackage(response) {
                 <p style="color: #cbd5e1; max-width: 580px; margin: 0 auto 20px; font-size: 0.95rem; line-height: 1.5;">${response.message}</p>
                 <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                     <button type="button" class="btn" style="width: auto; padding: 10px 22px; font-size: 0.9rem;" onclick="openScreeningModal();">
-                        <i class="fas fa-sparkles"></i> Elegir otra atmósfera / Try Inspiring Mood
+                        <i class="fas fa-sparkles"></i> Choose Inspiring Mood / Explore Another Atmosphere
                     </button>
                 </div>
             </div>

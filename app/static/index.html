@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link rel="stylesheet" href="/static/style.css?v=20260829_05">
+    <link rel="stylesheet" href="/static/style.css?v=20260829_06">
 </head>
 
 <body>
@@ -357,9 +357,6 @@
                             <button type="button" id="generate-biopic-btn" class="btn btn-biopic-unlocked" disabled>
                                 <i class="fas fa-meteor"></i> Open Emotional Constellation
                             </button>
-                            <button type="button" id="demo-preview-biopic-btn" class="btn-demo-preview" title="Explore Constellation with sample stars & Lyria music in demo mode">
-                                <i class="fas fa-compass"></i> Preview Constellation (Demo Mode)
-                            </button>
                         </div>
                     </div>
 
@@ -539,7 +536,7 @@
     <div id="biopic-trailer-modal" class="modal-overlay constellation-overlay hidden" onclick="if(event.target === this) closeEmotionalConstellation()">
         <div class="constellation-modal-wrapper">
             <!-- Dedicated Prominent Close Button in Top-Right -->
-            <button type="button" id="close-biopic-btn-floating" class="constellation-floating-close" title="Cerrar Constelación (Esc)" onclick="closeEmotionalConstellation()">
+            <button type="button" id="close-biopic-btn-floating" class="constellation-floating-close" title="Close Constellation (Esc)" onclick="closeEmotionalConstellation()">
                 <i class="fas fa-times"></i>
             </button>
 
@@ -588,11 +585,11 @@
                         </div>
                         
                         <div class="constellation-canvas-hint">
-                            <i class="fas fa-hand-pointer"></i> Haz clic en una estrella para escuchar su acorde
+                            <i class="fas fa-hand-pointer"></i> Click any star to resonate its harmonic chord
                         </div>
                     </div>
 
-                    <!-- Right: Active Star & Los Acordes Panel -->
+                    <!-- Right: Active Star & Harmonic Chords Panel -->
                     <div class="constellation-observatory-panel">
                         <!-- Active Star Inspection Card -->
                         <div class="observatory-star-card" id="observatory-star-card">
@@ -608,22 +605,22 @@
                             <div class="observatory-poster-row">
                                 <img id="biopic-active-poster" class="observatory-thumbnail" src="" alt="Star Film Poster">
                                 <div class="observatory-resonance-box">
-                                    <span class="resonance-label"><i class="fas fa-heart-pulse"></i> Efecto Emocional:</span>
+                                    <span class="resonance-label"><i class="fas fa-heart-pulse"></i> Emotional Resonance:</span>
                                     <p class="resonance-text" id="storyboard-emotional-beat">Solace &amp; Refuge</p>
-                                    <span class="resonance-label" style="margin-top: 4px;"><i class="fas fa-sparkles"></i> Transformación:</span>
-                                    <p class="resonance-note" id="biopic-voiceover-text">Refugio introspectivo ante la fatiga emocional.</p>
+                                    <span class="resonance-label" style="margin-top: 4px;"><i class="fas fa-sparkles"></i> Mood Transformation:</span>
+                                    <p class="resonance-note" id="biopic-voiceover-text">Introspective sanctuary dissolving emotional fatigue.</p>
                                 </div>
                             </div>
 
                             <button type="button" class="btn-play-star-note" id="play-active-star-note-btn" onclick="playActiveStarChord()">
-                                <i class="fas fa-volume-high"></i> Tocar Acorde de esta Película
+                                <i class="fas fa-volume-high"></i> Play Star Harmonic Chord
                             </button>
                         </div>
 
-                        <!-- Los Acordes Armónicos Lyria -->
+                        <!-- Harmonic Chords Lyria -->
                         <div class="lyria-architecture-card">
                             <div class="lyria-arch-header">
-                                <i class="fas fa-music"></i> <strong>Los Acordes Armónicos (Lyria)</strong>
+                                <i class="fas fa-music"></i> <strong>Harmonic Chords (Google Lyria)</strong>
                             </div>
                             <div class="harmonic-chords-row" id="constellation-chords-row">
                                 <!-- Populated dynamically with mood chords -->
@@ -633,7 +630,7 @@
                         <!-- Action Exit Row -->
                         <div class="constellation-bottom-actions">
                             <button type="button" class="btn-close-constellation-action" onclick="closeEmotionalConstellation()">
-                                <i class="fas fa-times"></i> Cerrar Constelación
+                                <i class="fas fa-times"></i> Close Constellation
                             </button>
                         </div>
                     </div>
@@ -794,7 +791,7 @@
         <p>Feel & Film &bull; Multi-Agent System Powered by Google ADK, Gemini 3.5 Flash &bull; Video & Music Powered by Google Veo & Lyria &bull; Data from TMDB & JustWatch.</p>
     </footer>
 
-    <script src="/static/app.js?v=20260829_05"></script>
+    <script src="/static/app.js?v=20260829_06"></script>
 </body>
 
 </html>
