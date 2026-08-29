@@ -48,59 +48,156 @@
         </header>
 
         <main>
-            <!-- Input Form Section -->
-            <section class="card input-section">
-                <h2>Configure Emotional Journey</h2>
-                <form id="mood-form">
-                    <div class="form-group">
-                        <label for="initial_mood">How are you feeling tonight?</label>
-                        <textarea id="initial_mood" class="glass-input" rows="3" placeholder="Describe your current mood, thoughts, fatigue, or excitement in detail..." required oninvalid="this.setCustomValidity('Please fill out this field.')" oninput="this.setCustomValidity('')"></textarea>
+        <main>
+            <!-- Hero Screening Room Banner (Click to launch or re-open ethereal interview) -->
+            <section class="card hero-screening-card">
+                <div class="hero-projector-glow"></div>
+                <div class="hero-content">
+                    <div class="hero-badge"><i class="fas fa-clapperboard"></i> The Private Screening Room</div>
+                    <h2>What does your soul crave tonight?</h2>
+                    <p class="hero-subtitle">Step into our cinema projection booth. Your autonomous 4-agent crew will interview your mood, music taste, and dietary preferences to craft tonight's bespoke experience.</p>
+                    <div class="hero-actions">
+                        <button type="button" id="start-screening-btn" class="btn btn-hero">
+                            <span class="btn-text"><i class="fas fa-ticket"></i> Begin Curated Screening Interview</span>
+                        </button>
+                        <button type="button" id="browse-vault-btn" class="btn btn-secondary">
+                            <i class="fas fa-box-archive"></i> Explore Cinémathèque Vault
+                        </button>
                     </div>
-
-                    <div class="form-group">
-                        <label for="desired_atmosphere">What kind of cinematic experience do you want to transition to?</label>
-                        <textarea id="desired_atmosphere" class="glass-input" rows="3" placeholder="e.g. Cozy comfort, deep philosophical thought, high adrenaline suspense, heart-warming laugh..." required oninvalid="this.setCustomValidity('Please fill out this field.')" oninput="this.setCustomValidity('')"></textarea>
-                    </div>
-
-                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div class="form-group">
-                            <label for="audience_age_range">Audience Demographic</label>
-                            <select id="audience_age_range" class="glass-input">
-                                <option value="Adults (18+)" selected>Adults (18+)</option>
-                                <option value="Kids (0-12)">Kids (0-12)</option>
-                                <option value="Teens (13-17)">Teens (13-17)</option>
-                                <option value="Mixed Family">Mixed Family</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="dietary_preference">Concession Preference (Learned)</label>
-                            <select id="dietary_preference" class="glass-input">
-                                <option value="" selected>Autonomous (Let Sommelier decide)</option>
-                                <option value="Non-alcoholic pairings only">Non-alcoholic drinks only</option>
-                                <option value="Vegan food only">Vegan / Plant-based</option>
-                                <option value="Sweet concession pairing">Sweet treats pairing</option>
-                                <option value="Savory gourmet pairing">Savory gourmet pairing</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="theme">Specific themes, directors, or eras? (optional)</label>
-                        <textarea id="theme" class="glass-input" rows="2" placeholder="e.g. 70s aesthetics, rainy neon cities, anime, mind-bending twists..."></textarea>
-                    </div>
-
-                    <button type="submit" id="generate-btn">
-                        <span class="btn-text"><i class="fas fa-magic"></i> Curate Complete Cinema Night (1-Click)</span>
-                        <div class="cinematic-spinner hidden">
-                            <span class="reel">🎞️</span>
-                            <span class="sp-text">Master Orchestrator coordinating sub-agents...</span>
-                        </div>
-                    </button>
-                </form>
-                <div class="disclaimer">
-                    <small>* The Master Orchestrator coordinates the Film Curator, Musicologist, and Sommelier in a single autonomous cycle, actively applying your learned preferences.</small>
                 </div>
             </section>
+
+            <!-- Ethereal Floating Cinema Screening Modal (The Screen Test) -->
+            <div id="screening-modal" class="modal-overlay screening-overlay hidden">
+                <div class="screening-projector-beam"></div>
+                <div class="screening-modal-card">
+                    <!-- Modal Header & Scene Stepper -->
+                    <div class="screening-modal-header">
+                        <div class="screening-stepper">
+                            <span class="stepper-dot active" data-step="0"><span class="dot-num">I</span> Mood</span>
+                            <span class="stepper-line"></span>
+                            <span class="stepper-dot" data-step="1"><span class="dot-num">II</span> Atmosphere</span>
+                            <span class="stepper-line"></span>
+                            <span class="stepper-dot" data-step="2"><span class="dot-num">III</span> Audience</span>
+                            <span class="stepper-line"></span>
+                            <span class="stepper-dot" data-step="3"><span class="dot-num">IV</span> Nuance</span>
+                        </div>
+                        <button type="button" id="close-screening-btn" class="modal-close-btn" title="Skip to dashboard">&times;</button>
+                    </div>
+
+                    <!-- Scene Form Wrapper -->
+                    <form id="screening-interview-form">
+                        <!-- Scene 1: Initial Mood -->
+                        <div class="scene-step active" id="scene-0">
+                            <div class="scene-meta">SCENE I &bull; INNER EMOTIONAL STATE</div>
+                            <h3 class="scene-question">How are you feeling tonight?</h3>
+                            <p class="scene-hint">Describe your current mood, fatigue, joy, or what's on your mind...</p>
+                            <textarea id="initial_mood" class="glass-input scene-textarea" rows="3" placeholder="e.g. Exhausted after a long week of work, craving quiet warmth and gentle comfort..."></textarea>
+                            
+                            <div class="scene-suggestions">
+                                <span class="suggestion-label"><i class="fas fa-sparkles"></i> Quick feelings:</span>
+                                <button type="button" class="scene-pill" data-target="initial_mood" data-val="Exhausted after a long week, craving comfort and peaceful warmth">Exhausted & Need Comfort</button>
+                                <button type="button" class="scene-pill" data-target="initial_mood" data-val="Melancholic and contemplative, looking for deep emotional beauty">Melancholic & Reflective</button>
+                                <button type="button" class="scene-pill" data-target="initial_mood" data-val="Stressed from daily routine, seeking gripping escape">Stressed & Craving Escape</button>
+                                <button type="button" class="scene-pill" data-target="initial_mood" data-val="Curious and adventurous, open to mind-bending stories">Curious & Adventurous</button>
+                            </div>
+                        </div>
+
+                        <!-- Scene 2: Desired Atmosphere -->
+                        <div class="scene-step hidden" id="scene-1">
+                            <div class="scene-meta">SCENE II &bull; EMOTIONAL DESTINATION</div>
+                            <h3 class="scene-question">Where do you want cinema to take you?</h3>
+                            <p class="scene-hint">What kind of atmosphere or emotional shift do you desire?</p>
+                            <textarea id="desired_atmosphere" class="glass-input scene-textarea" rows="3" placeholder="e.g. Uplifting warmth, poetic visuals, laughing out loud, heart-touching human connection..."></textarea>
+                            
+                            <div class="scene-suggestions">
+                                <span class="suggestion-label"><i class="fas fa-sparkles"></i> Destinations:</span>
+                                <button type="button" class="scene-pill" data-target="desired_atmosphere" data-val="Cozy, uplifting comfort and warm laughter">Cozy & Uplifting</button>
+                                <button type="button" class="scene-pill" data-target="desired_atmosphere" data-val="Deep philosophical thought and poetic cinematography">Poetic & Philosophical</button>
+                                <button type="button" class="scene-pill" data-target="desired_atmosphere" data-val="High-tension mystery and psychological suspense">Suspense & Mystery</button>
+                                <button type="button" class="scene-pill" data-target="desired_atmosphere" data-val="Warm, heartwarming romance and emotional comfort">Heartwarming Romance</button>
+                            </div>
+                        </div>
+
+                        <!-- Scene 3: Audience & Concession Preferences -->
+                        <div class="scene-step hidden" id="scene-2">
+                            <div class="scene-meta">SCENE III &bull; THE AUDIENCE & THE PALATE</div>
+                            <h3 class="scene-question">Who is joining tonight & what are your dietary rules?</h3>
+                            <p class="scene-hint">Our Sommelier and Film Curator tailor the movie rating and gastronomy to this.</p>
+                            
+                            <div class="scene-fields-grid">
+                                <div class="form-group">
+                                    <label for="audience_age_range"><i class="fas fa-users"></i> Audience Demographic</label>
+                                    <select id="audience_age_range" class="glass-input">
+                                        <option value="Adults (18+)" selected>Adults (18+)</option>
+                                        <option value="Kids (0-12)">Kids (0-12, Family-friendly G/PG)</option>
+                                        <option value="Teens (13-17)">Teens (13-17)</option>
+                                        <option value="Mixed Family">Mixed Family</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dietary_preference"><i class="fas fa-martini-glass"></i> Concession Pairing Rule</label>
+                                    <select id="dietary_preference" class="glass-input">
+                                        <option value="" selected>Autonomous (Let Sommelier decide)</option>
+                                        <option value="Non-alcoholic pairings only">Non-alcoholic drinks only (100% Mocktails/Sodas)</option>
+                                        <option value="Vegan food only">Vegan / Plant-based snacks only</option>
+                                        <option value="Sweet concession pairing">Sweet treats pairing</option>
+                                        <option value="Savory gourmet pairing">Savory gourmet pairing</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="scene-suggestions" style="margin-top: 15px;">
+                                <span class="suggestion-label"><i class="fas fa-utensils"></i> Instant dietary tags:</span>
+                                <button type="button" class="scene-pill" data-target="dietary_preference" data-val="Non-alcoholic pairings only">🚫 Non-alcoholic only</button>
+                                <button type="button" class="scene-pill" data-target="dietary_preference" data-val="Vegan food only">🌱 Vegan snacks only</button>
+                            </div>
+                        </div>
+
+                        <!-- Scene 4: Specific Directors, Studios, or Eras -->
+                        <div class="scene-step hidden" id="scene-3">
+                            <div class="scene-meta">SCENE IV &bull; CINEMATIC NUANCES (OPTIONAL)</div>
+                            <h3 class="scene-question">Any favorite director, studio, decade, or country?</h3>
+                            <p class="scene-hint">Leave blank for full AI freedom, or specify your cinematic tastes...</p>
+                            <input type="text" id="theme" class="glass-input scene-input" placeholder="e.g. Studio Ghibli, 80s cinema, Alfonso Cuarón, A24, Latin American cinema...">
+                            
+                            <div class="scene-suggestions">
+                                <span class="suggestion-label"><i class="fas fa-film"></i> Popular filters:</span>
+                                <button type="button" class="scene-pill" data-target="theme" data-val="Studio Ghibli">🌸 Studio Ghibli</button>
+                                <button type="button" class="scene-pill" data-target="theme" data-val="años 80">📼 80s Cinema</button>
+                                <button type="button" class="scene-pill" data-target="theme" data-val="años 90">🎞️ 90s Classics</button>
+                                <button type="button" class="scene-pill" data-target="theme" data-val="Alfonso Cuarón">🎬 Alfonso Cuarón</button>
+                                <button type="button" class="scene-pill" data-target="theme" data-val="Quentin Tarantino">📽️ Quentin Tarantino</button>
+                                <button type="button" class="scene-pill" data-target="theme" data-val="A24">⚡ A24 Indie</button>
+                                <button type="button" class="scene-pill" data-target="theme" data-val="cine latinoamericano">🌎 Latin American Cinema</button>
+                            </div>
+                        </div>
+
+                        <!-- Modal Navigation Footer -->
+                        <div class="screening-modal-footer">
+                            <button type="button" id="prev-scene-btn" class="btn btn-scene-nav hidden">
+                                <i class="fas fa-chevron-left"></i> Previous Scene
+                            </button>
+                            
+                            <div class="footer-center-hint">
+                                <span id="keyboard-hint"><i class="fas fa-keyboard"></i> Press <kbd>Enter ↵</kbd> to continue</span>
+                            </div>
+
+                            <button type="button" id="next-scene-btn" class="btn btn-scene-next">
+                                <span id="next-scene-text">Next Scene <i class="fas fa-chevron-right"></i></span>
+                            </button>
+
+                            <button type="submit" id="submit-screening-btn" class="btn btn-scene-submit hidden">
+                                <span class="btn-text"><i class="fas fa-wand-magic-sparkles"></i> Orchestrate Cinema Night</span>
+                                <div class="cinematic-spinner hidden">
+                                    <span class="reel">🎞️</span>
+                                    <span class="sp-text">Coordinating 4 agents...</span>
+                                </div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <!-- Results Section: Unified Cinema Night Package -->
             <section class="results-section hidden" id="results">

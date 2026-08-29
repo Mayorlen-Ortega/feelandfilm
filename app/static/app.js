@@ -379,19 +379,234 @@ function detectUserCountry() {
     }
 }
 
-document.getElementById('mood-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const btn = document.getElementById('generate-btn');
-    const btnText = btn.querySelector('.btn-text');
-    const spinner = btn.querySelector('.cinematic-spinner');
+// ===========================================================================
+// Ethereal Cinema Screening Interview Modal Controller ("The Screen Test")
+// ===========================================================================
+
+let currentSceneIndex = 0;
+const totalScenes = 4;
+
+function initScreeningInterviewModal() {
+    const modal = document.getElementById('screening-modal');
+    const startBtn = document.getElementById('start-screening-btn');
+    const closeBtn = document.getElementById('close-screening-btn');
+    const browseVaultBtn = document.getElementById('browse-vault-btn');
+    const nextBtn = document.getElementById('next-scene-btn');
+    const prevBtn = document.getElementById('prev-scene-btn');
+    const submitBtn = document.getElementById('submit-screening-btn');
+    const form = document.getElementById('screening-interview-form');
+
+    // 1. Open Modal Trigger
+    if (startBtn) {
+        startBtn.addEventListener('click', () => {
+            openScreeningModal();
+        });
+    }
+
+    // 2. Browse Vault Shortcut
+    if (browseVaultBtn) {
+        browseVaultBtn.addEventListener('click', () => {
+            closeScreeningModal();
+            const archiveSection = document.getElementById('cinematheque-section');
+            if (archiveSection) archiveSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    // 3. Close Modal Trigger
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            closeScreeningModal();
+        });
+    }
+
+    // 4. Close on clicking outside modal card
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeScreeningModal();
+        });
+    }
+
+    // 5. Scene Navigation
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (validateCurrentScene()) {
+                goToScene(currentSceneIndex + 1);
+            }
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentSceneIndex > 0) {
+                goToScene(currentSceneIndex - 1);
+            }
+        });
+    }
+
+    // 6. Quick Suggestion Pills
+    const pills = document.querySelectorAll('.scene-pill');
+    pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            const targetId = pill.dataset.target;
+            const val = pill.dataset.val;
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                if (targetEl.tagName === 'SELECT') {
+                    targetEl.value = val;
+                } else {
+                    targetEl.value = val;
+                }
+                // Visual pulse on target
+                targetEl.focus();
+                targetEl.style.borderColor = 'var(--accent)';
+                setTimeout(() => { targetEl.style.borderColor = ''; }, 800);
+            }
+        });
+    });
+
+    // 7. Global Keyboard Navigation (Enter to advance, Esc to close)
+    document.addEventListener('keydown', (e) => {
+        if (!modal || modal.classList.contains('hidden')) return;
+
+        if (e.key === 'Escape') {
+            closeScreeningModal();
+        } else if (e.key === 'Enter' && !e.shiftKey) {
+            // Only handle Enter if not in textarea with shift
+            if (e.target && e.target.classList.contains('scene-textarea') && e.shiftKey) return;
+
+            e.preventDefault();
+            if (currentSceneIndex < totalScenes - 1) {
+                if (validateCurrentScene()) {
+                    goToScene(currentSceneIndex + 1);
+                }
+            } else {
+                // On last scene, trigger submission
+                if (form) form.requestSubmit();
+            }
+        }
+    });
+
+    // 8. Form Submission (Orchestration Cycle)
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await executeCinemaOrchestration();
+        });
+    }
+
+    // Automatically launch screening modal on fresh session
+    setTimeout(() => {
+        const resultsSection = document.getElementById('results');
+        if (resultsSection && resultsSection.classList.contains('hidden')) {
+            openScreeningModal();
+        }
+    }, 400);
+}
+
+function openScreeningModal() {
+    const modal = document.getElementById('screening-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    goToScene(0);
+}
+
+function closeScreeningModal() {
+    const modal = document.getElementById('screening-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function goToScene(index) {
+    if (index < 0 || index >= totalScenes) return;
+    currentSceneIndex = index;
+
+    // Update scene visibility
+    for (let i = 0; i < totalScenes; i++) {
+        const sceneEl = document.getElementById(`scene-${i}`);
+        if (sceneEl) {
+            if (i === index) {
+                sceneEl.classList.remove('hidden');
+                sceneEl.classList.add('active');
+                // Focus active input
+                const input = sceneEl.querySelector('.glass-input');
+                if (input) setTimeout(() => input.focus(), 150);
+            } else {
+                sceneEl.classList.add('hidden');
+                sceneEl.classList.remove('active');
+            }
+        }
+    }
+
+    // Update Stepper Dots
+    const dots = document.querySelectorAll('.stepper-dot');
+    dots.forEach((dot, i) => {
+        dot.classList.remove('active', 'completed');
+        if (i === index) {
+            dot.classList.add('active');
+        } else if (i < index) {
+            dot.classList.add('completed');
+        }
+    });
+
+    // Update Nav Buttons
+    const prevBtn = document.getElementById('prev-scene-btn');
+    const nextBtn = document.getElementById('next-scene-btn');
+    const submitBtn = document.getElementById('submit-screening-btn');
+    const keyboardHint = document.getElementById('keyboard-hint');
+
+    if (prevBtn) {
+        if (index > 0) prevBtn.classList.remove('hidden');
+        else prevBtn.classList.add('hidden');
+    }
+
+    if (index === totalScenes - 1) {
+        if (nextBtn) nextBtn.classList.add('hidden');
+        if (submitBtn) submitBtn.classList.remove('hidden');
+        if (keyboardHint) keyboardHint.innerHTML = `<i class="fas fa-sparkles"></i> Press <kbd>Enter ↵</kbd> to Curate Night`;
+    } else {
+        if (nextBtn) nextBtn.classList.remove('hidden');
+        if (submitBtn) submitBtn.classList.add('hidden');
+        if (keyboardHint) keyboardHint.innerHTML = `<i class="fas fa-keyboard"></i> Press <kbd>Enter ↵</kbd> for Scene ${['II', 'III', 'IV'][index]}`;
+    }
+}
+
+function validateCurrentScene() {
+    if (currentSceneIndex === 0) {
+        const mood = document.getElementById('initial_mood');
+        if (!mood || !mood.value.trim()) {
+            mood.focus();
+            mood.placeholder = "Please share a few words about how you feel...";
+            mood.style.borderColor = "#e74c3c";
+            setTimeout(() => { mood.style.borderColor = ''; }, 1200);
+            return false;
+        }
+    } else if (currentSceneIndex === 1) {
+        const atm = document.getElementById('desired_atmosphere');
+        if (!atm || !atm.value.trim()) {
+            atm.focus();
+            atm.placeholder = "Where do you want cinema to take you tonight?";
+            atm.style.borderColor = "#e74c3c";
+            setTimeout(() => { atm.style.borderColor = ''; }, 1200);
+            return false;
+        }
+    }
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// Autonomous Multi-Agent Orchestration Execution
+// ---------------------------------------------------------------------------
+
+async function executeCinemaOrchestration() {
+    const submitBtn = document.getElementById('submit-screening-btn');
+    const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+    const spinner = submitBtn ? submitBtn.querySelector('.cinematic-spinner') : null;
     const resultsSection = document.getElementById('results');
-    
-    btn.disabled = true;
-    btnText.classList.add('hidden');
-    spinner.classList.remove('hidden');
-    resultsSection.classList.add('hidden');
-    
+
+    if (submitBtn) submitBtn.disabled = true;
+    if (btnText) btnText.classList.add('hidden');
+    if (spinner) spinner.classList.remove('hidden');
+    if (resultsSection) resultsSection.classList.add('hidden');
+
     window.sessionRecommendedFilms = window.sessionRecommendedFilms || [];
     const allExcluded = Array.from(new Set([...(window.excludedFilms || []), ...(window.sessionRecommendedFilms || [])]));
 
@@ -423,23 +638,30 @@ document.getElementById('mood-form').addEventListener('submit', async (e) => {
 
         const data = await response.json();
         currentSessionData = data;
+
+        // Close ethereal modal smoothly
+        closeScreeningModal();
+
+        // Render complete Cinema Package
         renderCinemaNightPackage(data);
         
         // Refresh Cinémathèque
         loadCinematheque();
         
-        resultsSection.classList.remove('hidden');
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        if (resultsSection) {
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
 
     } catch (error) {
         alert("Failed to orchestrate cinema night: " + error.message);
         console.error(error);
     } finally {
-        btn.disabled = false;
-        btnText.classList.remove('hidden');
-        spinner.classList.add('hidden');
+        if (submitBtn) submitBtn.disabled = false;
+        if (btnText) btnText.classList.remove('hidden');
+        if (spinner) spinner.classList.add('hidden');
     }
-});
+}
 
 function renderCinemaNightPackage(response) {
     const container = document.getElementById('slate-container');
@@ -844,6 +1066,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAuth();
     loadCinematheque();
     initFeedbackControls();
+    initScreeningInterviewModal();
 
     const drawerTabs = document.querySelectorAll('.drawer-tab');
     drawerTabs.forEach(tab => {
