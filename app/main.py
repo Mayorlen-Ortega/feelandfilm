@@ -23,8 +23,10 @@ from app.agent import (
     soundtrack_agent, 
     sommelier_agent,
     master_orchestrator_agent,
+    cinema_courier_agent,
     orchestrate_cinematic_experience,
     generate_emotional_biopic_storyboard,
+    generate_cinema_epistle,
     run_adk_agent,
     parse_json_safely
 )
@@ -704,6 +706,94 @@ async def generate_biopic_trailer_endpoint(request: BiopicRequest):
     """
     result = await generate_emotional_biopic_storyboard(request.films, request.user_name)
     return result
+
+
+class SendCinemaEmailRequest(BaseModel):
+    recipient_email: str
+    user_name: Optional[str] = "Cinephile"
+    package_data: dict
+
+
+@app.post("/api/send-cinema-email")
+async def send_cinema_email(request: SendCinemaEmailRequest):
+    """
+    Drafts and dispatches a personalized Cinema Night Epistle using the Cinema Courier Agent.
+    """
+    epistle_result = await generate_cinema_epistle(request.package_data, request.user_name)
+    epistle = epistle_result.get("epistle", {})
+
+    smtp_host = os.getenv("SMTP_HOST", "")
+    smtp_port = int(os.getenv("SMTP_PORT", "587"))
+    smtp_user = os.getenv("SMTP_USER", "")
+    smtp_pass = os.getenv("SMTP_PASSWORD", "")
+    from_email = os.getenv("SMTP_FROM", smtp_user or "concierge@feelandfilm.ai")
+    dispatched = False
+    dispatch_note = "Cinema Epistle drafted by AI Concierge."
+
+    if smtp_host and smtp_user and smtp_pass:
+        try:
+            import smtplib
+            from email.mime.text import MIMEText
+            from email.mime.multipart import MIMEMultipart
+
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = epistle.get("subject", "🎬 Your Private Screening Tonight")
+            msg["From"] = f"Feel & Film Concierge <{from_email}>"
+            msg["To"] = request.recipient_email
+
+            film_info = epistle.get("film_showcase", {})
+            somm_info = epistle.get("sommelier_prep_guide", {})
+
+            html_body = f"""
+            <div style="background:#0d0a08; color:#f1f5f9; font-family:'Helvetica Neue', Arial, sans-serif; padding:30px; border-radius:8px; max-width:600px; margin:auto; border:1.5px solid #d4af37;">
+                <div style="text-align:center; border-bottom:1px solid #d4af37; padding-bottom:15px; margin-bottom:20px;">
+                    <h2 style="font-family:Georgia, serif; color:#d4af37; letter-spacing:2px; margin:0;">FEEL &amp; FILM</h2>
+                    <p style="color:#94a3b8; font-size:12px; margin:5px 0 0 0;">PRIVATE CINEMA NIGHT EPISTLE</p>
+                </div>
+                <p style="font-size:16px; color:#fff; font-weight:600;">{epistle.get('greeting', 'Dear Cinephile,')}</p>
+                <p style="font-style:italic; color:#cbd5e1; line-height:1.6;">{epistle.get('curator_epistle', '')}</p>
+                
+                <div style="background:#181410; border-left:3px solid #d4af37; padding:15px; margin:20px 0; border-radius:0 6px 6px 0;">
+                    <h3 style="color:#d4af37; margin:0 0 6px 0; font-family:Georgia, serif;">🎬 {film_info.get('title', '')}</h3>
+                    <p style="color:#94a3b8; font-size:13px; margin:0 0 8px 0;">Directed by {film_info.get('director', '')} &bull; {film_info.get('runtime', '')}</p>
+                    <p style="color:#e2e8f0; font-size:14px; margin:0; line-height:1.4;">{film_info.get('curator_reason', '')}</p>
+                </div>
+
+                <div style="background:#121814; border:1px solid #10b981; padding:14px 16px; margin:15px 0; border-radius:6px;">
+                    <h4 style="color:#a7f3d0; margin:0 0 8px 0; font-size:14px;">🍸 Concession Preparation Guide</h4>
+                    <p style="color:#f1f5f9; font-size:13px; margin:0 0 6px 0;"><strong>Drink:</strong> {somm_info.get('drink_name', '')} — {somm_info.get('drink_recipe_steps', '')}</p>
+                    <p style="color:#f1f5f9; font-size:13px; margin:0;"><strong>Snack:</strong> {somm_info.get('snack_name', '')} — {somm_info.get('snack_serving_tip', '')}</p>
+                </div>
+
+                <p style="color:#94a3b8; font-size:13px; margin-top:16px;">🎵 <strong>Acoustic Atmosphere:</strong> {epistle.get('soundtrack_atmosphere_tip', '')}</p>
+                <p style="color:#d4af37; font-size:13px; margin-top:8px;">📺 <strong>Where to Stream:</strong> {epistle.get('streaming_watch_guide', '')}</p>
+
+                <div style="border-top:1px dashed #d4af37; padding-top:15px; margin-top:25px; text-align:center; color:#94a3b8; font-size:12px;">
+                    <p style="margin:0; font-style:italic;">{epistle.get('valediction', 'Warmly curated by Your Feel & Film AI Crew')}</p>
+                </div>
+            </div>
+            """
+
+            msg.attach(MIMEText(html_body, "html"))
+
+            server = smtplib.SMTP(smtp_host, smtp_port)
+            server.starttls()
+            server.login(smtp_user, smtp_pass)
+            server.send_message(msg)
+            server.quit()
+            dispatched = True
+            dispatch_note = f"Dispatched live to {request.recipient_email}."
+        except Exception as mail_err:
+            print("SMTP delivery notice:", mail_err)
+            dispatch_note = f"Epistle prepared (SMTP notice: {mail_err})."
+
+    return {
+        "status": "success",
+        "dispatched": dispatched,
+        "recipient_email": request.recipient_email,
+        "dispatch_note": dispatch_note,
+        "epistle": epistle
+    }
 
 
 @app.get("/api/stats")

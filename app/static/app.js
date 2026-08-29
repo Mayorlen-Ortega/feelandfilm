@@ -457,6 +457,10 @@ function attachPillClickListeners() {
                 targetEl.focus();
                 targetEl.style.borderColor = 'var(--accent)';
                 setTimeout(() => { targetEl.style.borderColor = ''; }, 800);
+
+                if (targetId === 'desired_atmosphere' || targetId === 'initial_mood') {
+                    updateScene4Pills();
+                }
             }
         };
     });
@@ -533,54 +537,108 @@ function refreshScreeningPills() {
         `;
     }
 
-    // 4. Scene IV: Directors, Studios, Eras & Genres (Dynamic from history + rotating)
-    const nuancContainer = document.getElementById('scene-3-pills');
-    if (nuancContainer) {
-        const pastDirectors = (allArchiveRecords || []).map(r => r.film_director).filter(d => d && d !== 'TMDB' && d !== 'Unknown' && d !== 'Cinematic Visionary');
-        const uniqueDirectors = Array.from(new Set(pastDirectors));
+    // 4. Scene IV: Directors, Studios, Eras & Genres (Strictly coherent with Desired Atmosphere)
+    updateScene4Pills();
+    attachPillClickListeners();
+}
 
-        const globalAuteurs = [
+function updateScene4Pills() {
+    const nuancContainer = document.getElementById('scene-3-pills');
+    if (!nuancContainer) return;
+
+    const atmVal = (document.getElementById('desired_atmosphere')?.value || '').toLowerCase();
+    const moodVal = (document.getElementById('initial_mood')?.value || '').toLowerCase();
+    const combined = `${moodVal} ${atmVal}`;
+
+    let curatedPills = [];
+
+    if (combined.includes('thrill') || combined.includes('suspense') || combined.includes('myster') || combined.includes('crim') || combined.includes('twist') || combined.includes('noir') || combined.includes('tension') || combined.includes('detective') || combined.includes('trailler') || combined.includes('trailer')) {
+        curatedPills = [
+            { label: "🎬 David Fincher", val: "David Fincher" },
+            { label: "🕵️ Denis Villeneuve", val: "Denis Villeneuve" },
+            { label: "🔪 Alfred Hitchcock", val: "Alfred Hitchcock" },
+            { label: "⚡ A24 Thrillers", val: "A24 psychological thriller" },
+            { label: "📼 90s Psychological Thrillers", val: "90s psychological thriller" },
+            { label: "🩸 Neo-Noir Mystery", val: "neo-noir mystery" },
+            { label: "🇰🇷 Bong Joon-ho", val: "Bong Joon-ho" }
+        ];
+    } else if (combined.includes('horror') || combined.includes('terror') || combined.includes('dark') || combined.includes('miedo') || combined.includes('scary')) {
+        curatedPills = [
+            { label: "👁️ Guillermo del Toro", val: "Guillermo del Toro" },
+            { label: "🕯️ Jordan Peele", val: "Jordan Peele" },
+            { label: "🩸 Ari Aster", val: "Ari Aster" },
+            { label: "⚡ A24 Horror", val: "A24 psychological horror" },
+            { label: "📼 80s Supernatural", val: "80s supernatural horror" },
+            { label: "🎬 John Carpenter", val: "John Carpenter" }
+        ];
+    } else if (combined.includes('cozy') || combined.includes('comfort') || combined.includes('uplift') || combined.includes('laugh') || combined.includes('humor') || combined.includes('comed') || combined.includes('animat') || combined.includes('warm') || combined.includes('family')) {
+        curatedPills = [
+            { label: "🌸 Studio Ghibli", val: "Studio Ghibli" },
+            { label: "✨ Wes Anderson", val: "Wes Anderson" },
+            { label: "🐉 Hayao Miyazaki", val: "Hayao Miyazaki" },
+            { label: "🎨 Pixar Classics", val: "Pixar animation" },
+            { label: "📼 80s Feel-Good", val: "80s feel-good comedy" },
+            { label: "🎞️ 90s Family Adventures", val: "90s family adventure" },
+            { label: "🎭 French Comedy", val: "French auteur comedy" }
+        ];
+    } else if (combined.includes('poetic') || combined.includes('philosop') || combined.includes('contemplat') || combined.includes('calm') || combined.includes('melanchol') || combined.includes('drama') || combined.includes('art') || combined.includes('deep')) {
+        curatedPills = [
+            { label: "🎬 Alfonso Cuarón", val: "Alfonso Cuarón" },
+            { label: "🌊 Andrei Tarkovsky", val: "Andrei Tarkovsky" },
+            { label: "⚡ A24 Art-House", val: "A24 contemplative indie" },
+            { label: "🎞️ Wong Kar-wai", val: "Wong Kar-wai" },
+            { label: "🌎 Cine Latinoamericano", val: "cine latinoamericano" },
+            { label: "🗼 Nouvelle Vague", val: "French New Wave" },
+            { label: "🌿 Hirokazu Kore-eda", val: "Hirokazu Kore-eda" }
+        ];
+    } else if (combined.includes('romanc') || combined.includes('love') || combined.includes('amor') || combined.includes('heartwarming') || combined.includes('intima')) {
+        curatedPills = [
+            { label: "💖 Richard Linklater", val: "Richard Linklater" },
+            { label: "☕ Nora Ephron", val: "Nora Ephron" },
+            { label: "🎞️ 90s Rom-Coms", val: "90s romantic comedy" },
+            { label: "🌸 Makoto Shinkai", val: "Makoto Shinkai" },
+            { label: "🗼 French Romance", val: "French romance cinema" },
+            { label: "🎬 Céline Sciamma", val: "Céline Sciamma" }
+        ];
+    } else if (combined.includes('scifi') || combined.includes('sci-fi') || combined.includes('space') || combined.includes('futur') || combined.includes('mind-bend') || combined.includes('surreal') || combined.includes('cosmic')) {
+        curatedPills = [
+            { label: "🚀 Christopher Nolan", val: "Christopher Nolan" },
+            { label: "🌌 Denis Villeneuve", val: "Denis Villeneuve" },
+            { label: "🛸 Stanley Kubrick", val: "Stanley Kubrick" },
+            { label: "⚡ Cyberpunk & Dystopia", val: "cyberpunk scifi" },
+            { label: "📼 80s Sci-Fi", val: "80s science fiction classics" },
+            { label: "🎬 Ridley Scott", val: "Ridley Scott" }
+        ];
+    } else if (combined.includes('action') || combined.includes('energet') || combined.includes('adrenalin') || combined.includes('epic') || combined.includes('fight') || combined.includes('excit')) {
+        curatedPills = [
+            { label: "📽️ Quentin Tarantino", val: "Quentin Tarantino" },
+            { label: "🔥 George Miller", val: "George Miller" },
+            { label: "🥋 Johnnie To", val: "Johnnie To" },
+            { label: "📼 80s Action", val: "80s high-octane action" },
+            { label: "🇰🇷 Korean Action Thrillers", val: "Korean action thriller" },
+            { label: "🎬 Edgar Wright", val: "Edgar Wright" }
+        ];
+    } else {
+        curatedPills = [
+            { label: "⚡ A24 Indie", val: "A24" },
+            { label: "🎬 Alfonso Cuarón", val: "Alfonso Cuarón" },
             { label: "🌸 Studio Ghibli", val: "Studio Ghibli" },
             { label: "📼 Años 80", val: "años 80" },
             { label: "🎞️ Años 90", val: "años 90" },
-            { label: "🎬 Alfonso Cuarón", val: "Alfonso Cuarón" },
-            { label: "📽️ Quentin Tarantino", val: "Quentin Tarantino" },
-            { label: "⚡ A24 Indie", val: "A24" },
             { label: "🌎 Cine Latinoamericano", val: "cine latinoamericano" },
-            { label: "🎷 Neo-Noir & Jazz", val: "neo-noir jazz aesthetic" },
-            { label: "🐉 Hayao Miyazaki", val: "Hayao Miyazaki" },
-            { label: "⏳ Denis Villeneuve", val: "Denis Villeneuve" },
-            { label: "👁️ Guillermo del Toro", val: "Guillermo del Toro" },
-            { label: "🇫🇷 Cine Francés", val: "cine frances de autor" },
-            { label: "🍜 Cine Japonés", val: "cine japones" },
-            { label: "🌌 Christopher Nolan", val: "Christopher Nolan" }
+            { label: "📽️ Quentin Tarantino", val: "Quentin Tarantino" }
         ];
-
-        let personalizedList = [];
-        
-        // Prioritize up to 2 past explored directors
-        uniqueDirectors.slice(0, 2).forEach(dir => {
-            personalizedList.push({ label: `🎬 ${dir}`, val: dir });
-        });
-
-        // Add non-duplicate rotating suggestions
-        const remaining = globalAuteurs.filter(g => !personalizedList.some(p => p.val.toLowerCase() === g.val.toLowerCase()));
-        
-        // Shuffle remaining to keep suggestions freshly rotating
-        const shuffled = remaining.sort(() => 0.5 - Math.random());
-        
-        const finalList = [...personalizedList, ...shuffled].slice(0, 7);
-
-        nuancContainer.innerHTML = `
-            <span class="suggestion-label">
-                <i class="fas fa-film"></i> ${uniqueDirectors.length > 0 ? 'Adapted to your taste' : 'Quick filters'} 
-                <span class="suggestion-badge"><i class="fas fa-brain"></i> Generated from your interactions</span>:
-            </span>
-            ${finalList.map(n => `
-                <button type="button" class="scene-pill" data-target="theme" data-val="${n.val}">${n.label}</button>
-            `).join('')}
-        `;
     }
+
+    nuancContainer.innerHTML = `
+        <span class="suggestion-label">
+            <i class="fas fa-film"></i> Tailored to your destination
+            <span class="suggestion-badge"><i class="fas fa-brain"></i> Dynamic Nuance Matching</span>:
+        </span>
+        ${curatedPills.map(n => `
+            <button type="button" class="scene-pill" data-target="theme" data-val="${n.val}">${n.label}</button>
+        `).join('')}
+    `;
 
     attachPillClickListeners();
 }
@@ -643,6 +701,7 @@ function goToScene(index) {
     }
 
     if (index === totalScenes - 1) {
+        updateScene4Pills();
         updateSceneAuthBox();
         if (nextBtn) nextBtn.classList.add('hidden');
         if (keyboardHint) keyboardHint.innerHTML = `<i class="fas fa-sparkles"></i> Press <kbd>Enter ↵</kbd> to Launch`;
@@ -889,8 +948,11 @@ function renderCinemaNightPackage(response) {
             </div>
         </div>
 
-        <!-- Behind the Scenes Curious Hook Button -->
-        <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
+        <!-- Action Row: Email Dispatch & Behind the Scenes -->
+        <div style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <button type="button" class="btn-email-dispatch" onclick="openCinemaEmailModal()">
+                <i class="fas fa-envelope-open-text"></i> <strong>Send Package to My Email</strong>
+            </button>
             <button type="button" class="inspect-crew-btn" onclick="scrollToTrace()">
                 <i class="fas fa-clapperboard"></i> <strong>Behind the Scenes:</strong> See how your 4 agents collaborated
             </button>
@@ -913,6 +975,136 @@ function renderCinemaNightPackage(response) {
     // 5. Render Live Agent Trace in Terminal
     renderAgentTrace(response.agent_trace || []);
 }
+
+// ---------------------------------------------------------------------------
+// Cinema Courier & Email Dispatch Modal Handlers
+// ---------------------------------------------------------------------------
+
+let lastDraftedEpistleText = "";
+
+function openCinemaEmailModal() {
+    const modal = document.getElementById('cinema-email-modal');
+    const emailInput = document.getElementById('epistle-recipient-email');
+    const resultBox = document.getElementById('epistle-result-box');
+    const form = document.getElementById('cinema-email-form');
+
+    if (emailInput && currentUser && currentUser.email && currentUser.email !== 'guest') {
+        emailInput.value = currentUser.email;
+    }
+    if (resultBox) resultBox.classList.add('hidden');
+    if (form) form.classList.remove('hidden');
+    if (modal) modal.classList.remove('hidden');
+}
+
+window.openCinemaEmailModal = openCinemaEmailModal;
+
+function closeCinemaEmailModal() {
+    const modal = document.getElementById('cinema-email-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+window.closeCinemaEmailModal = closeCinemaEmailModal;
+
+async function handleSendCinemaEmail(e) {
+    if (e) e.preventDefault();
+    if (!currentSessionData) {
+        alert("No active cinema package found to dispatch.");
+        return;
+    }
+
+    const emailInput = document.getElementById('epistle-recipient-email');
+    const sendBtn = document.getElementById('epistle-send-btn');
+    const resultBox = document.getElementById('epistle-result-box');
+    const previewEl = document.getElementById('epistle-letter-preview');
+    const statusText = document.getElementById('epistle-status-text');
+    const form = document.getElementById('cinema-email-form');
+
+    const targetEmail = (emailInput?.value || '').trim();
+    if (!targetEmail) return;
+
+    const originalHtml = sendBtn.innerHTML;
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cinema Courier Drafting...';
+
+    try {
+        const res = await fetch('/api/send-cinema-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                recipient_email: targetEmail,
+                user_name: (currentUser && currentUser.name) ? currentUser.name : "Cinephile",
+                package_data: currentSessionData
+            })
+        });
+
+        const data = await res.json();
+        if (data.status === 'success' && data.epistle) {
+            const ep = data.epistle;
+            const filmInfo = ep.film_showcase || {};
+            const sommInfo = ep.sommelier_prep_guide || {};
+
+            lastDraftedEpistleText = `${ep.subject || 'Cinema Night'}\n\n${ep.greeting || ''}\n\n${ep.curator_epistle || ''}\n\n🎬 FEATURE FILM: ${filmInfo.title || ''} (${filmInfo.runtime || ''})\nDirector: ${filmInfo.director || ''}\n${filmInfo.curator_reason || ''}\n\n🍸 CONCESSION PAIRING:\n- Drink: ${sommInfo.drink_name || ''} (${sommInfo.drink_recipe_steps || ''})\n- Snack: ${sommInfo.snack_name || ''} (${sommInfo.snack_serving_tip || ''})\n\n🎵 ACOUSTIC ATMOSPHERE:\n${ep.soundtrack_atmosphere_tip || ''}\n\n📺 STREAMING GUIDE:\n${ep.streaming_watch_guide || ''}\n\n${ep.valediction || ''}`;
+
+            if (previewEl) {
+                previewEl.innerHTML = `
+                    <h4>${ep.subject || '🎬 Your Cinema Night Package'}</h4>
+                    <p style="font-weight: 600; color: #fff; margin-bottom: 6px;">${ep.greeting || 'Dear Cinephile,'}</p>
+                    <p style="margin-bottom: 12px;">${ep.curator_epistle || ''}</p>
+                    
+                    <div class="epistle-highlight-box">
+                        <strong style="color: var(--accent);">🎬 ${filmInfo.title || 'Selected Film'}</strong> (${filmInfo.runtime || ''})<br>
+                        <span style="color: #94a3b8; font-size: 0.8rem;">Directed by ${filmInfo.director || ''}</span>
+                        <p style="margin: 4px 0 0 0; font-size: 0.85rem;">${filmInfo.curator_reason || ''}</p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 10px; border-radius: 6px; margin: 10px 0;">
+                        <strong style="color: #a7f3d0; font-size: 0.85rem;">🍸 Concession Preparation:</strong>
+                        <p style="margin: 3px 0; font-size: 0.82rem;"><strong>${sommInfo.drink_name || ''}:</strong> ${sommInfo.drink_recipe_steps || ''}</p>
+                        <p style="margin: 3px 0; font-size: 0.82rem;"><strong>${sommInfo.snack_name || ''}:</strong> ${sommInfo.snack_serving_tip || ''}</p>
+                    </div>
+
+                    <p style="font-size: 0.82rem; color: #94a3b8; margin: 6px 0;">🎵 <strong>Atmosphere:</strong> ${ep.soundtrack_atmosphere_tip || ''}</p>
+                    <p style="font-size: 0.82rem; color: var(--accent); margin: 6px 0;">📺 <strong>Where to Stream:</strong> ${ep.streaming_watch_guide || ''}</p>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-top: 10px; font-style: italic; text-align: center;">${ep.valediction || ''}</p>
+                `;
+            }
+
+            if (statusText) {
+                statusText.innerText = data.dispatched ? `Dispatched live to ${targetEmail}!` : `Epistle drafted by AI Concierge (Ready to copy).`;
+            }
+
+            if (form) form.classList.add('hidden');
+            if (resultBox) resultBox.classList.remove('hidden');
+        } else {
+            alert("Could not draft epistle at this time. Please try again.");
+        }
+    } catch (err) {
+        console.error("Failed to send cinema email:", err);
+        alert("Error dispatching email: " + err.message);
+    } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = originalHtml;
+    }
+}
+
+window.handleSendCinemaEmail = handleSendCinemaEmail;
+
+function copyEpistleToClipboard() {
+    if (!lastDraftedEpistleText) return;
+    navigator.clipboard.writeText(lastDraftedEpistleText).then(() => {
+        const btn = document.getElementById('copy-epistle-btn');
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied to Clipboard!';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-copy"></i> Copy Letter Text';
+            }, 2000);
+        }
+    }).catch(err => {
+        console.error("Clipboard copy error:", err);
+    });
+}
+
+window.copyEpistleToClipboard = copyEpistleToClipboard;
 
 // ---------------------------------------------------------------------------
 // Behind the Scenes & Live Agent Trace Renderer

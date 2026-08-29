@@ -28,6 +28,7 @@ Traditional movie recommenders rely on rigid dropdowns or generic collaborative 
 5. **Continuous Memory & Learning Loop:** Actively learns user feedback across sessions, generating explicit collaborative notes (*"I remembered you prefer non-alcoholic pairings..."*).
 6. **The Cinémathèque Archive & Watched Tracker:** Vintage brass filing vault with multi-criteria sorting (*Recent, Oldest, Highest Rated, Watched First, Unwatched First, Title A-Z*) and emotional drawer filters (*Watched, Unwatched, 5★ Rated, Moods*).
 7. **35mm Director's Storyboard & Editorial Visual Notebook (Google Gemma 2, Veo & Lyria):** Milestone progress bar (3 watched films) unlocking an auteur celluloid notebook (*Carnet de Réalisation*) featuring Google Gemma 2 director remarks, Google Veo 35mm cinematography specs, Google Lyria musical score leitmotifs, and an emotional color palette swatch.
+8. **Cinema Courier & Epistle Agent (Google Gemini Concierge):** Drafts and dispatches bespoke cinema night letters to user email with curator reflections, step-by-step concession recipes, acoustic setting tips, and streaming links.
 
 ---
 

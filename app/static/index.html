@@ -655,6 +655,46 @@
         </div>
     </div>
 
+    <!-- Cinema Courier / Email Dispatch Modal (Google Gemini Concierge) -->
+    <div id="cinema-email-modal" class="modal-overlay hidden">
+        <div class="modal-card epistle-modal-card">
+            <div class="modal-header">
+                <h3><i class="fas fa-envelope-open-text" style="color: var(--accent);"></i> Cinema Package Email Dispatch</h3>
+                <button type="button" id="close-email-modal-btn" class="modal-close-btn" onclick="closeCinemaEmailModal()">&times;</button>
+            </div>
+            <p class="modal-subtitle">Your AI Concierge (Cinema Courier Agent) will compose a personalized letter with movie curation, gastronomy recipe steps, and streaming links.</p>
+
+            <form id="cinema-email-form" onsubmit="handleSendCinemaEmail(event)">
+                <div class="form-group" style="text-align: left; margin-bottom: 14px;">
+                    <label for="epistle-recipient-email"><i class="fas fa-paper-plane"></i> Recipient Email Address</label>
+                    <input type="email" id="epistle-recipient-email" class="glass-input" placeholder="e.g. cinephile@gmail.com" required>
+                </div>
+                
+                <button type="submit" id="epistle-send-btn" class="modal-submit-btn">
+                    <i class="fas fa-feather-pointed"></i> Draft &amp; Dispatch Cinema Epistle
+                </button>
+            </form>
+
+            <!-- Epistle Live Preview & Confirmation Box -->
+            <div id="epistle-result-box" class="epistle-result-box hidden">
+                <div class="epistle-status-banner" id="epistle-status-banner">
+                    <i class="fas fa-check-circle"></i> <span id="epistle-status-text">Epistle drafted successfully!</span>
+                </div>
+                <div class="epistle-letter-preview" id="epistle-letter-preview">
+                    <!-- Populated dynamically with epistle letter -->
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 14px;">
+                    <button type="button" id="copy-epistle-btn" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem; margin: 0;" onclick="copyEpistleToClipboard()">
+                        <i class="fas fa-copy"></i> Copy Letter Text
+                    </button>
+                    <button type="button" class="btn" style="flex: 1; font-size: 0.8rem; margin: 0;" onclick="closeCinemaEmailModal()">
+                        <i class="fas fa-check"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Google Sign-In Modal -->
     <div id="auth-modal" class="modal-overlay hidden">
         <div class="modal-card">

@@ -281,6 +281,48 @@ trailer_director_agent = Agent(
       "director_credits": "Curated by Your Cinema Journey • Powered by Google Veo, Lyria & Gemma 2 AI"
     }
     """
+# 6. Cinema Courier & Epistle Agent (Concierge Dispatcher)
+cinema_courier_agent = Agent(
+    name="cinema_courier_agent",
+    model="gemini-3.5-flash",
+    description="Cinematic Concierge and Epistle Writer. Drafts personalized, warm, and poetic letters and preparation guides for the user's cinema night.",
+    instruction="""
+    You are the Feel & Film Cinema Courier & Concierge Agent.
+    You will receive a JSON payload with:
+    - 'user_name': Name of the cinephile.
+    - 'initial_mood': User's emotional input.
+    - 'desired_atmosphere': Desired atmosphere.
+    - 'film': Film details (title, director, runtime, synopsis, fun_fact, reasoning).
+    - 'soundtrack': Composer, standout_track, musical vibe.
+    - 'sommelier': Beverage, snack, pairing_reasoning.
+    - 'streaming_providers': Where to watch platforms (e.g. Netflix, Prime Video, Apple TV).
+    - 'collaborative_note': Note from the Master Orchestrator.
+
+    Your mission is to compose a luxurious, warm, and personal 'Cinema Epistle' (Carta de Noche de Cine) that the user receives in their inbox.
+
+    Output ONLY valid raw JSON matching this schema (no markdown backticks):
+    {
+      "subject": "🎬 Your Private Screening Tonight: [Film Title]",
+      "greeting": "Dear [User Name],",
+      "curator_epistle": "A warm, poetic 2-sentence letter opening that acknowledges their present emotional mood and introduces the sanctuary of tonight's movie.",
+      "film_showcase": {
+        "title": "Film Title",
+        "director": "Director",
+        "runtime": "120 min",
+        "key_quote_or_synopsis": "Punchy synopsis or quote.",
+        "curator_reason": "Why this movie fits tonight."
+      },
+      "sommelier_prep_guide": {
+        "drink_name": "Beverage Name",
+        "drink_recipe_steps": "A 1-2 sentence artisanal preparation guide (e.g. 'Stir fresh mint with crushed ice, top with artisanal ginger beer and a squeeze of lime.')",
+        "snack_name": "Snack Name",
+        "snack_serving_tip": "A 1-sentence tip on how to serve it."
+      },
+      "soundtrack_atmosphere_tip": "A 1-sentence tip on how to set the room audio/lighting before pressing play.",
+      "streaming_watch_guide": "Where to stream (e.g. 'Available tonight on Netflix & Prime Video')",
+      "valediction": "Warmly curated by Your Feel & Film AI Crew"
+    }
+    """
 )
 
 
@@ -951,4 +993,78 @@ async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_n
     return {
         "status": "success",
         "storyboard": storyboard
+    }
+
+
+# ---------------------------------------------------------------------------
+# Cinema Courier & Epistle Generator (Google Gemini Concierge)
+# ---------------------------------------------------------------------------
+
+async def generate_cinema_epistle(package_data: dict, user_name: str = "Cinephile") -> dict:
+    """
+    Generates a personalized, poetic Cinema Epistle email dispatch using the Cinema Courier Agent.
+    """
+    film = package_data.get("film") or {}
+    soundtrack = package_data.get("soundtrack") or {}
+    sommelier = package_data.get("sommelier") or {}
+
+    payload = {
+        "user_name": user_name,
+        "initial_mood": package_data.get("initial_mood", "Evening reflection"),
+        "desired_atmosphere": package_data.get("desired_atmosphere", "Cinema journey"),
+        "film": {
+            "title": film.get("title", "Selected Feature"),
+            "director": film.get("director", "Auteur Director"),
+            "runtime": f"{film.get('runtime', 120)} min",
+            "synopsis": film.get("synopsis", ""),
+            "fun_fact": film.get("fun_fact", ""),
+            "reasoning": film.get("reasoning", "")
+        },
+        "soundtrack": {
+            "composer": soundtrack.get("composer", "Original Composer"),
+            "standout_track": soundtrack.get("standout_track", "Main Theme"),
+            "vibe": soundtrack.get("vibe", "Atmospheric soundtrack")
+        },
+        "sommelier": {
+            "beverage": sommelier.get("beverage", "Artisanal beverage"),
+            "snack": sommelier.get("snack", "Gourmet snack"),
+            "pairing_reasoning": sommelier.get("pairing_reasoning", "Harmonizes with tonight's film.")
+        },
+        "streaming_providers": film.get("streaming_providers", []),
+        "collaborative_note": package_data.get("collaborative_note", "")
+    }
+
+    try:
+        raw, _ = await run_adk_agent(cinema_courier_agent, payload, "cinema_courier")
+        epistle = parse_json_safely(raw, None)
+        if not epistle or not isinstance(epistle, dict) or "subject" not in epistle:
+            raise ValueError("Failed to parse epistle JSON from agent")
+    except Exception as e:
+        print("Cinema Courier Agent fallback:", e)
+        film_title = film.get("title", "Selected Feature")
+        epistle = {
+            "subject": f"🎬 Your Private Screening Tonight: {film_title}",
+            "greeting": f"Dear {user_name},",
+            "curator_epistle": f"To accompany your evening and provide the sanctuary your mood sought, our crew has prepared tonight's private screening of {film_title}.",
+            "film_showcase": {
+                "title": film_title,
+                "director": film.get("director", "Auteur Director"),
+                "runtime": f"{film.get('runtime', 120)} min",
+                "key_quote_or_synopsis": film.get("synopsis", ""),
+                "curator_reason": film.get("reasoning", "Specially chosen for your emotional shift.")
+            },
+            "sommelier_prep_guide": {
+                "drink_name": sommelier.get("beverage", "Artisanal Beverage"),
+                "drink_recipe_steps": "Serve chilled in glassware of choice. Stir gently with a twist of citrus to awaken the botanicals.",
+                "snack_name": sommelier.get("snack", "Gourmet Concession Bite"),
+                "snack_serving_tip": "Plate warmly and enjoy right as the opening credits begin."
+            },
+            "soundtrack_atmosphere_tip": f"Dim the lights to a soft warm glow and cue {soundtrack.get('standout_track', 'the original score')} by {soundtrack.get('composer', 'the composer')}.",
+            "streaming_watch_guide": "Available on your regional streaming platforms (see web portal for direct links).",
+            "valediction": "Warmly curated by Your Feel & Film AI Crew"
+        }
+
+    return {
+        "status": "success",
+        "epistle": epistle
     }
