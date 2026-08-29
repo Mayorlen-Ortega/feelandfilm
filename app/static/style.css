@@ -573,6 +573,24 @@ h1 {
     color: #888;
     font-family: 'Cinzel', serif;
     margin-right: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.suggestion-badge {
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .scene-pill {

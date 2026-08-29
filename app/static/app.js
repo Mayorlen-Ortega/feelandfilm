@@ -648,7 +648,10 @@ function refreshScreeningPills() {
         }
         
         moodContainer.innerHTML = `
-            <span class="suggestion-label"><i class="fas fa-sparkles"></i> Quick feelings:</span>
+            <span class="suggestion-label">
+                <i class="fas fa-sparkles"></i> Quick feelings 
+                <span class="suggestion-badge"><i class="fas fa-brain"></i> Generated from your interactions</span>:
+            </span>
             ${finalMoods.slice(0, 5).map(m => `
                 <button type="button" class="scene-pill" data-target="initial_mood" data-val="${m.val}">${m.label}</button>
             `).join('')}
@@ -668,7 +671,10 @@ function refreshScreeningPills() {
         ];
 
         atmContainer.innerHTML = `
-            <span class="suggestion-label"><i class="fas fa-sparkles"></i> Destinations:</span>
+            <span class="suggestion-label">
+                <i class="fas fa-compass"></i> Destinations 
+                <span class="suggestion-badge"><i class="fas fa-brain"></i> Generated from your interactions</span>:
+            </span>
             ${atmPool.slice(0, 5).map(a => `
                 <button type="button" class="scene-pill" data-target="desired_atmosphere" data-val="${a.val}">${a.label}</button>
             `).join('')}
@@ -714,7 +720,10 @@ function refreshScreeningPills() {
         const finalList = [...personalizedList, ...shuffled].slice(0, 7);
 
         nuancContainer.innerHTML = `
-            <span class="suggestion-label"><i class="fas fa-film"></i> ${uniqueDirectors.length > 0 ? 'Adapted to your taste:' : 'Quick filters:'}</span>
+            <span class="suggestion-label">
+                <i class="fas fa-film"></i> ${uniqueDirectors.length > 0 ? 'Adapted to your taste' : 'Quick filters'} 
+                <span class="suggestion-badge"><i class="fas fa-brain"></i> Generated from your interactions</span>:
+            </span>
             ${finalList.map(n => `
                 <button type="button" class="scene-pill" data-target="theme" data-val="${n.val}">${n.label}</button>
             `).join('')}
