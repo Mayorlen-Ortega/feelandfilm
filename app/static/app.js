@@ -1003,13 +1003,21 @@ function toggleTraceLogs() {
     const toggleText = document.getElementById('trace-toggle-text');
     if (!traceBody) return;
 
-    const isHidden = traceBody.classList.contains('hidden');
-    if (isHidden) {
+    const isCurrentlyHidden = traceBody.classList.contains('hidden') || traceBody.style.display === 'none';
+
+    if (isCurrentlyHidden) {
         traceBody.classList.remove('hidden');
+        traceBody.style.display = 'block';
         if (arrowIcon) arrowIcon.classList.add('rotated');
         if (toggleText) toggleText.innerText = "Hide Multi-Agent Execution Logs";
+
+        const currentTraces = (currentSessionData && currentSessionData.agent_trace && currentSessionData.agent_trace.length > 0)
+            ? currentSessionData.agent_trace
+            : null;
+        renderAgentTrace(currentTraces);
     } else {
         traceBody.classList.add('hidden');
+        traceBody.style.display = 'none';
         if (arrowIcon) arrowIcon.classList.remove('rotated');
         if (toggleText) toggleText.innerText = "Inspect Raw Multi-Agent Execution Logs";
     }
@@ -1023,10 +1031,16 @@ function scrollToTrace() {
     const arrowIcon = document.getElementById('trace-arrow-icon');
     const toggleText = document.getElementById('trace-toggle-text');
 
-    if (traceBody && traceBody.classList.contains('hidden')) {
+    if (traceBody) {
         traceBody.classList.remove('hidden');
+        traceBody.style.display = 'block';
         if (arrowIcon) arrowIcon.classList.add('rotated');
         if (toggleText) toggleText.innerText = "Hide Multi-Agent Execution Logs";
+
+        const currentTraces = (currentSessionData && currentSessionData.agent_trace && currentSessionData.agent_trace.length > 0)
+            ? currentSessionData.agent_trace
+            : null;
+        renderAgentTrace(currentTraces);
     }
 
     if (traceSection) {
@@ -1041,15 +1055,16 @@ function renderAgentTrace(traces) {
     if (!terminal) return;
 
     if (!traces || traces.length === 0) {
+        const timeStr = new Date().toLocaleTimeString();
         terminal.innerHTML = `
             <div class="terminal-entry system">
                 <div class="term-header-line">
-                    <span class="term-time">[${new Date().toLocaleTimeString()}]</span>
+                    <span class="term-time">[${timeStr}]</span>
                     <span class="term-agent system">[Google ADK Core]</span>
-                    <strong class="term-action">Autonomous Multi-Agent Runner Active</strong>
+                    <strong class="term-action">Autonomous Multi-Agent Runner Active &amp; Ready</strong>
                 </div>
                 <div class="term-details-box">
-                    <span class="term-text">All 4 specialist agents (Master Orchestrator, Film Curator, Soundtrack Maestro, Cinema Sommelier) synchronized in a single execution cycle.</span>
+                    <span class="term-text">All 4 specialist agents (Master Orchestrator, Film Curator, Soundtrack Maestro, Cinema Sommelier) are active and synchronized. Curate a recommendation above to view live single-cycle JSON decision traces.</span>
                 </div>
             </div>
         `;
@@ -2506,6 +2521,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initFeedbackControls();
     initScreeningInterviewModal();
     initBiopicTrailerControls();
+
+    // Initialize agent execution logs terminal
+    renderAgentTrace([]);
+    const traceBtn = document.getElementById('trace-toggle-btn');
+    if (traceBtn) {
+        traceBtn.addEventListener('click', toggleTraceLogs);
+    }
 
     const drawerTabs = document.querySelectorAll('.drawer-tab');
     drawerTabs.forEach(tab => {
