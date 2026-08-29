@@ -2482,27 +2482,35 @@ button:disabled {
 .filmstrip-edge-meta {
     display: flex;
     justify-content: space-between;
-    font-size: 0.65rem;
-    color: #888;
+    font-size: 0.68rem;
+    color: var(--accent);
     font-family: 'Cinzel', serif;
-    letter-spacing: 1px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
 }
 
 .filmstrip-frame-inner {
     position: relative;
     width: 100%;
-    height: 380px;
-    background: #000;
-    border-radius: 4px;
+    height: 400px;
+    background: #080605;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
 }
 
 .storyboard-frame-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.85) contrast(1.1);
-    transition: all 0.5s ease;
+    object-position: center;
+    filter: brightness(0.9) contrast(1.08) saturate(1.05);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+.storyboard-frame-img:hover {
+    transform: scale(1.02);
 }
 
 .celluloid-grain-overlay {
@@ -2511,8 +2519,7 @@ button:disabled {
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
-    background-size: 3px 3px;
+    background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.6) 100%);
     pointer-events: none;
 }
 
@@ -2521,11 +2528,11 @@ button:disabled {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 12px 14px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0) 100%);
+    padding: 16px 18px;
+    background: linear-gradient(to top, rgba(8, 6, 5, 0.95) 0%, rgba(8, 6, 5, 0.6) 60%, rgba(0, 0, 0, 0) 100%);
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
 }
 
 .caption-title {

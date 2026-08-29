@@ -1702,7 +1702,7 @@ function updateBiopicMilestone() {
     if (genBtn) {
         if (count >= target) {
             genBtn.disabled = false;
-            genBtn.innerHTML = '<i class="fas fa-book-open-reader"></i> Open Director\'s Storyboard';
+            genBtn.innerHTML = '<i class="fas fa-palette"></i> Open Ultra-HD Moodboard';
         } else {
             genBtn.disabled = true;
             genBtn.innerHTML = `<i class="fas fa-lock"></i> Mark ${target - count} more to unlock`;
@@ -1711,7 +1711,7 @@ function updateBiopicMilestone() {
 }
 
 // ---------------------------------------------------------------------------
-// Google Gemma 2, Veo & Lyria 35mm Director's Storyboard Engine
+// Google Gemini & Lyria Ultra-HD Moodboard Engine
 // ---------------------------------------------------------------------------
 
 async function generateBiopicTrailer(isDemoMode = false) {
@@ -1721,19 +1721,19 @@ async function generateBiopicTrailer(isDemoMode = false) {
 
     const originalHtml = triggerBtn.innerHTML;
     triggerBtn.disabled = true;
-    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Compiling 35mm Storyboard...';
+    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Curating 4K Moodboard...';
 
     const watchedIds = getWatchedFilmIds();
     let targetFilms = allArchiveRecords.filter(r => watchedIds.includes(r.session_id));
 
     if (isDemoMode && targetFilms.length < 3) {
-        // In demo mode for judges, supplement with any available archive films or sample films
+        // In demo mode for judges, supplement with any available archive films or sample high-res films
         targetFilms = allArchiveRecords.slice(0, 3);
         if (targetFilms.length === 0) {
             targetFilms = [
-                { title: "Cinema Paradiso", director: "Giuseppe Tornatore", primary_mood: "Melancholic", desired_atmosphere: "Comforting Warmth", poster_url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80" },
-                { title: "Spirited Away", director: "Hayao Miyazaki", primary_mood: "Curious & Adventurous", desired_atmosphere: "Wonder", poster_url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300&q=80" },
-                { title: "Roma", director: "Alfonso Cuarón", primary_mood: "Contemplative", desired_atmosphere: "Catharsis", poster_url: "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=300&q=80" }
+                { title: "Blade Runner 2049", director: "Denis Villeneuve", primary_mood: "Melancholic", desired_atmosphere: "Comforting Warmth", poster_url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop" },
+                { title: "Spirited Away", director: "Hayao Miyazaki", primary_mood: "Curious & Adventurous", desired_atmosphere: "Wonder", poster_url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop" },
+                { title: "Roma", director: "Alfonso Cuarón", primary_mood: "Contemplative", desired_atmosphere: "Catharsis", poster_url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop" }
             ];
         }
     }
@@ -1823,7 +1823,7 @@ function displayStoryboardAct(actIndex) {
     const actName = document.getElementById('biopic-act-name');
     const directorNoteEl = document.getElementById('biopic-voiceover-text');
 
-    // Veo Specs
+    // Visual Art Direction Specs
     const veoAspectEl = document.getElementById('veo-spec-aspect');
     const veoLensEl = document.getElementById('veo-spec-lens');
     const veoLightingEl = document.getElementById('veo-spec-lighting');
@@ -1834,31 +1834,43 @@ function displayStoryboardAct(actIndex) {
     const lyriaTempoEl = document.getElementById('lyria-spec-tempo');
     const lyriaPromptEl = document.getElementById('biopic-lyria-prompt');
 
+    // Resolve Ultra-HD Image
+    let hdPoster = act.poster_url || "";
+    hdPoster = hdPoster.replace('/w300/', '/w1280/').replace('/w500/', '/w1280/');
+    if (!hdPoster || hdPoster.includes('w=300')) {
+        const fallbacks = [
+            "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"
+        ];
+        hdPoster = fallbacks[actIndex % fallbacks.length];
+    }
+
     if (posterEl) {
-        posterEl.src = act.poster_url || "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80";
+        posterEl.src = hdPoster;
     }
     if (filmTitleEl) filmTitleEl.innerText = act.featured_film || act.title || "Cinema Selection";
     if (filmDirectorEl) filmDirectorEl.innerText = act.featured_director || act.director || "Auteur Director";
-    if (frameNumEl) frameNumEl.innerText = `FRAME 0${actIndex + 1} / 0${acts.length}`;
+    if (frameNumEl) frameNumEl.innerText = `MOVEMENT 0${actIndex + 1} / 0${acts.length}`;
 
-    const veo = act.veo_cinematography || {};
+    const art = act.art_direction || act.veo_cinematography || {};
     const lyria = act.lyria_score || {};
 
-    if (stockLabelEl) stockLabelEl.innerText = (veo.film_stock || "KODAK 500T 35MM").toUpperCase();
+    if (stockLabelEl) stockLabelEl.innerHTML = `<i class="fas fa-sparkles"></i> ULTRA-HD ART DIRECTION`;
 
-    if (actPill) actPill.innerText = `ACT ${act.act_number || actIndex + 1} • ${((act.act_title || '').split(':')[0] || 'CHAPTER').toUpperCase()}`;
-    if (emotionalBeatEl) emotionalBeatEl.innerHTML = `<i class="fas fa-heart-pulse"></i> ${act.emotional_state || act.emotional_beat || 'Emotional Beat'}`;
-    if (actName) actName.innerText = act.act_title || `Chapter ${actIndex + 1}`;
+    if (actPill) actPill.innerText = `MOVEMENT ${act.act_number || actIndex + 1} • ${((act.act_title || '').split(':')[0] || 'CHAPTER').toUpperCase()}`;
+    if (emotionalBeatEl) emotionalBeatEl.innerHTML = `<i class="fas fa-heart-pulse"></i> ${act.emotional_state || act.emotional_beat || 'Emotional Resonance'}`;
+    if (actName) actName.innerText = act.act_title || `Movement ${actIndex + 1}`;
     if (directorNoteEl) directorNoteEl.innerText = act.director_note || act.voiceover_line || "A reflective observation on this cinematic chapter.";
 
-    if (veoAspectEl) veoAspectEl.innerText = veo.aspect_ratio || "2.39:1 Anamorphic";
-    if (veoLensEl) veoLensEl.innerText = veo.lens || "50mm Prime";
-    if (veoLightingEl) veoLightingEl.innerText = veo.lighting || "Golden Hour";
-    if (veoPromptEl) veoPromptEl.innerText = veo.camera_movement || act.veo_video_prompt || "Cinematic composition framed in 35mm film stock.";
+    if (veoAspectEl) veoAspectEl.innerText = art.lighting_style || art.aspect_ratio || "Amber Chiaroscuro";
+    if (veoLensEl) veoLensEl.innerText = art.composition || art.lens || "Low-Contrast 35mm";
+    if (veoLightingEl) veoLightingEl.innerText = art.atmosphere_tone || art.lighting || "Restorative";
+    if (veoPromptEl) veoPromptEl.innerText = art.composition || act.veo_video_prompt || "Intimate chiaroscuro with organic analog grain and contemplative depth.";
 
     if (lyriaKeyEl) lyriaKeyEl.innerText = lyria.key || "D Minor";
-    if (lyriaTempoEl) lyriaTempoEl.innerText = lyria.tempo || "68 BPM";
-    if (lyriaPromptEl) lyriaPromptEl.innerText = (lyria.instrumentation ? `${lyria.instrumentation} — ${lyria.vibe || ''}` : (act.lyria_music_cue || "Harmonic leitmotif score"));
+    if (lyriaTempoEl) lyriaTempoEl.innerText = lyria.tempo ? `${lyria.tempo}` : "68 BPM";
+    if (lyriaPromptEl) lyriaPromptEl.innerText = (lyria.instrumentation ? `${lyria.instrumentation} — ${lyria.vibe || ''}` : (act.lyria_music_cue || "Solo grand piano and warm acoustic resonances"));
 
     // Update stepper
     const stepperDots = document.querySelectorAll('#biopic-act-stepper .act-step');

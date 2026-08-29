@@ -187,100 +187,100 @@ master_orchestrator_agent = Agent(
 
 # 5. Director's Storyboard & Visual Notebook Agent (Google Gemma 2 / Gemini 3.5 Flash & Veo/Lyria Engine)
 trailer_director_agent = Agent(
-    name="directors_storyboard_agent",
+# 5. Visual Art Director & Lyria Moodboard Agent (Gemini Art Director + Lyria Composer)
+directors_storyboard_agent = Agent(
+    name="visual_moodboard_director_agent",
     model="gemini-3.5-flash",
-    description="Cinematic Director & Curator. Synthesizes emotional cinema history into an editorial 35mm Storyboard & Director's Notebook with Google Veo & Lyria prompts.",
+    description="Cinematic Visual Art Director & Lyria Acoustic Composer. Curates high-definition moodboards, color palettes, and harmonic scores from the user's emotional journey.",
     instruction="""
-    You are the Feel & Film Lead Director & Editorial Curator.
+    You are the Feel & Film Visual Art Director & Lyria Acoustic Composer.
     You will receive a JSON payload containing:
     - 'user_name': Name of the cinephile.
     - 'watched_films': Array of watched movies with 'title', 'director', 'primary_mood', 'desired_atmosphere', 'poster_url'.
 
-    Your mission is to compile an artistic, luxurious '35mm Director's Storyboard & Visual Notebook' (Carnet de Réalisation) that reflects how the user's emotions and taste transformed across cinema.
+    Your mission is to compile an Ultra-HD Cinémathèque Moodboard (Art Gallery & Soundscape) analyzing the visual and musical arc across their cinema journey.
 
     Output ONLY valid raw JSON matching this schema (no markdown backticks):
     {
-      "story_title": "The 35mm Emotional Chronicles of User",
+      "story_title": "The Cinémathèque Ultra-HD Moodboard",
       "curator_archetype": "The Contemplative Neorealist",
-      "director_preface": "A poetic 2-sentence director's preface connecting these films into an auteur dialogue.",
+      "director_preface": "A poetic 2-sentence art director's reflection on the visual and emotional harmony of these films.",
       "color_palette": [
-        {"name": "Amber Gold", "hex": "#d4af37"},
-        {"name": "Midnight Indigo", "hex": "#1e293b"},
-        {"name": "Cinema Teal", "hex": "#0f766e"},
-        {"name": "Celluloid Crimson", "hex": "#9f1239"}
+        {"name": "Amber Chiaroscuro", "hex": "#d4af37"},
+        {"name": "Deep Midnight", "hex": "#0f172a"},
+        {"name": "Emerald Twilight", "hex": "#064e3b"},
+        {"name": "Crimson Celluloid", "hex": "#881337"}
       ],
       "acts": [
         {
           "act_number": 1,
-          "act_title": "Act I: Solitude & The Quiet Sanctuary",
-          "emotional_state": "Fatigue & Vulnerability",
+          "act_title": "Movement I: The Introspective Sanctuary",
+          "emotional_state": "Fatigue & Solace",
           "featured_film": "First Film Title",
           "featured_director": "First Director",
-          "poster_url": "Poster URL",
-          "director_note": "A thoughtful 2-sentence editorial remark analyzing how this film provided shelter and emotional resonance.",
-          "veo_cinematography": {
-            "aspect_ratio": "2.39:1 Anamorphic",
-            "film_stock": "Kodak Vision3 500T 35mm",
-            "lens": "Panavision C-Series 50mm Prime",
-            "lighting": "Warm Tungsten & Ambient Twilight",
-            "camera_movement": "Slow lateral tracking shot with soft focus drift"
+          "poster_url": "HD Poster / Backdrop URL",
+          "director_note": "An auteur observation on how the visual textures and shadow play created emotional shelter.",
+          "art_direction": {
+            "lighting_style": "Tungsten Twilight & Amber Shadow",
+            "composition": "Intimate low-contrast framing with organic 35mm grain",
+            "atmosphere_tone": "Warm, restorative and contemplative"
           },
           "lyria_score": {
+            "movement_name": "Nocturne in D Minor",
             "key": "D Minor",
-            "tempo": "Andante (68 BPM)",
-            "instrumentation": "Solo Grand Piano, Muted Cello & Gentle Vinyl Crackle",
-            "vibe": "Sparse, melancholic warmth with contemplative depth"
+            "tempo": "68 BPM",
+            "instrumentation": "Solo Steinway Grand Piano, Muted Cello & Warm Ambient Resonances",
+            "vibe": "Sparse, intimate acoustic tranquility designed to decompress the soul"
           }
         },
         {
           "act_number": 2,
-          "act_title": "Act II: Wonder & The Uncharted Horizon",
-          "emotional_state": "Curiosity & Adventure",
+          "act_title": "Movement II: The Sensory Horizon",
+          "emotional_state": "Curiosity & Wonder",
           "featured_film": "Second Film Title",
           "featured_director": "Second Director",
-          "poster_url": "Poster URL",
-          "director_note": "An insightful editorial remark on how curiosity sparked an awakening into sensory exploration and imaginative worlds.",
-          "veo_cinematography": {
-            "aspect_ratio": "1.85:1 Flat",
-            "film_stock": "Fujifilm Eterna 250D 35mm",
-            "lens": "Zeiss Master Prime 35mm",
-            "lighting": "Golden Hour Sunburst & Neon Prism",
-            "camera_movement": "Sweeping cinematic jib rise with dynamic lens flare"
+          "poster_url": "HD Poster / Backdrop URL",
+          "director_note": "A visual reflection on how color saturation and expansive vistas sparked an emotional awakening.",
+          "art_direction": {
+            "lighting_style": "Golden Hour Luminescence & Prism Glow",
+            "composition": "Sweeping wide-angle panoramas with dynamic natural light",
+            "atmosphere_tone": "Luminous, vibrant and exploratory"
           },
           "lyria_score": {
+            "movement_name": "Rhapsody in G Major",
             "key": "G Major",
-            "tempo": "Moderato (105 BPM)",
-            "instrumentation": "Arpeggiated Harp, Analog Synthwave & Soaring Violins",
-            "vibe": "Energetic, expansive wonder opening into sonic discovery"
+            "tempo": "104 BPM",
+            "instrumentation": "Concert Harp, Analog Synthesizer Chords & Soaring String Ensembles",
+            "vibe": "Uplifting, expansive wonder opening into sonic discovery"
           }
         },
         {
           "act_number": 3,
-          "act_title": "Act III: Catharsis & Lasting Harmony",
-          "emotional_state": "Restoration & Peace",
+          "act_title": "Movement III: Catharsis & Lasting Serenity",
+          "emotional_state": "Restoration & Harmony",
           "featured_film": "Third Film Title",
           "featured_director": "Third Director",
-          "poster_url": "Poster URL",
-          "director_note": "A closing auteur reflection on reaching emotional catharsis and clarity through the mirror of cinema.",
-          "veo_cinematography": {
-            "aspect_ratio": "2.39:1 Scope",
-            "film_stock": "Kodak Double-X Black & White / Rich Color Grain",
-            "lens": "Cooke Anamorphic /i 75mm",
-            "lighting": "Soft Overhead Diffused Warmth",
-            "camera_movement": "Gentle slow-motion push-in celebrating human resilience"
+          "poster_url": "HD Poster / Backdrop URL",
+          "director_note": "A closing reflection on reaching emotional catharsis and aesthetic clarity through the mirror of cinema.",
+          "art_direction": {
+            "lighting_style": "Diffused Daylight & High-Contrast Monochrome Harmony",
+            "composition": "Centered heroic symmetry celebrating human grace and peace",
+            "atmosphere_tone": "Triumphant, peaceful and timeless"
           },
           "lyria_score": {
+            "movement_name": "Hymn in C Major",
             "key": "C Major",
-            "tempo": "Largo Maestoso (72 BPM)",
-            "instrumentation": "Full Orchestral Strings, French Horn & Harmonic Chords",
+            "tempo": "72 BPM",
+            "instrumentation": "Full Orchestral Strings, Warm French Horn & Harmonic Choral Swells",
             "vibe": "Triumphant, serene resolution of the emotional arc"
           }
         }
       ],
       "climax_quote": "Cinema does not merely show us other worlds; it translates what our soul needed to understand.",
-      "director_credits": "Curated by Your Cinema Journey • Powered by Google Veo, Lyria & Gemma 2 AI"
+      "director_credits": "Visual Art Direction by Google Gemini • Acoustic Score by Google Lyria"
     }
     """
+)
 # 6. Cinema Courier & Epistle Agent (Concierge Dispatcher)
 cinema_courier_agent = Agent(
     name="cinema_courier_agent",
@@ -901,94 +901,101 @@ async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_n
     except Exception as e:
         print("Director Storyboard Agent fallback synthesis:", e)
         f1 = watched_films[0] if len(watched_films) > 0 else {}
-        f2 = watched_films[1] if len(watched_films) > 1 else f1
-        f3 = watched_films[2] if len(watched_films) > 2 else f2
+        f2 = watched_films[1] if len(watched_films) > 1 else {}
+        f3 = watched_films[2] if len(watched_films) > 2 else {}
+
+        def get_hd_img(f, default_url):
+            url = f.get("poster_url") or f.get("backdrop_url") or ""
+            if url:
+                return url.replace("/w300/", "/w1280/").replace("/w500/", "/w1280/")
+            return default_url
 
         storyboard = {
-            "story_title": f"The 35mm Emotional Chronicles of {user_name}",
+            "story_title": f"The Cinémathèque Ultra-HD Moodboard for {user_name}",
             "curator_archetype": "The Contemplative Neorealist",
-            "director_preface": f"Through the evocative gaze of {f1.get('title', 'Cinema')}, {f2.get('title', 'Spirited Away')}, and {f3.get('title', 'Roma')}, {user_name}'s cinematic voyage formed an auteur dialogue moving from weary solitude into profound emotional harmony.",
+            "director_preface": f"A cinematic synthesis of {user_name}'s emotional journey, mapping how quiet solitude blossomed into wonder and found lasting harmony.",
             "color_palette": [
-                {"name": "Amber Gold", "hex": "#d4af37"},
-                {"name": "Midnight Indigo", "hex": "#1e293b"},
-                {"name": "Cinema Teal", "hex": "#0f766e"},
-                {"name": "Celluloid Crimson", "hex": "#9f1239"}
+                {"name": "Amber Chiaroscuro", "hex": "#d4af37"},
+                {"name": "Deep Midnight", "hex": "#0f172a"},
+                {"name": "Emerald Twilight", "hex": "#064e3b"},
+                {"name": "Crimson Celluloid", "hex": "#881337"}
             ],
             "acts": [
                 {
                     "act_number": 1,
-                    "act_title": "Act I: Solitude & The Quiet Sanctuary",
+                    "act_title": "Movement I: The Introspective Sanctuary",
                     "emotional_state": f1.get("primary_mood", "Fatigue & Vulnerability"),
-                    "featured_film": f1.get("title", "Cinema Paradiso"),
-                    "featured_director": f1.get("director", "Giuseppe Tornatore"),
-                    "poster_url": f1.get("poster_url", "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80"),
-                    "director_note": f"When the noise of modern life overwhelmed the senses, {f1.get('title', 'Cinema')} offered sanctuary in the flickering warmth of 35mm projection light.",
-                    "veo_cinematography": {
-                        "aspect_ratio": "2.39:1 Anamorphic",
-                        "film_stock": "Kodak Vision3 500T 35mm",
-                        "lens": "Panavision C-Series 50mm Prime",
-                        "lighting": "Warm Tungsten & Ambient Twilight",
-                        "camera_movement": "Slow lateral tracking shot across rain-slicked city window with soft focus drift"
+                    "featured_film": f1.get("title", "Blade Runner 2049"),
+                    "featured_director": f1.get("director", "Denis Villeneuve"),
+                    "poster_url": get_hd_img(f1, "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop"),
+                    "director_note": f"In {f1.get('title', 'Blade Runner 2049')}, the visual composition created a tranquil sanctuary where quiet vulnerability felt understood.",
+                    "art_direction": {
+                        "lighting_style": "Tungsten Twilight & Amber Shadow",
+                        "composition": "Intimate low-contrast framing with organic 35mm grain",
+                        "atmosphere_tone": "Warm, restorative and contemplative"
                     },
                     "lyria_score": {
+                        "movement_name": "Nocturne in D Minor",
                         "key": "D Minor",
-                        "tempo": "Andante (68 BPM)",
-                        "instrumentation": "Solo Grand Piano, Muted Cello & Gentle Vinyl Crackle",
-                        "vibe": "Sparse, melancholic warmth with contemplative depth"
+                        "tempo": "68 BPM",
+                        "instrumentation": "Solo Steinway Grand Piano & Muted Cello",
+                        "vibe": "Sparse, intimate acoustic tranquility designed to decompress the soul"
                     }
                 },
                 {
                     "act_number": 2,
-                    "act_title": "Act II: Wonder & The Uncharted Horizon",
+                    "act_title": "Movement II: The Sensory Horizon",
                     "emotional_state": f2.get("desired_atmosphere", "Adventure & Wonder"),
                     "featured_film": f2.get("title", "Spirited Away"),
                     "featured_director": f2.get("director", "Hayao Miyazaki"),
-                    "poster_url": f2.get("poster_url", "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80"),
+                    "poster_url": get_hd_img(f2, "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop"),
                     "director_note": f"Curiosity opened a luminous portal into imaginative worlds with {f2.get('title', 'Spirited Away')}, expanding the horizon into sensory delight.",
-                    "veo_cinematography": {
-                        "aspect_ratio": "1.85:1 Flat",
-                        "film_stock": "Fujifilm Eterna 250D 35mm",
-                        "lens": "Zeiss Master Prime 35mm",
-                        "lighting": "Golden Hour Sunburst & Neon Prism",
-                        "camera_movement": "Sweeping cinematic jib rise meeting glowing dusk horizon"
+                    "art_direction": {
+                        "lighting_style": "Golden Hour Luminescence & Prism Glow",
+                        "composition": "Sweeping wide-angle panoramas with dynamic natural light",
+                        "atmosphere_tone": "Luminous, vibrant and exploratory"
                     },
                     "lyria_score": {
+                        "movement_name": "Rhapsody in G Major",
                         "key": "G Major",
-                        "tempo": "Moderato (105 BPM)",
-                        "instrumentation": "Arpeggiated Harp, Analog Synthwave & Soaring Violins",
-                        "vibe": "Energetic, expansive wonder opening into sonic discovery"
+                        "tempo": "104 BPM",
+                        "instrumentation": "Concert Harp, Analog Synthesizer Chords & Soaring String Ensembles",
+                        "vibe": "Uplifting, expansive wonder opening into sonic discovery"
                     }
                 },
                 {
                     "act_number": 3,
-                    "act_title": "Act III: Catharsis & Lasting Harmony",
+                    "act_title": "Movement III: Catharsis & Lasting Serenity",
                     "emotional_state": "Restoration & Peace",
                     "featured_film": f3.get("title", "Roma"),
                     "featured_director": f3.get("director", "Alfonso Cuarón"),
-                    "poster_url": f3.get("poster_url", "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80"),
+                    "poster_url": get_hd_img(f3, "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"),
                     "director_note": f"In {f3.get('title', 'Roma')}, emotion and memory converged into pure cinematic serenity, leaving a lasting sense of human resilience and peace.",
-                    "veo_cinematography": {
-                        "aspect_ratio": "2.39:1 Scope",
-                        "film_stock": "Kodak Double-X Monochrome / Rich Grain",
-                        "lens": "Cooke Anamorphic /i 75mm",
-                        "lighting": "Soft Overhead Diffused Warmth",
-                        "camera_movement": "Gentle slow-motion push-in celebrating human grace"
+                    "art_direction": {
+                        "lighting_style": "Diffused Daylight & High-Contrast Monochrome Harmony",
+                        "composition": "Centered heroic symmetry celebrating human grace and peace",
+                        "atmosphere_tone": "Triumphant, peaceful and timeless"
                     },
                     "lyria_score": {
+                        "movement_name": "Hymn in C Major",
                         "key": "C Major",
-                        "tempo": "Largo Maestoso (72 BPM)",
-                        "instrumentation": "Full Orchestral Strings, French Horn & Harmonic Chords",
+                        "tempo": "72 BPM",
+                        "instrumentation": "Full Orchestral Strings, Warm French Horn & Harmonic Choral Swells",
                         "vibe": "Triumphant, serene resolution of the emotional arc"
                     }
                 }
             ],
             "climax_quote": "Cinema does not merely show us other worlds; it translates what our soul needed to understand.",
-            "director_credits": "Curated by Your Cinema Journey • Powered by Google Veo, Lyria & Gemma 2 AI"
+            "director_credits": "Visual Art Direction by Google Gemini • Acoustic Score by Google Lyria"
         }
 
     for i, act in enumerate(storyboard.get("acts", [])):
-        if i < len(watched_films) and not act.get("poster_url"):
-            act["poster_url"] = watched_films[i].get("poster_url")
+        if i < len(watched_films):
+            raw_url = watched_films[i].get("poster_url") or watched_films[i].get("backdrop_url")
+            if raw_url:
+                act["poster_url"] = raw_url.replace("/w300/", "/w1280/").replace("/w500/", "/w1280/")
+            elif not act.get("poster_url"):
+                act["poster_url"] = "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"
 
     return {
         "status": "success",
