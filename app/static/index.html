@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link rel="stylesheet" href="/static/style.css?v=20260829_02">
+    <link rel="stylesheet" href="/static/style.css?v=20260829_03">
 </head>
 
 <body>
@@ -519,7 +519,6 @@
                             <i class="fas fa-chevron-down trace-arrow-icon" id="trace-arrow-icon"></i>
                         </button>
                     </div>
-
                     <div class="trace-body hidden" id="trace-body">
                         <div class="terminal-log" id="terminal-log">
                             <!-- Populated with step-by-step agent logs -->
@@ -531,40 +530,40 @@
     </div>
 
     <!-- Interactive Emotional Constellation & Google Lyria Soundscape Modal -->
-    <div id="biopic-trailer-modal" class="modal-overlay constellation-overlay hidden" style="padding: 50px 24px !important;">
-        <div class="constellation-modal-wrapper" style="max-width: 880px !important; max-height: calc(100vh - 100px) !important; margin: auto !important; overflow: hidden !important;">
+    <div id="biopic-trailer-modal" class="modal-overlay constellation-overlay hidden" onclick="if(event.target === this) closeEmotionalConstellation()">
+        <div class="constellation-modal-wrapper">
+            <!-- Dedicated Prominent Close Button in Top-Right -->
+            <button type="button" id="close-biopic-btn-floating" class="constellation-floating-close" title="Cerrar Constelación (Esc)" onclick="closeEmotionalConstellation()">
+                <i class="fas fa-times"></i>
+            </button>
+
             <div class="constellation-card">
-                <!-- Cosmic Header -->
+                <!-- Cosmic Header (Compact single row) -->
                 <div class="constellation-header">
                     <div class="constellation-header-left">
                         <span class="constellation-cosmic-icon"><i class="fas fa-galaxy"></i></span>
                         <div>
-                            <span class="constellation-subtitle">FEEL &amp; FILM &bull; CELESTIAL CINEMA CARTOGRAPHY &amp; LYRIA SOUNDSCAPE</span>
+                            <span class="constellation-subtitle">FEEL &amp; FILM &bull; CELESTIAL CINEMA CARTOGRAPHY</span>
                             <h3 class="constellation-title" id="biopic-story-title">The Emotional Constellation</h3>
                         </div>
                     </div>
 
                     <div class="constellation-header-meta">
                         <div class="archetype-badge" id="storyboard-archetype-pill">
-                            <i class="fas fa-meteor"></i> <span id="storyboard-archetype-text">The Nocturnal Contemplative</span>
+                            <i class="fas fa-meteor"></i> <span id="storyboard-archetype-text">The Serene Voyager</span>
                         </div>
                         
                         <!-- Interactive Lyria Audio Player Badge -->
-                        <button type="button" id="biopic-play-pause-btn" class="btn-constellation-audio" title="Toggle Google Lyria Ambient Soundscape">
+                        <button type="button" id="biopic-play-pause-btn" class="btn-constellation-audio" title="Toggle Lyria Soundscape">
                             <span class="sound-equalizer">
                                 <span></span><span></span><span></span><span></span>
                             </span>
-                            <span id="ambient-audio-text">Lyria Soundscape: Playing (D Minor &bull; 64 BPM)</span>
-                        </button>
-
-                        <!-- Prominent & Stylish Constellation Close Button -->
-                        <button type="button" id="close-biopic-btn" class="constellation-close-btn" title="Cerrar Constelación" onclick="closeEmotionalConstellation()">
-                            <i class="fas fa-times"></i> <span>Close</span>
+                            <span id="ambient-audio-text">Lyria: Playing (D Minor)</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Cosmic Narrative Bar -->
+                <!-- Cosmic Narrative Bar (Reseña de relación mood/búsquedas y efecto) -->
                 <div class="constellation-narrative-bar">
                     <i class="fas fa-stars narrative-star-icon"></i>
                     <p class="constellation-narrative-text" id="storyboard-preface-text">
@@ -583,18 +582,18 @@
                         </div>
                         
                         <div class="constellation-canvas-hint">
-                            <i class="fas fa-hand-pointer"></i> Click any star orb to trigger its Lyria harmonic acoustic chord &amp; inspect its coordinates.
+                            <i class="fas fa-hand-pointer"></i> Haz clic en una estrella para escuchar su acorde
                         </div>
                     </div>
 
-                    <!-- Right: Observatory Dossier & Lyria Musicology Panel -->
+                    <!-- Right: Active Star & Los Acordes Panel -->
                     <div class="constellation-observatory-panel">
                         <!-- Active Star Inspection Card -->
                         <div class="observatory-star-card" id="observatory-star-card">
                             <div class="observatory-star-header">
                                 <div class="star-badge-row">
                                     <span class="star-spectral-pill" id="observatory-star-pill">STAR 01 &bull; SANCTUARY</span>
-                                    <span class="star-freq-badge" id="observatory-star-freq"><i class="fas fa-wave-square"></i> 293.66 Hz (D4)</span>
+                                    <span class="star-freq-badge" id="observatory-star-freq"><i class="fas fa-wave-square"></i> 293.66 Hz</span>
                                 </div>
                                 <h4 class="observatory-film-title" id="storyboard-film-title">Blade Runner 2049</h4>
                                 <div class="observatory-director" id="storyboard-film-director"><i class="fas fa-video"></i> Denis Villeneuve</div>
@@ -603,59 +602,38 @@
                             <div class="observatory-poster-row">
                                 <img id="biopic-active-poster" class="observatory-thumbnail" src="" alt="Star Film Poster">
                                 <div class="observatory-resonance-box">
-                                    <span class="resonance-label"><i class="fas fa-heart-pulse"></i> Emotional Resonance:</span>
+                                    <span class="resonance-label"><i class="fas fa-heart-pulse"></i> Efecto Emocional:</span>
                                     <p class="resonance-text" id="storyboard-emotional-beat">Solace &amp; Refuge</p>
-                                    <span class="resonance-label" style="margin-top: 6px;"><i class="fas fa-sparkles"></i> Celestial Alignment:</span>
-                                    <p class="resonance-note" id="biopic-voiceover-text">A sanctuary star offering introspective shelter from emotional fatigue.</p>
+                                    <span class="resonance-label" style="margin-top: 4px;"><i class="fas fa-sparkles"></i> Transformación:</span>
+                                    <p class="resonance-note" id="biopic-voiceover-text">Refugio introspectivo ante la fatiga emocional.</p>
                                 </div>
                             </div>
 
                             <button type="button" class="btn-play-star-note" id="play-active-star-note-btn" onclick="playActiveStarChord()">
-                                <i class="fas fa-volume-high"></i> Resonate Star Harmonic Chord
+                                <i class="fas fa-volume-high"></i> Tocar Acorde de esta Película
                             </button>
                         </div>
 
-                        <!-- Google Lyria Soundscape Architecture Box -->
+                        <!-- Los Acordes Armónicos Lyria -->
                         <div class="lyria-architecture-card">
                             <div class="lyria-arch-header">
-                                <i class="fas fa-music"></i> <strong>Google Lyria Harmonic Soundscape</strong>
+                                <i class="fas fa-music"></i> <strong>Los Acordes Armónicos (Lyria)</strong>
                             </div>
-                            <div class="lyria-arch-specs">
-                                <div class="spec-tag">Key: <strong id="lyria-spec-key">D Minor</strong></div>
-                                <div class="spec-tag">Tempo: <strong id="lyria-spec-tempo">64 BPM</strong></div>
-                                <div class="spec-tag">Mode: <strong>Ambient Reverie</strong></div>
-                            </div>
-                            <p class="lyria-arch-desc" id="biopic-lyria-prompt">
-                                Warm polyphonic ambient synthesizer pads, glass celesta bells, and sub-bass resonances.
-                            </p>
-                            
-                            <!-- Interactive Harmonic Progression Keyboard -->
                             <div class="harmonic-chords-row" id="constellation-chords-row">
-                                <button type="button" class="chord-pill" onclick="playChordIndex(0)">Dm9</button>
-                                <button type="button" class="chord-pill" onclick="playChordIndex(1)">BbMaj7</button>
-                                <button type="button" class="chord-pill" onclick="playChordIndex(2)">Gm11</button>
-                                <button type="button" class="chord-pill" onclick="playChordIndex(3)">Asus4</button>
+                                <!-- Populated dynamically with mood chords -->
                             </div>
                         </div>
 
-                        <!-- Central Supernova Quote -->
-                        <div class="supernova-quote-card">
-                            <i class="fas fa-meteor supernova-icon"></i>
-                            <span id="biopic-credits-text">"Where your cinematic memories orbit in harmonic balance, illuminating your creative soul."</span>
+                        <!-- Action Exit Row -->
+                        <div class="constellation-bottom-actions">
+                            <button type="button" class="btn-close-constellation-action" onclick="closeEmotionalConstellation()">
+                                <i class="fas fa-times"></i> Cerrar Constelación
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Constellation Footer Controls -->
-                <div class="constellation-footer">
-                    <div class="constellation-stepper-row" id="biopic-act-stepper">
-                        <!-- Populated with star buttons -->
-                    </div>
-
-                    <div class="constellation-credits">
-                        <span>Cartography by Google Gemini 3.5 Flash &bull; Ambient Soundscape by Google Lyria</span>
-                    </div>
-                </div>
+                <!-- End of Main Interactive Stage -->
             </div>
         </div>
     </div>
@@ -733,7 +711,7 @@
         <p>Feel & Film &bull; Multi-Agent System Powered by Google ADK, Gemini 3.5 Flash &bull; Video & Music Powered by Google Veo & Lyria &bull; Data from TMDB & JustWatch.</p>
     </footer>
 
-    <script src="/static/app.js?v=20260829_02"></script>
+    <script src="/static/app.js?v=20260829_03"></script>
 </body>
 
 </html>

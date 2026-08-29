@@ -2256,13 +2256,13 @@ function startLyriaAmbientPad(key = "D Minor", tempo = "64 BPM") {
 
     try {
         ambientGainNode = ctx.createGain();
-        ambientGainNode.gain.setValueAtTime(0.001, ctx.currentTime);
-        ambientGainNode.gain.exponentialRampToValueAtTime(0.04, ctx.currentTime + 2.5);
+        ambientGainNode.gain.setValueAtTime(0.0005, ctx.currentTime);
+        ambientGainNode.gain.exponentialRampToValueAtTime(0.012, ctx.currentTime + 2.5); // Soft, peaceful ambient background
 
         // Lowpass filter for smooth cinematic warmth
         const filter = ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(480, ctx.currentTime);
+        filter.frequency.setValueAtTime(360, ctx.currentTime);
 
         ambientGainNode.connect(filter);
         filter.connect(ctx.destination);
@@ -2289,13 +2289,13 @@ function startLyriaAmbientPad(key = "D Minor", tempo = "64 BPM") {
 function stopLyriaAmbientPad() {
     if (ambientGainNode && lyriaAudioContext) {
         try {
-            ambientGainNode.gain.exponentialRampToValueAtTime(0.0001, lyriaAudioContext.currentTime + 1.2);
+            ambientGainNode.gain.exponentialRampToValueAtTime(0.00001, lyriaAudioContext.currentTime + 0.8);
             setTimeout(() => {
                 ambientOscillators.forEach(o => {
                     try { o.stop(); o.disconnect(); } catch (e) {}
                 });
                 ambientOscillators = [];
-            }, 1300);
+            }, 900);
         } catch (e) {}
     }
     isLyriaSoundscapePlaying = false;
@@ -2318,10 +2318,10 @@ function updateAudioButtonState() {
 
     if (isLyriaSoundscapePlaying) {
         playBtn.classList.add('playing');
-        btnText.innerHTML = `Lyria Soundscape: Playing (${(currentConstellationData?.ambient_soundscape?.key) || 'D Minor'})`;
+        btnText.innerHTML = `Lyria: Playing (${(currentConstellationData?.ambient_soundscape?.key) || 'D Minor'})`;
     } else {
         playBtn.classList.remove('playing');
-        btnText.innerHTML = `Lyria Soundscape: Muted (Click to Play)`;
+        btnText.innerHTML = `Lyria: Muted`;
     }
 }
 
@@ -2333,7 +2333,7 @@ function playLyriaAcousticStarSound(rootFreq, chordNotes) {
         const now = ctx.currentTime;
         const notes = chordNotes || [rootFreq, rootFreq * 1.25, rootFreq * 1.5, rootFreq * 2];
 
-        // Crystalline Celesta Bell Arpeggio
+        // Crystalline Celesta Bell Arpeggio (Soft and delicate)
         notes.forEach((freq, idx) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -2342,14 +2342,14 @@ function playLyriaAcousticStarSound(rootFreq, chordNotes) {
             osc.frequency.setValueAtTime(freq, now + (idx * 0.12));
 
             gain.gain.setValueAtTime(0.0001, now + (idx * 0.12));
-            gain.gain.exponentialRampToValueAtTime(0.035, now + (idx * 0.12) + 0.04);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + (idx * 0.12) + 2.8);
+            gain.gain.exponentialRampToValueAtTime(0.018, now + (idx * 0.12) + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + (idx * 0.12) + 2.5);
 
             osc.connect(gain);
             gain.connect(ctx.destination);
 
             osc.start(now + (idx * 0.12));
-            osc.stop(now + (idx * 0.12) + 3.0);
+            osc.stop(now + (idx * 0.12) + 2.8);
         });
     } catch (e) {}
 }
@@ -2450,6 +2450,9 @@ function initBiopicTrailerControls() {
     const closeBtn = document.getElementById('close-biopic-btn');
     if (closeBtn) closeBtn.addEventListener('click', closeEmotionalConstellation);
 
+    const floatingCloseBtn = document.getElementById('close-biopic-btn-floating');
+    if (floatingCloseBtn) floatingCloseBtn.addEventListener('click', closeEmotionalConstellation);
+
     const ambientBtn = document.getElementById('biopic-play-pause-btn');
     if (ambientBtn) {
         ambientBtn.addEventListener('click', toggleLyriaSoundscape);
@@ -2466,6 +2469,14 @@ document.addEventListener('DOMContentLoaded', () => {
     initFeedbackControls();
     initScreeningInterviewModal();
     initBiopicTrailerControls();
+
+    // Global keyboard listener to close modals with Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+            closeEmotionalConstellation();
+            closeCinemaEmailModal();
+        }
+    });
 
     // Initialize agent execution logs terminal
     renderAgentTrace([]);
