@@ -278,65 +278,6 @@
                     </div>
                 </div>
 
-                <!-- The Cinémathèque Archive (Personal Film Vault) -->
-                <div class="card archive-card" id="cinematheque-section">
-                    <div class="archive-header">
-                        <div class="archive-title-group">
-                            <h3><i class="fas fa-archive"></i> The Cinémathèque Archive</h3>
-                            <p class="archive-subtitle">Preserved cinematic discoveries cataloged in ClickHouse Cloud.</p>
-                        </div>
-                        <div class="archive-status-badge" id="archive-status-badge">
-                            <span class="badge-dot"></span>
-                            <span id="archive-records-count">0 Curations Preserved</span>
-                        </div>
-                    </div>
-
-                    <!-- Guest Mode Warning Banner -->
-                    <div id="archive-guest-banner" class="archive-guest-banner">
-                        <i class="fas fa-user-lock"></i>
-                        <span><strong>Guest Mode Active:</strong> Your curated films are not stored in your archive. <a href="javascript:void(0)" class="guest-signin-link" onclick="openAuthModal()">Sign in with Google</a> to preserve your personal film journal and memory.</span>
-                    </div>
-
-                    <!-- Filing Cabinet Drawer Tabs -->
-                    <div class="drawer-cabinet" id="drawer-cabinet">
-                        <button class="drawer-tab active" data-drawer="ALL">
-                            <i class="fas fa-folder-open"></i> All Records
-                        </button>
-                        <button class="drawer-tab" data-drawer="Stressed">
-                            <i class="fas fa-coffee"></i> Stressed & Overworked
-                        </button>
-                        <button class="drawer-tab" data-drawer="Sad">
-                            <i class="fas fa-cloud-rain"></i> Melancholic & Sad
-                        </button>
-                        <button class="drawer-tab" data-drawer="Tired">
-                            <i class="fas fa-bed"></i> Tired & Seeking Rest
-                        </button>
-                        <button class="drawer-tab" data-drawer="Excited">
-                            <i class="fas fa-bolt"></i> Excited & Energetic
-                        </button>
-                        <button class="drawer-tab" data-drawer="Curious">
-                            <i class="fas fa-compass"></i> Curious & Cinephile
-                        </button>
-                    </div>
-
-                    <!-- Archive Cards Grid -->
-                    <div id="archive-grid" class="archive-grid"></div>
-
-                    <!-- Archive Expand Toggle Button -->
-                    <div id="archive-expand-wrapper" class="archive-expand-wrapper hidden">
-                        <button type="button" id="archive-expand-btn" class="archive-expand-btn">
-                            <i class="fas fa-chevron-down"></i> <span id="archive-expand-text">Show All Curations</span>
-                        </button>
-                    </div>
-
-                    <!-- Empty State Message -->
-                    <div id="archive-empty-state" class="archive-empty-state hidden">
-                        <div class="empty-icon"><i class="fas fa-film"></i></div>
-                        <h4 id="empty-title">Your Film Vault is Empty</h4>
-                        <p id="empty-desc">Discover your first film using the emotional curator above to begin filing your personal cinémathèque records.</p>
-                    </div>
-                </div>
-
                 <!-- Behind the Scenes: Visual AI Crew Pipeline (User Friendly & Judge Transparency) -->
                 <div class="card trace-card" id="agent-trace-section">
                     <div class="trace-main-header">
@@ -414,6 +355,67 @@
                         <div class="terminal-log" id="terminal-log">
                             <!-- Populated with step-by-step agent logs -->
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- The Cinémathèque Archive (Personal Film Vault - Always rendered on main page) -->
+            <section class="archive-main-section" style="margin-top: 2rem;">
+                <div class="card archive-card" id="cinematheque-section">
+                    <div class="archive-header">
+                        <div class="archive-title-group">
+                            <h3><i class="fas fa-archive"></i> The Cinémathèque Archive</h3>
+                            <p class="archive-subtitle">Preserved cinematic discoveries cataloged in ClickHouse Cloud.</p>
+                        </div>
+                        <div class="archive-status-badge" id="archive-status-badge">
+                            <span class="badge-dot"></span>
+                            <span id="archive-records-count">0 Curations Preserved</span>
+                        </div>
+                    </div>
+
+                    <!-- Guest Mode Warning Banner -->
+                    <div id="archive-guest-banner" class="archive-guest-banner">
+                        <i class="fas fa-user-lock"></i>
+                        <span><strong>Guest Mode Active:</strong> Your curated films are not stored in your archive. <a href="javascript:void(0)" class="guest-signin-link" onclick="openAuthModal()">Sign in with Google</a> to preserve your personal film journal and memory.</span>
+                    </div>
+
+                    <!-- Filing Cabinet Drawer Tabs -->
+                    <div class="drawer-cabinet" id="drawer-cabinet">
+                        <button class="drawer-tab active" data-drawer="ALL">
+                            <i class="fas fa-folder-open"></i> All Records
+                        </button>
+                        <button class="drawer-tab" data-drawer="Stressed">
+                            <i class="fas fa-coffee"></i> Stressed & Overworked
+                        </button>
+                        <button class="drawer-tab" data-drawer="Sad">
+                            <i class="fas fa-cloud-rain"></i> Melancholic & Sad
+                        </button>
+                        <button class="drawer-tab" data-drawer="Tired">
+                            <i class="fas fa-bed"></i> Tired & Seeking Rest
+                        </button>
+                        <button class="drawer-tab" data-drawer="Excited">
+                            <i class="fas fa-bolt"></i> Excited & Energetic
+                        </button>
+                        <button class="drawer-tab" data-drawer="Curious">
+                            <i class="fas fa-compass"></i> Curious & Cinephile
+                        </button>
+                    </div>
+
+                    <!-- Archive Cards Grid -->
+                    <div id="archive-grid" class="archive-grid"></div>
+
+                    <!-- Archive Expand Toggle Button -->
+                    <div id="archive-expand-wrapper" class="archive-expand-wrapper hidden">
+                        <button type="button" id="archive-expand-btn" class="archive-expand-btn">
+                            <i class="fas fa-chevron-down"></i> <span id="archive-expand-text">Show All Curations</span>
+                        </button>
+                    </div>
+
+                    <!-- Empty State Message -->
+                    <div id="archive-empty-state" class="archive-empty-state hidden">
+                        <div class="empty-icon"><i class="fas fa-film"></i></div>
+                        <h4 id="empty-title">Your Film Vault is Empty</h4>
+                        <p id="empty-desc">Discover your first film using the emotional curator above to begin filing your personal cinémathèque records.</p>
                     </div>
                 </div>
             </section>
