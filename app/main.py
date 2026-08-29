@@ -657,6 +657,12 @@ async def get_cinematheque(user_email: str = ""):
 
 @app.delete("/api/cinematheque/{session_id}")
 async def delete_cinematheque_item(session_id: str):
+    # Clean in-memory user store caches
+    sid_str = str(session_id).strip()
+    for email, mem in USER_MEMORY_STORE.items():
+        if "past_feedbacks" in mem:
+            mem["past_feedbacks"] = [f for f in mem["past_feedbacks"] if str(f.get("session_id")) != sid_str]
+
     host = os.getenv("CLICKHOUSE_HOST", "")
     if not host or host == "mock":
         return {"status": "success", "session_id": session_id, "message": "Deleted in mock mode."}
@@ -669,7 +675,6 @@ async def delete_cinematheque_item(session_id: str):
             password=os.getenv("CLICKHOUSE_PASSWORD", ""), 
             secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
         )
-        sid_str = str(session_id).strip()
         try:
             client.command("ALTER TABLE audience_sessions DELETE WHERE session_id = %(session_id)s", parameters={"session_id": sid_str})
         except Exception:
