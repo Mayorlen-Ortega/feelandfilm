@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link rel="stylesheet" href="/static/style.css?v=20260829_04">
+    <link rel="stylesheet" href="/static/style.css?v=20260829_05">
 </head>
 
 <body>
@@ -18,8 +18,8 @@
         <!-- Google Federated Auth Bar & Analytics Matrix Access -->
         <div class="auth-bar" id="auth-bar">
             <div class="auth-left-actions">
-                <button type="button" id="btn-open-alignment-matrix" class="alignment-matrix-nav-btn" title="Abrir Matriz de Fidelidad y Evaluación de Requerimientos (Alt + A)" onclick="openAlignmentMatrixModal()">
-                    <i class="fas fa-chart-line"></i> <span>Matriz de Fidelidad</span> <kbd class="kbd-badge">Alt+A</kbd>
+                <button type="button" id="btn-open-alignment-matrix" class="alignment-matrix-nav-btn" title="Open AI Alignment & Multi-Constraint Fidelity Matrix (Alt + A)" onclick="openAlignmentMatrixModal()">
+                    <i class="fas fa-chart-line"></i> <span>Alignment Matrix</span> <kbd class="kbd-badge">Alt+A</kbd>
                 </button>
             </div>
             <div id="logged-out-view" class="auth-logged-out">
@@ -651,52 +651,52 @@
                 <div class="alignment-header-left">
                     <span class="alignment-icon-badge"><i class="fas fa-chart-line"></i></span>
                     <div>
-                        <h3>Matriz de Alineación &amp; Fidelidad Multi-Requerimiento</h3>
-                        <p class="modal-subtitle" style="margin: 0;">Evaluación empírica de cumplimiento: Mood + Estilo + Directivas de Autor/Región en las últimas 10 curaciones.</p>
+                        <h3>AI Multi-Constraint Alignment &amp; Fidelity Matrix</h3>
+                        <p class="modal-subtitle" style="margin: 0;">Empirical fulfillment audit: Mood + Atmosphere + Auteur/Regional Directives across the latest 10 curations.</p>
                     </div>
                 </div>
-                <button type="button" class="modal-close-btn" onclick="closeAlignmentMatrixModal()" title="Cerrar (Esc)">&times;</button>
+                <button type="button" class="modal-close-btn" onclick="closeAlignmentMatrixModal()" title="Close (Esc)">&times;</button>
             </div>
 
             <!-- Global KPIs summary -->
             <div class="alignment-kpi-grid">
                 <div class="alignment-kpi-card">
-                    <span class="kpi-label"><i class="fas fa-bullseye"></i> Fidelidad Global</span>
+                    <span class="kpi-label"><i class="fas fa-bullseye"></i> Global Fidelity</span>
                     <strong class="kpi-value text-accent" id="kpi-composite-fidelity">--%</strong>
-                    <span class="kpi-sub">Ponderación compuesta</span>
+                    <span class="kpi-sub">Composite weighting</span>
                 </div>
                 <div class="alignment-kpi-card">
-                    <span class="kpi-label"><i class="fas fa-heart-pulse"></i> Resolución de Mood</span>
+                    <span class="kpi-label"><i class="fas fa-heart-pulse"></i> Mood Resolution</span>
                     <strong class="kpi-value text-success" id="kpi-mood-satisfaction">--%</strong>
-                    <span class="kpi-sub">Elevación emocional</span>
+                    <span class="kpi-sub">Emotional elevation</span>
                 </div>
                 <div class="alignment-kpi-card">
-                    <span class="kpi-label"><i class="fas fa-user-astronaut"></i> Prioridad de Autor / Región</span>
+                    <span class="kpi-label"><i class="fas fa-user-astronaut"></i> Auteur / Region Priority</span>
                     <strong class="kpi-value text-cyan" id="kpi-directive-precision">--%</strong>
-                    <span class="kpi-sub">Directivas respetadas</span>
+                    <span class="kpi-sub">Directives satisfied</span>
                 </div>
                 <div class="alignment-kpi-card">
-                    <span class="kpi-label"><i class="fas fa-feather"></i> Estilo y Atmósfera</span>
+                    <span class="kpi-label"><i class="fas fa-feather"></i> Style &amp; Atmosphere</span>
                     <strong class="kpi-value text-purple" id="kpi-style-accuracy">--%</strong>
-                    <span class="kpi-sub">Pacing poético/cinematográfico</span>
+                    <span class="kpi-sub">Poetic / tonal pacing</span>
                 </div>
             </div>
 
             <!-- Export & Action Toolbar -->
             <div class="alignment-toolbar">
                 <div class="alignment-toolbar-left">
-                    <span class="toolbar-hint"><i class="fas fa-keyboard"></i> Atajo: <code>Alt + A</code></span>
-                    <span class="toolbar-count-badge" id="alignment-total-badge">10 Curaciones Evaluadas</span>
+                    <span class="toolbar-hint"><i class="fas fa-keyboard"></i> Shortcut: <code>Alt + A</code></span>
+                    <span class="toolbar-count-badge" id="alignment-total-badge">10 Evaluated Curations</span>
                 </div>
                 <div class="alignment-toolbar-actions">
-                    <button type="button" class="alignment-btn export-csv" onclick="exportAlignmentCSV()" title="Exportar a Hoja de Cálculo Excel / Google Sheets">
-                        <i class="fas fa-file-csv"></i> Exportar CSV
+                    <button type="button" class="alignment-btn export-csv" onclick="exportAlignmentCSV()" title="Export to CSV spreadsheet (Excel / Google Sheets)">
+                        <i class="fas fa-file-csv"></i> Export CSV
                     </button>
-                    <button type="button" class="alignment-btn export-json" onclick="exportAlignmentJSON()" title="Descargar datos en formato JSON">
-                        <i class="fas fa-file-code"></i> Exportar JSON
+                    <button type="button" class="alignment-btn export-json" onclick="exportAlignmentJSON()" title="Download raw JSON data">
+                        <i class="fas fa-file-code"></i> Export JSON
                     </button>
-                    <button type="button" class="alignment-btn copy-report" onclick="copyAlignmentSummary()" title="Copiar informe de evaluación al portapapeles">
-                        <i class="fas fa-copy"></i> Copiar Resumen
+                    <button type="button" class="alignment-btn copy-report" onclick="copyAlignmentSummary()" title="Copy evaluation markdown report to clipboard">
+                        <i class="fas fa-copy"></i> Copy Summary
                     </button>
                 </div>
             </div>
@@ -706,11 +706,11 @@
                 <table class="alignment-table">
                     <thead>
                         <tr>
-                            <th style="width: 14%;"># / Fecha</th>
-                            <th style="width: 26%;">Entradas (Mood + Estilo + Directivas)</th>
-                            <th style="width: 22%;">Película Curada &amp; Director</th>
-                            <th style="width: 16%;">Fidelidad / Scores</th>
-                            <th style="width: 22%;">Cumplimiento &amp; Arbitraje</th>
+                            <th style="width: 14%;"># / Date</th>
+                            <th style="width: 26%;">Inputs (Mood + Atmosphere + Directives)</th>
+                            <th style="width: 22%;">Curated Film &amp; Director</th>
+                            <th style="width: 16%;">Fidelity Scores</th>
+                            <th style="width: 22%;">Fulfillment &amp; Agent Arbitration</th>
                         </tr>
                     </thead>
                     <tbody id="alignment-table-body">
@@ -794,7 +794,7 @@
         <p>Feel & Film &bull; Multi-Agent System Powered by Google ADK, Gemini 3.5 Flash &bull; Video & Music Powered by Google Veo & Lyria &bull; Data from TMDB & JustWatch.</p>
     </footer>
 
-    <script src="/static/app.js?v=20260829_04"></script>
+    <script src="/static/app.js?v=20260829_05"></script>
 </body>
 
 </html>

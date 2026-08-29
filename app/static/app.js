@@ -2492,7 +2492,7 @@ async function fetchAndRenderAlignmentMatrix() {
             <tr>
                 <td colspan="5" style="text-align: center; padding: 25px; color: #94a3b8;">
                     <i class="fas fa-spinner fa-spin" style="font-size: 1.2rem; color: var(--accent);"></i>
-                    <p style="margin-top: 8px; font-size: 0.8rem;">Calculando matriz de alineación multi-requerimiento...</p>
+                    <p style="margin-top: 8px; font-size: 0.8rem;">Calculating multi-constraint AI alignment matrix...</p>
                 </td>
             </tr>
         `;
@@ -2510,7 +2510,7 @@ async function fetchAndRenderAlignmentMatrix() {
             tbody.innerHTML = `
                 <tr>
                     <td colspan="5" style="text-align: center; padding: 20px; color: #f87171;">
-                        <i class="fas fa-exclamation-triangle"></i> Error al cargar datos de alineación.
+                        <i class="fas fa-exclamation-triangle"></i> Error loading alignment data.
                     </td>
                 </tr>
             `;
@@ -2533,7 +2533,7 @@ function renderAlignmentMatrix(data) {
     if (moodEl) moodEl.innerText = `${kpis.avg_mood_satisfaction || 96}%`;
     if (dirEl) dirEl.innerText = `${kpis.avg_directive_precision || 98}%`;
     if (styleEl) styleEl.innerText = `${kpis.avg_style_accuracy || 95}%`;
-    if (countBadge) countBadge.innerText = `${kpis.total_evaluated || 0} Curaciones Evaluadas`;
+    if (countBadge) countBadge.innerText = `${kpis.total_evaluated || 10} Evaluated Curations`;
 
     // 2. Render Table Rows
     const tbody = document.getElementById('alignment-table-body');
@@ -2544,7 +2544,7 @@ function renderAlignmentMatrix(data) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="5" style="text-align: center; padding: 25px; color: #94a3b8;">
-                    No hay registros de evaluación aún. Realiza búsquedas para generar métricas.
+                    No evaluation records found yet. Perform searches to generate analytics.
                 </td>
             </tr>
         `;
@@ -2554,6 +2554,7 @@ function renderAlignmentMatrix(data) {
     tbody.innerHTML = records.map((r, idx) => {
         const film = r.recommended_film || {};
         const tagsHtml = (r.satisfaction_tags || []).map(t => `<span class="eval-tag">${t}</span>`).join('');
+        const posterSrc = film.poster_url || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=200&q=80';
 
         return `
             <tr>
@@ -2568,7 +2569,7 @@ function renderAlignmentMatrix(data) {
                             <span class="val">${r.input_mood || 'N/A'}</span>
                         </div>
                         <div class="eval-input-item">
-                            <span class="lbl">Estilo:</span>
+                            <span class="lbl">Atmosphere:</span>
                             <span class="val">${r.input_atmosphere || 'N/A'}</span>
                         </div>
                         ${r.input_directives ? `
@@ -2580,7 +2581,7 @@ function renderAlignmentMatrix(data) {
                 </td>
                 <td>
                     <div class="eval-film-cell">
-                        <img class="eval-film-thumb" src="${film.poster_url || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop'}" alt="${film.title || 'Poster'}">
+                        <img class="eval-film-thumb" src="${posterSrc}" alt="${film.title || 'Poster'}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=200&q=80';">
                         <div class="eval-film-info">
                             <span class="eval-film-title">${film.title || 'Curated Film'}</span>
                             <span class="eval-film-director"><i class="fas fa-video"></i> ${film.director || 'Auteur'} (${film.year || '2020'})</span>
@@ -2590,7 +2591,7 @@ function renderAlignmentMatrix(data) {
                 <td>
                     <div class="eval-scores-box">
                         <div class="score-row">
-                            <span>Fidelidad:</span>
+                            <span>Fidelity:</span>
                             <strong style="color: var(--accent);">${r.composite_score}%</strong>
                         </div>
                         <div class="score-bar-bg">
@@ -2598,14 +2599,14 @@ function renderAlignmentMatrix(data) {
                         </div>
                         <div class="score-row" style="font-size: 0.6rem; color: #94a3b8;">
                             <span>Mood: ${r.mood_score}%</span>
-                            <span>Directiva: ${r.directive_score}%</span>
+                            <span>Directives: ${r.directive_score}%</span>
                         </div>
                     </div>
                 </td>
                 <td>
                     <div class="eval-reasoning-cell">
                         <div class="eval-tag-list">${tagsHtml}</div>
-                        <p class="eval-arbitration-text">${r.arbitration_note || 'Requerimientos sintetizados óptimamente.'}</p>
+                        <p class="eval-arbitration-text">${r.arbitration_note || 'Requirements harmoniously balanced.'}</p>
                     </div>
                 </td>
             </tr>
@@ -2619,7 +2620,7 @@ function renderAlignmentMatrix(data) {
 
 function exportAlignmentCSV() {
     if (!currentAlignmentData || !currentAlignmentData.records || currentAlignmentData.records.length === 0) {
-        alert("No hay datos de evaluación para exportar.");
+        alert("No evaluation data available to export.");
         return;
     }
 
@@ -2661,7 +2662,7 @@ window.exportAlignmentCSV = exportAlignmentCSV;
 
 function exportAlignmentJSON() {
     if (!currentAlignmentData || !currentAlignmentData.records) {
-        alert("No hay datos de evaluación para exportar.");
+        alert("No evaluation data available to export.");
         return;
     }
 
@@ -2678,17 +2679,17 @@ window.exportAlignmentJSON = exportAlignmentJSON;
 
 function copyAlignmentSummary() {
     if (!currentAlignmentData || !currentAlignmentData.records || currentAlignmentData.records.length === 0) {
-        alert("No hay datos disponibles.");
+        alert("No evaluation data available.");
         return;
     }
 
     const kpis = currentAlignmentData.kpis || {};
     let summary = `### Feel & Film • AI Alignment & Multi-Constraint Evaluation Summary\n`;
-    summary += `- **Fidelidad Global:** ${kpis.avg_composite_fidelity}%\n`;
-    summary += `- **Resolución de Mood:** ${kpis.avg_mood_satisfaction}%\n`;
-    summary += `- **Prioridad de Autor/Región:** ${kpis.avg_directive_precision}%\n`;
-    summary += `- **Estilo & Atmósfera:** ${kpis.avg_style_accuracy}%\n\n`;
-    summary += `| # | Mood + Directivas | Película Curada | Score | Arbitraje de Agentes |\n`;
+    summary += `- **Global Fidelity:** ${kpis.avg_composite_fidelity}%\n`;
+    summary += `- **Mood Resolution:** ${kpis.avg_mood_satisfaction}%\n`;
+    summary += `- **Auteur / Regional Directive Precision:** ${kpis.avg_directive_precision}%\n`;
+    summary += `- **Style & Atmosphere Fidelity:** ${kpis.avg_style_accuracy}%\n\n`;
+    summary += `| # | Mood + Directives | Curated Film | Composite Score | Agent Arbitration Reasoning |\n`;
     summary += `|---|---|---|---|---|\n`;
 
     currentAlignmentData.records.forEach((r, idx) => {
@@ -2697,7 +2698,7 @@ function copyAlignmentSummary() {
     });
 
     navigator.clipboard.writeText(summary).then(() => {
-        alert("¡Resumen de fidelidad copiado al portapapeles en formato Markdown!");
+        alert("✓ Alignment evaluation summary copied to clipboard in Markdown format!");
     }).catch(err => {
         console.error("Copy error:", err);
     });

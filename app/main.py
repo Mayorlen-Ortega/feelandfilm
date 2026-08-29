@@ -1040,29 +1040,29 @@ ALIGNMENT_EVALUATION_HISTORY: List[Dict[str, Any]] = [
         "id": "eval_hist_01",
         "timestamp": "2026-08-29 18:40",
         "user_email": "may@cinephile.org",
-        "input_mood": "Stressed & Fatigued (Estresada)",
-        "input_atmosphere": "Poetic Contemplation (Cine Poético)",
-        "input_directives": "Denis Villeneuve, Immersive Atmosphere",
+        "input_mood": "Stressed & Overwhelmed",
+        "input_atmosphere": "Poetic Contemplation",
+        "input_directives": "Denis Villeneuve, Atmospheric Sci-Fi",
         "recommended_film": {
             "title": "Arrival",
             "director": "Denis Villeneuve",
             "year": "2016",
             "runtime": "116 min",
             "genres": ["Sci-Fi", "Drama", "Mystery"],
-            "poster_url": "https://image.tmdb.org/t/p/w200/x2FJsf1ElAgr63Y3PNPtJrcmpoe.jpg"
+            "poster_url": "https://image.tmdb.org/t/p/w200/pEzNVQfdzYDzVK0XqxERIw2x2se.jpg"
         },
         "mood_score": 98,
         "style_score": 96,
         "directive_score": 100,
         "composite_score": 98,
         "satisfaction_tags": ["✓ Mood Resolved", "✓ Auteur Prioritized (Villeneuve)", "✓ Poetic Pacing Honored"],
-        "arbitration_note": "El orquestador priorizó la directiva explícita de 'Denis Villeneuve' seleccionando su obra más introspectiva y poética ('Arrival'), resolviendo el estrés mediante cadencias contemplativas y lenguaje alienígena sin caer en acción caótica."
+        "arbitration_note": "The orchestrator prioritized the explicit 'Denis Villeneuve' directive by curating his most introspective work ('Arrival'), counteracting stress through poetic cadence and alien linguistics without chaotic action."
     },
     {
         "id": "eval_hist_02",
         "timestamp": "2026-08-29 18:25",
         "user_email": "may@cinephile.org",
-        "input_mood": "Stressed & Overwhelmed",
+        "input_mood": "Fatigued & Stressed",
         "input_atmosphere": "Relaxing Whimsical Joy",
         "input_directives": "Studio Ghibli, Magical Realism",
         "recommended_film": {
@@ -1071,14 +1071,14 @@ ALIGNMENT_EVALUATION_HISTORY: List[Dict[str, Any]] = [
             "year": "2004",
             "runtime": "119 min",
             "genres": ["Animation", "Fantasy", "Adventure"],
-            "poster_url": "https://image.tmdb.org/t/p/w200/6p0n2iqnvRzk0v67W912y0z5w8w.jpg"
+            "poster_url": "https://image.tmdb.org/t/p/w200/13kOl2v0nD2OLbVSHnHk8GUFEhO.jpg"
         },
         "mood_score": 97,
         "style_score": 98,
         "directive_score": 100,
         "composite_score": 98,
         "satisfaction_tags": ["✓ Mood Uplifted", "✓ Ghibli Animation Honored", "✓ Whimsical Magic Fused"],
-        "arbitration_note": "Se maximizó la ligereza visual y la orquestación de Joe Hisaishi para contrarrestar la sobrecarga mental, manteniendo intacto el tono fantástico solicitado."
+        "arbitration_note": "Maximized visual levity and Joe Hisaishi's symphonic scoring to ease mental overload while preserving the requested magical fantasy aesthetic."
     },
     {
         "id": "eval_hist_03",
@@ -1086,21 +1086,21 @@ ALIGNMENT_EVALUATION_HISTORY: List[Dict[str, Any]] = [
         "user_email": "may@cinephile.org",
         "input_mood": "Curious & Analytical",
         "input_atmosphere": "Thought-provoking Mystery",
-        "input_directives": "Cine Latino, Realismo Mágico / Psicológico",
+        "input_directives": "Latin American Cinema, Psychological Mystery",
         "recommended_film": {
             "title": "The Headless Woman (La mujer sin cabeza)",
             "director": "Lucrecia Martel",
             "year": "2008",
             "runtime": "87 min",
             "genres": ["Drama", "Mystery", "Thriller"],
-            "poster_url": "https://image.tmdb.org/t/p/w200/7aQYx3oF0DqP1o6h4C6r5l8c7q8.jpg"
+            "poster_url": "https://image.tmdb.org/t/p/w200/fuheeNADrSaPoKTnatkVdAliEFN.jpg"
         },
         "mood_score": 95,
         "style_score": 96,
         "directive_score": 100,
         "composite_score": 97,
-        "satisfaction_tags": ["✓ Cine Latino Prioritized (Argentina)", "✓ Psychological Depth", "✓ Auteur Martel Soundscape"],
-        "arbitration_note": "El agente reconoció la restricción regional 'Cine Latino' y seleccionó la obra cumbre de Lucrecia Martel, encajando el diseño sonoro sensorial con la curiosidad analítica del usuario."
+        "satisfaction_tags": ["✓ Latin American Cinema", "✓ Psychological Depth", "✓ Martel Sensory Sound"],
+        "arbitration_note": "Honored the regional 'Latin American Cinema' constraint by selecting Lucrecia Martel's masterpiece, aligning its intricate sound design with the user's analytical curiosity."
     },
     {
         "id": "eval_hist_04",
@@ -1108,21 +1108,21 @@ ALIGNMENT_EVALUATION_HISTORY: List[Dict[str, Any]] = [
         "user_email": "may@cinephile.org",
         "input_mood": "Melancholic & Reflective",
         "input_atmosphere": "Cathartic Serenity",
-        "input_directives": "Cine Poético, Fotografía Pictórica",
+        "input_directives": "Poetic Cinema, Humanist Reflection",
         "recommended_film": {
             "title": "After Life (Wandâfuru raifu)",
             "director": "Hirokazu Kore-eda",
             "year": "1998",
             "runtime": "118 min",
             "genres": ["Drama", "Fantasy"],
-            "poster_url": "https://image.tmdb.org/t/p/w200/9PzF0q3Lw8zZ5w8x9z7y4p2k1l0.jpg"
+            "poster_url": "https://image.tmdb.org/t/p/w200/ty43RTdSBpL3VjBJWeRoKhFg7hF.jpg"
         },
         "mood_score": 99,
         "style_score": 98,
         "directive_score": 96,
         "composite_score": 98,
         "satisfaction_tags": ["✓ Melancholy Healed", "✓ Poetic Memory Core", "✓ Kore-eda Humanism"],
-        "arbitration_note": "Fusión perfecta de melancolía y poesía cinematográfica. La premisa de elegir un único recuerdo para la eternidad genera una catarsis pacífica y reconfortante."
+        "arbitration_note": "Synthesized melancholy and poetic framing. The central premise of choosing one single memory for eternity facilitates peaceful emotional catharsis."
     },
     {
         "id": "eval_hist_05",
@@ -1130,21 +1130,131 @@ ALIGNMENT_EVALUATION_HISTORY: List[Dict[str, Any]] = [
         "user_email": "may@cinephile.org",
         "input_mood": "Bored & Disconnected",
         "input_atmosphere": "Uplifting Sparkling Joy",
-        "input_directives": "Cine Francés, Estilo Visual París",
+        "input_directives": "French Cinema, Paris Visuals",
         "recommended_film": {
             "title": "Amélie (Le Fabuleux Destin d'Amélie Poulain)",
             "director": "Jean-Pierre Jeunet",
             "year": "2001",
             "runtime": "122 min",
             "genres": ["Comedy", "Romance"],
-            "poster_url": "https://image.tmdb.org/t/p/w200/5ly2k0k4l1x3x2y4z6w8q0p7o1.jpg"
+            "poster_url": "https://image.tmdb.org/t/p/w200/nSxDa3M9aMvGVLoItzWTepQ5h5d.jpg"
         },
         "mood_score": 98,
         "style_score": 97,
         "directive_score": 100,
         "composite_score": 98,
-        "satisfaction_tags": ["✓ Boredom Eradicated", "✓ French Cinema Auteur", "✓ Yann Tiersen Accordion Score"],
-        "arbitration_note": "Respuesta inmediata al aburrimiento mediante el dinamismo cromático de Jeunet y el icónico acordeón de Tiersen, satisfaciendo la etiqueta de cine francés al 100%."
+        "satisfaction_tags": ["✓ Boredom Eradicated", "✓ French Auteur Honored", "✓ Yann Tiersen Score"],
+        "arbitration_note": "Counteracted boredom through Jeunet's saturated color palette and Yann Tiersen's accordion score, satisfying the French cinema directive completely."
+    },
+    {
+        "id": "eval_hist_06",
+        "timestamp": "2026-08-29 15:45",
+        "user_email": "may@cinephile.org",
+        "input_mood": "Curious & Introspective",
+        "input_atmosphere": "Neo-Noir Cyberpunk",
+        "input_directives": "Denis Villeneuve, Roger Deakins Cinematography",
+        "recommended_film": {
+            "title": "Blade Runner 2049",
+            "director": "Denis Villeneuve",
+            "year": "2017",
+            "runtime": "164 min",
+            "genres": ["Sci-Fi", "Drama", "Mystery"],
+            "poster_url": "https://image.tmdb.org/t/p/w200/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg"
+        },
+        "mood_score": 96,
+        "style_score": 99,
+        "directive_score": 100,
+        "composite_score": 98,
+        "satisfaction_tags": ["✓ Neo-Noir Atmosphere", "✓ Villeneuve Auteur", "✓ Deakins Visuals"],
+        "arbitration_note": "Satisfied both the neo-noir atmosphere and Villeneuve directive with Roger Deakins' iconic color palette and Hans Zimmer's sub-bass resonance."
+    },
+    {
+        "id": "eval_hist_07",
+        "timestamp": "2026-08-29 14:10",
+        "user_email": "may@cinephile.org",
+        "input_mood": "Anxious & Restless",
+        "input_atmosphere": "Transcendent Awe & Serenity",
+        "input_directives": "Studio Ghibli, Joe Hisaishi Scoring",
+        "recommended_film": {
+            "title": "Spirited Away",
+            "director": "Hayao Miyazaki",
+            "year": "2001",
+            "runtime": "125 min",
+            "genres": ["Animation", "Fantasy", "Adventure"],
+            "poster_url": "https://image.tmdb.org/t/p/w200/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg"
+        },
+        "mood_score": 99,
+        "style_score": 97,
+        "directive_score": 100,
+        "composite_score": 99,
+        "satisfaction_tags": ["✓ Anxiety Mitigated", "✓ Ghibli Masterpiece", "✓ Joe Hisaishi Theme"],
+        "arbitration_note": "Replaced restlessness with immersive bathhouse folklore, balancing the childhood nostalgia and calming piano motifs of Joe Hisaishi."
+    },
+    {
+        "id": "eval_hist_08",
+        "timestamp": "2026-08-29 13:20",
+        "user_email": "may@cinephile.org",
+        "input_mood": "Curious & Atmospheric",
+        "input_atmosphere": "Dark Fantasy & Poetic Lore",
+        "input_directives": "Guillermo del Toro, Spanish Cinema",
+        "recommended_film": {
+            "title": "Pan's Labyrinth (El laberinto del fauno)",
+            "director": "Guillermo del Toro",
+            "year": "2006",
+            "runtime": "118 min",
+            "genres": ["Fantasy", "Drama", "War"],
+            "poster_url": "https://image.tmdb.org/t/p/w200/z7xXihu5wHuSMWymq5VAulPVuvg.jpg"
+        },
+        "mood_score": 95,
+        "style_score": 98,
+        "directive_score": 100,
+        "composite_score": 97,
+        "satisfaction_tags": ["✓ Dark Fantasy Lore", "✓ Del Toro Auteur", "✓ Lullaby Soundtrack"],
+        "arbitration_note": "Harmonized historical drama and dark fairy tale aesthetics, executing Guillermo del Toro's distinct visual signature without breaking emotional tone."
+    },
+    {
+        "id": "eval_hist_09",
+        "timestamp": "2026-08-29 12:00",
+        "user_email": "may@cinephile.org",
+        "input_mood": "Contemplative & Nostalgic",
+        "input_atmosphere": "Intimate Black & White Poetics",
+        "input_directives": "Alfonso Cuarón, Mexico Cinema",
+        "recommended_film": {
+            "title": "Roma",
+            "director": "Alfonso Cuarón",
+            "year": "2018",
+            "runtime": "135 min",
+            "genres": ["Drama"],
+            "poster_url": "https://image.tmdb.org/t/p/w200/w90ItYf9qagQKVEBr1uFxPomAtf.jpg"
+        },
+        "mood_score": 97,
+        "style_score": 99,
+        "directive_score": 100,
+        "composite_score": 98,
+        "satisfaction_tags": ["✓ Monochrome Poetics", "✓ Cuarón Directing", "✓ Dolby Atmos Sound"],
+        "arbitration_note": "Executed Cuarón's intimate childhood memories with sweeping 65mm cinematography, honoring the Latin American roots and contemplative pacing."
+    },
+    {
+        "id": "eval_hist_10",
+        "timestamp": "2026-08-29 10:30",
+        "user_email": "may@cinephile.org",
+        "input_mood": "Curious & Tense",
+        "input_atmosphere": "Surreal Psychological Suspense",
+        "input_directives": "Alfred Hitchcock, Master of Suspense",
+        "recommended_film": {
+            "title": "Vertigo",
+            "director": "Alfred Hitchcock",
+            "year": "1958",
+            "runtime": "128 min",
+            "genres": ["Mystery", "Romance", "Thriller"],
+            "poster_url": "https://image.tmdb.org/t/p/w200/15uOEfqBNTVtDUT7hGBVCka0rZz.jpg"
+        },
+        "mood_score": 98,
+        "style_score": 97,
+        "directive_score": 100,
+        "composite_score": 98,
+        "satisfaction_tags": ["✓ Hitchcock Auteur", "✓ Bernard Herrmann Score", "✓ Surreal Vertigo Effect"],
+        "arbitration_note": "Prioritized Alfred Hitchcock's quintessential masterpiece, connecting surreal technicolor spiral sequences with Bernard Herrmann's spiraling orchestral score."
     }
 ]
 
@@ -1158,7 +1268,7 @@ def record_alignment_evaluation(
     reasoning: str,
     poster_url: str = ""
 ):
-    """Logs an alignment evaluation entry analyzing requirement tradeoffs."""
+    """Logs an alignment evaluation entry analyzing requirement tradeoffs in English."""
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
     
     # Calculate dimensional fidelity
@@ -1172,7 +1282,7 @@ def record_alignment_evaluation(
     title = film_data.get("title", "Curated Selection")
 
     tags = ["✓ Mood Resolved", f"✓ Auteur: {director[:18]}", "✓ Atmosphere Honored"]
-    if "latino" in directives_clean.lower():
+    if "latino" in directives_clean.lower() or "latin" in directives_clean.lower():
         tags.append("✓ Regional Focus")
     if "poet" in directives_clean.lower() or "poet" in desired_atmosphere.lower():
         tags.append("✓ Poetic Pacing")
@@ -1190,14 +1300,14 @@ def record_alignment_evaluation(
             "year": film_data.get("year", "2020"),
             "runtime": film_data.get("runtime", "110 min"),
             "genres": film_data.get("mood_tags", ["Cinema", "Auteur"]),
-            "poster_url": poster_url or "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop"
+            "poster_url": poster_url or "https://image.tmdb.org/t/p/w200/pEzNVQfdzYDzVK0XqxERIw2x2se.jpg"
         },
         "mood_score": mood_score,
         "style_score": style_score,
         "directive_score": directive_score,
         "composite_score": composite,
         "satisfaction_tags": tags[:3],
-        "arbitration_note": reasoning or f"El sistema balanceó el estado de '{initial_mood}' con el objetivo de '{desired_atmosphere}', priorizando la dirección de {director} sin descuidar el equilibrio sensorial."
+        "arbitration_note": reasoning or f"The agent balanced '{initial_mood}' against '{desired_atmosphere}', prioritizing {director}'s signature directing without sacrificing emotional equilibrium."
     }
 
     ALIGNMENT_EVALUATION_HISTORY.insert(0, entry)
