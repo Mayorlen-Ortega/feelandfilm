@@ -2298,13 +2298,13 @@ function startLyriaAmbientPad(key = "D Minor", tempo = "64 BPM") {
 
     try {
         ambientGainNode = ctx.createGain();
-        ambientGainNode.gain.setValueAtTime(0.0005, ctx.currentTime);
-        ambientGainNode.gain.exponentialRampToValueAtTime(0.012, ctx.currentTime + 2.5); // Soft, peaceful ambient background
+        ambientGainNode.gain.setValueAtTime(0.0001, ctx.currentTime);
+        ambientGainNode.gain.exponentialRampToValueAtTime(0.0035, ctx.currentTime + 3.0); // Whisper-soft ambient texture
 
-        // Lowpass filter for smooth cinematic warmth
+        // Lowpass filter for deep cinematic warmth
         const filter = ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(360, ctx.currentTime);
+        filter.frequency.setValueAtTime(220, ctx.currentTime);
 
         ambientGainNode.connect(filter);
         filter.connect(ctx.destination);
