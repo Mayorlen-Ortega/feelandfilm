@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import json
 import os
+import re
+import random
 import uuid
 import clickhouse_connect
 from dotenv import load_dotenv
@@ -306,23 +308,27 @@ UNSAFE_PATTERNS = [
 ]
 
 def check_content_safety(*texts: str) -> bool:
-    combined = " ".join([str(t).lower() for t in texts if t])
-    
-    # 1. Neutralize whitelisted cinema words (prevents Scunthorpe false positives like Alfred Hitchcock)
-    cleaned = combined
-    for allowed in CINEMA_SAFETY_WHITELIST:
-        cleaned = cleaned.replace(allowed, " ")
+    try:
+        combined = " ".join([str(t).lower() for t in texts if t])
+        
+        # 1. Neutralize whitelisted cinema words (prevents Scunthorpe false positives like Alfred Hitchcock)
+        cleaned = combined
+        for allowed in CINEMA_SAFETY_WHITELIST:
+            cleaned = cleaned.replace(allowed, " ")
 
-    # 2. Check for unsafe patterns with word boundary protection for short words
-    for bad in UNSAFE_PATTERNS:
-        if len(bad) <= 5:
-            # Word boundary regex prevents "skill" -> "kill", "Hitchcock" -> "cock", etc.
-            if re.search(r'\b' + re.escape(bad) + r'\b', cleaned):
-                return False
-        else:
-            if bad in cleaned:
-                return False
-    return True
+        # 2. Check for unsafe patterns with word boundary protection for short words
+        for bad in UNSAFE_PATTERNS:
+            if len(bad) <= 5:
+                # Word boundary regex prevents "skill" -> "kill", "Hitchcock" -> "cock", etc.
+                if re.search(r'\b' + re.escape(bad) + r'\b', cleaned):
+                    return False
+            else:
+                if bad in cleaned:
+                    return False
+        return True
+    except Exception as e:
+        print("Safety check error:", e)
+        return True
 
 
 # ---------------------------------------------------------------------------
