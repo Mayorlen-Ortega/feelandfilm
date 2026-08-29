@@ -342,9 +342,11 @@ async def curate_experience(request: MoodRequest):
         }
 
     user_email = request.user_email or ""
+    if user_email and user_email != "guest":
+        sync_user_memory_from_db(user_email)
     mem = get_or_create_user_memory(user_email)
     
-    # Merge client excluded films with memory excluded films
+    # Merge client excluded films with memory excluded films (ensures films in Cinémathèque are never re-recommended)
     combined_excluded = list(set(request.excluded_films + mem.get("excluded_films", [])))
     
     # If user provided explicit dietary preference in request, register it

@@ -738,6 +738,13 @@ function validateCurrentScene() {
 // Autonomous Multi-Agent Orchestration Execution
 // ---------------------------------------------------------------------------
 
+function getGlobalExcludedFilms() {
+    const archiveTitles = (allArchiveRecords || []).map(r => r.title).filter(Boolean);
+    const sessionTitles = window.sessionRecommendedFilms || [];
+    const manualTitles = window.excludedFilms || [];
+    return Array.from(new Set([...archiveTitles, ...sessionTitles, ...manualTitles]));
+}
+
 async function executeCinemaOrchestration() {
     const submitBtn = document.getElementById('submit-screening-btn');
     const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
@@ -749,8 +756,7 @@ async function executeCinemaOrchestration() {
     if (spinner) spinner.classList.remove('hidden');
     if (resultsSection) resultsSection.classList.add('hidden');
 
-    window.sessionRecommendedFilms = window.sessionRecommendedFilms || [];
-    const allExcluded = Array.from(new Set([...(window.excludedFilms || []), ...(window.sessionRecommendedFilms || [])]));
+    const allExcluded = getGlobalExcludedFilms();
 
     const userEmail = (currentUser && currentUser.email) ? currentUser.email : "guest";
     const savedDietary = localStorage.getItem('feelandfilm_dietary') || "";
@@ -996,6 +1002,7 @@ async function curateAnotherRecommendationSameMood() {
     if (!currentSessionData || !currentSessionData.film) return;
 
     const currentTitle = currentSessionData.film.title;
+    const allExcluded = getGlobalExcludedFilms();
     if (currentTitle && !allExcluded.includes(currentTitle)) {
         allExcluded.push(currentTitle);
     }
@@ -1008,7 +1015,7 @@ async function curateAnotherRecommendationSameMood() {
     }
 
     const userEmail = (currentUser && currentUser.email) ? currentUser.email : "guest";
-    const savedDietary = localStorage.getItem('feel_film_dietary') || null;
+    const savedDietary = localStorage.getItem('feelandfilm_dietary') || null;
 
     const requestData = {
         initial_mood: document.getElementById('initial_mood')?.value || currentSessionData.primary_mood || "Seeking inspiration",
