@@ -1154,7 +1154,7 @@ let currentBiopicActIndex = 0;
 let biopicPlaybackTimer = null;
 let isBiopicPlaying = false;
 
-// Watched IDs Storage
+// Watched IDs & Film Ratings Storage
 function getWatchedFilmIds() {
     try {
         const stored = localStorage.getItem('feelandfilm_watched_ids');
@@ -1169,6 +1169,55 @@ function saveWatchedFilmIds(ids) {
         localStorage.setItem('feelandfilm_watched_ids', JSON.stringify(ids));
     } catch (e) {}
 }
+
+function getArchivedRatings() {
+    try {
+        const stored = localStorage.getItem('feelandfilm_ratings');
+        return stored ? JSON.parse(stored) : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveArchivedRatings(ratings) {
+    try {
+        localStorage.setItem('feelandfilm_ratings', JSON.stringify(ratings));
+    } catch (e) {}
+}
+
+async function rateArchivedFilm(sessionId, title, rating, event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    if (!sessionId) return;
+
+    const ratings = getArchivedRatings();
+    ratings[sessionId] = rating;
+    saveArchivedRatings(ratings);
+    renderCinematheque();
+
+    // Auto-save feedback & user preference to agent memory
+    try {
+        const userEmail = (currentUser && currentUser.email) ? currentUser.email : "guest";
+        await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_email: userEmail,
+                session_id: sessionId,
+                movie_title: title || "Archived Movie",
+                rating: rating,
+                category: 'archived_film_rating',
+                feedback_text: `User rated ${title} ${rating} stars after watching it.`
+            })
+        });
+    } catch (e) {
+        console.error("Failed to sync archived rating:", e);
+    }
+}
+
+window.rateArchivedFilm = rateArchivedFilm;
 
 async function toggleWatchedFilm(sessionId) {
     if (!currentUser || !currentUser.email) {
@@ -1264,6 +1313,7 @@ function renderCinematheque() {
     const expandWrapper = document.getElementById('archive-expand-wrapper');
     const expandText = document.getElementById('archive-expand-text');
     const watchedIds = getWatchedFilmIds();
+    const ratings = getArchivedRatings();
 
     if (!grid) return;
 
@@ -1296,8 +1346,10 @@ function renderCinematheque() {
 
     grid.innerHTML = displayRecords.map(r => {
         const isWatched = watchedIds.includes(r.session_id);
+        const userRating = ratings[r.session_id] || 0;
         const posterUrl = r.poster_url || "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80";
         const tags = (r.detected_tags || []).slice(0, 3);
+        const safeTitle = (r.title || '').replace(/'/g, "\\'");
 
         return `
             <div class="archive-record-card" id="record-${r.session_id}">
@@ -1324,8 +1376,17 @@ function renderCinematheque() {
 
                 <div class="archive-card-actions">
                     <button type="button" class="archive-watched-btn ${isWatched ? 'is-watched' : ''}" onclick="toggleWatchedFilm('${r.session_id}')">
-                        <i class="fas ${isWatched ? 'fa-check-circle' : 'fa-eye'}"></i> ${isWatched ? 'Watched ★★★★★' : 'Mark as Watched'}
+                        <i class="fas ${isWatched ? 'fa-check-circle' : 'fa-eye'}"></i> ${isWatched ? 'Watched' : 'Mark as Watched'}
                     </button>
+
+                    ${isWatched ? `
+                        <div class="archive-rating-stars" title="Rate this film (${userRating ? userRating + '/5 stars' : 'Click to rate'})">
+                            <span class="star-rating-label">Rate:</span>
+                            ${[1, 2, 3, 4, 5].map(val => `
+                                <span class="archive-star ${val <= userRating ? 'filled' : ''}" onclick="rateArchivedFilm('${r.session_id}', '${safeTitle}', ${val}, event)">★</span>
+                            `).join('')}
+                        </div>
+                    ` : ''}
                 </div>
             </div>
         `;

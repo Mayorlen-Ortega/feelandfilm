@@ -2192,6 +2192,42 @@ button:disabled {
     color: #ffcccc;
 }
 
+.archive-rating-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 3px 9px;
+    border-radius: 14px;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.star-rating-label {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    margin-right: 3px;
+    font-family: 'Cinzel', serif;
+}
+
+.archive-star {
+    font-size: 0.95rem;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    line-height: 1;
+}
+
+.archive-star:hover {
+    transform: scale(1.25);
+    color: #f3d069;
+}
+
+.archive-star.filled {
+    color: #f3d069;
+    text-shadow: 0 0 6px rgba(243, 208, 105, 0.6);
+}
+
 /* ==========================================================================
    Full-Screen Biopic Trailer Modal
    ========================================================================== */
