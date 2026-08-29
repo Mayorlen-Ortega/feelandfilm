@@ -1252,29 +1252,67 @@ async function toggleWatchedFilm(sessionId) {
 
 window.toggleWatchedFilm = toggleWatchedFilm;
 
-async function deleteCinemathequeItem(sessionId, e) {
+async function deleteCinemathequeItem(sessionId, title, e) {
     if (e) {
-        e.preventDefault();
-        e.stopPropagation();
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
     }
-    if (!sessionId) return;
-    if (!confirm("Are you sure you want to remove this curated film from your archive?")) return;
+    
+    // 1. Instant smooth visual removal
+    const card = (sessionId && document.getElementById(`record-${sessionId}`)) || 
+                 document.querySelector(`[data-session-id="${sessionId}"]`)?.closest('.archive-record-card') ||
+                 (title && Array.from(document.querySelectorAll('.archive-title')).find(el => el.textContent.trim().toLowerCase() === title.toLowerCase())?.closest('.archive-record-card'));
+    
+    if (card) {
+        card.style.transition = 'all 0.25s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.9)';
+    }
 
-    // Optimistic local removal
-    allArchiveRecords = allArchiveRecords.filter(r => String(r.session_id) !== String(sessionId));
-    let watchedIds = getWatchedFilmIds().filter(id => String(id) !== String(sessionId));
-    saveWatchedFilmIds(watchedIds);
-    renderCinematheque();
-    updateBiopicMilestone();
+    // 2. Filter local array
+    allArchiveRecords = allArchiveRecords.filter(r => {
+        if (sessionId && r.session_id && String(r.session_id) === String(sessionId)) return false;
+        if (title && r.title && r.title.toLowerCase() === title.toLowerCase()) return false;
+        return true;
+    });
 
-    try {
-        await fetch(`/api/cinematheque/${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
-    } catch (err) {
-        console.error("Delete cinematheque item error:", err);
+    if (sessionId) {
+        let watchedIds = getWatchedFilmIds().filter(id => String(id) !== String(sessionId));
+        saveWatchedFilmIds(watchedIds);
+        const ratings = getArchivedRatings();
+        delete ratings[sessionId];
+        saveArchivedRatings(ratings);
+    }
+
+    setTimeout(() => {
+        renderCinematheque();
+        updateBiopicMilestone();
+    }, 200);
+
+    // 3. Persist to backend
+    const targetKey = sessionId || (title ? encodeURIComponent(title) : "");
+    if (targetKey) {
+        try {
+            await fetch(`/api/cinematheque/${targetKey}`, { method: 'DELETE' });
+        } catch (err) {
+            console.error("Delete cinematheque item error:", err);
+        }
     }
 }
 
 window.deleteCinemathequeItem = deleteCinemathequeItem;
+
+// Event delegation fallback for archive delete buttons
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.archive-delete-btn');
+    if (btn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const sid = btn.dataset.sessionId || btn.getAttribute('data-session-id');
+        const tit = btn.dataset.title || btn.getAttribute('data-title');
+        deleteCinemathequeItem(sid, tit, e);
+    }
+});
 
 async function loadCinematheque() {
     const userEmail = (currentUser && currentUser.email) ? currentUser.email : "guest";
@@ -1361,7 +1399,7 @@ function renderCinematheque() {
                                 <h4 class="archive-title">${r.title}</h4>
                                 <div class="archive-director"><i class="fas fa-video"></i> ${r.director || 'Auteur Director'}</div>
                             </div>
-                            <button type="button" class="archive-delete-btn" onclick="deleteCinemathequeItem('${r.session_id}', event)" title="Delete from archive">
+                            <button type="button" class="archive-delete-btn" data-session-id="${r.session_id || ''}" data-title="${safeTitle}" onclick="deleteCinemathequeItem('${r.session_id || ''}', '${safeTitle}', event)" title="Delete from archive">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>

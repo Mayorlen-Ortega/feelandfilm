@@ -676,9 +676,9 @@ async def delete_cinematheque_item(session_id: str):
             secure=os.getenv("CLICKHOUSE_SECURE", "False").lower() in ("true", "1", "yes")
         )
         try:
-            client.command("ALTER TABLE audience_sessions DELETE WHERE session_id = %(session_id)s", parameters={"session_id": sid_str})
+            client.command("ALTER TABLE audience_sessions DELETE WHERE session_id = %(sid)s OR film_title = %(sid)s", parameters={"sid": sid_str})
         except Exception:
-            client.command("DELETE FROM audience_sessions WHERE session_id = %(session_id)s", parameters={"session_id": sid_str})
+            client.command("DELETE FROM audience_sessions WHERE session_id = %(sid)s OR film_title = %(sid)s", parameters={"sid": sid_str})
             
         return {"status": "success", "session_id": sid_str}
     except Exception as e:
