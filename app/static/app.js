@@ -1997,6 +1997,8 @@ let isLyriaSoundscapePlaying = false;
 let ambientGainNode = null;
 let ambientOscillators = [];
 let starfieldAnimId = null;
+let leitmotifProgressAnimId = null;
+let activeLeitmotifNodes = [];
 
 async function generateBiopicTrailer(isDemoMode = false) {
     const genBtn = document.getElementById('generate-biopic-btn');
@@ -2005,7 +2007,7 @@ async function generateBiopicTrailer(isDemoMode = false) {
 
     const originalHtml = triggerBtn.innerHTML;
     triggerBtn.disabled = true;
-    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Plotting 5-Star Celestial Galaxy...';
+    triggerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Plotting Irregular Celestial Constellation...';
 
     const watchedIds = getWatchedFilmIds();
     let targetFilms = allArchiveRecords.filter(r => watchedIds.includes(r.session_id));
@@ -2059,69 +2061,28 @@ function openEmotionalConstellation(data) {
     const titleEl = document.getElementById('biopic-story-title');
     const archetypeEl = document.getElementById('storyboard-archetype-text');
     const prefaceEl = document.getElementById('storyboard-preface-text');
-    const creditsEl = document.getElementById('biopic-credits-text');
 
-    if (titleEl) titleEl.innerText = data.constellation_name || data.story_title || "The 5-Star Emotional Constellation";
-    if (archetypeEl) archetypeEl.innerText = data.celestial_archetype || data.curator_archetype || "The Nocturnal Contemplative";
-    if (prefaceEl) prefaceEl.innerText = data.cosmic_narrative || data.director_preface || "A celestial dialogue across your 5 cinematic milestones.";
-    
-    const supernova = data.central_supernova || {};
-    if (creditsEl) creditsEl.innerText = supernova.narrative || data.climax_quote || "Where 5 cinematic memories orbit in harmonic balance.";
-
-    // Render Lyria Soundscape metadata
-    const soundscape = data.ambient_soundscape || {};
-    const keyEl = document.getElementById('lyria-spec-key');
-    const tempoEl = document.getElementById('lyria-spec-tempo');
-    const promptEl = document.getElementById('biopic-lyria-prompt');
-
-    if (keyEl) keyEl.innerText = soundscape.key || "D Minor";
-    if (tempoEl) tempoEl.innerText = soundscape.tempo || "64 BPM";
-    if (promptEl) promptEl.innerText = soundscape.leitmotif_description || soundscape.instrumentation || "Lush ambient synthesizer pads with crystalline celesta chords.";
-
-    // Render dynamic mood-harmonic progression keyboard
-    renderHarmonicChordsKeyboard(soundscape.harmonic_progression);
+    if (titleEl) titleEl.innerText = data.constellation_name || data.story_title || "The Organic Emotional Constellation";
+    if (archetypeEl) archetypeEl.innerText = data.celestial_archetype || data.curator_archetype || "The Cosmic Cinephile";
+    if (prefaceEl) prefaceEl.innerText = data.cosmic_narrative || data.director_preface || "An irregular celestial asterism charting your cinema memories across cosmic depth.";
 
     if (modal) modal.classList.remove('hidden');
 
-    // Initialize Cosmic Starfield Canvas & Map
+    // Initialize Cosmic Starfield Canvas & Sky Map
     initCosmicStarfieldCanvas();
     renderConstellationSkyMap(data);
     selectConstellationStar(0, true);
 
-    // Auto-start ambient soundscape
+    // Auto-start subtle ambient pad
+    const soundscape = data.ambient_soundscape || {};
     startLyriaAmbientPad(soundscape.key || "D Minor", soundscape.tempo || "64 BPM");
-}
-
-function renderHarmonicChordsKeyboard(progression) {
-    const chordsContainer = document.getElementById('constellation-chords-row');
-    if (!chordsContainer) return;
-
-    const defaultProgression = [
-        { chord: "Dm9", mood: "Solitude & Refuge", frequencies: [146.83, 220.00, 293.66, 349.23, 440.00] },
-        { chord: "FMaj7#11", mood: "Wonder & Discovery", frequencies: [174.61, 261.63, 329.63, 369.99, 523.25] },
-        { chord: "Em9", mood: "Transcendent Awe", frequencies: [164.81, 246.94, 329.63, 392.00, 493.88] },
-        { chord: "Gmaj9", mood: "Warmth & Joy", frequencies: [196.00, 246.94, 293.66, 392.00, 440.00] },
-        { chord: "Dadd9", mood: "Catharsis & Serenity", frequencies: [146.83, 220.00, 293.66, 369.99, 587.33] }
-    ];
-
-    const chords = (progression && progression.length) ? progression : defaultProgression;
-
-    chordsContainer.innerHTML = chords.map((item, idx) => {
-        const chordName = typeof item === 'string' ? item : (item.chord || 'Chord');
-        const moodName = (typeof item === 'object' && item.mood) ? item.mood.split('&')[0].trim() : `Mood ${idx + 1}`;
-        return `
-            <button type="button" class="chord-pill" onclick="playChordIndex(${idx})" title="Play ${chordName} (${moodName})">
-                <span class="chord-title-text">${chordName}</span>
-                <span class="chord-mood-sub">${moodName}</span>
-            </button>
-        `;
-    }).join('');
 }
 
 function closeEmotionalConstellation() {
     const modal = document.getElementById('biopic-trailer-modal');
     if (modal) modal.classList.add('hidden');
     stopLyriaAmbientPad();
+    stopCurrentLeitmotif();
     if (starfieldAnimId) {
         cancelAnimationFrame(starfieldAnimId);
         starfieldAnimId = null;
@@ -2129,7 +2090,7 @@ function closeEmotionalConstellation() {
 }
 
 // ---------------------------------------------------------------------------
-// Interactive Sky Map & Star Orbs Renderer (5-Star Constellation)
+// Interactive Irregular Sky Map & Star-Shaped Nodes Renderer
 // ---------------------------------------------------------------------------
 
 function renderConstellationSkyMap(data) {
@@ -2142,55 +2103,92 @@ function renderConstellationSkyMap(data) {
     container.innerHTML = '';
     svgCanvas.innerHTML = '';
 
-    // 5-Star celestial crescent/W coordinates layout
-    const defaultCoords = [
-        { x: 18, y: 68 },
-        { x: 36, y: 32 },
-        { x: 52, y: 72 },
-        { x: 68, y: 28 },
-        { x: 84, y: 62 }
+    // Asymmetric irregular asterism coordinates (mimicking real celestial sky charts)
+    const irregularAsterismDefaults = [
+        { x: 22, y: 64 }, { x: 38, y: 28 }, { x: 58, y: 34 },
+        { x: 78, y: 22 }, { x: 84, y: 68 }, { x: 48, y: 74 },
+        { x: 68, y: 82 }, { x: 16, y: 36 }, { x: 34, y: 84 },
+        { x: 90, y: 44 }, { x: 52, y: 16 }, { x: 72, y: 52 }
     ];
 
-    // 1. Draw SVG Connecting Lines between stars
+    // 1. Draw SVG Connecting Lines with Depth-Weighted Opacity
     let linesHtml = '';
     stars.forEach((star, idx) => {
-        const c1 = star.coordinates || defaultCoords[idx % defaultCoords.length];
+        const c1 = star.coordinates || irregularAsterismDefaults[idx % irregularAsterismDefaults.length];
         const connections = star.connections || (idx > 0 ? [idx] : []);
+        const depth1 = star.depth_factor !== undefined ? star.depth_factor : 1.0;
 
         connections.forEach(targetId => {
             const targetStar = stars.find(s => s.star_id === targetId) || (stars[targetId - 1]);
             if (targetStar) {
-                const c2 = targetStar.coordinates || defaultCoords[(targetId - 1) % defaultCoords.length];
+                const targetIdx = stars.indexOf(targetStar);
+                const c2 = targetStar.coordinates || irregularAsterismDefaults[targetIdx % irregularAsterismDefaults.length];
+                const depth2 = targetStar.depth_factor !== undefined ? targetStar.depth_factor : 1.0;
+                
+                // Combined depth for line stroke & opacity
+                const avgDepth = (depth1 + depth2) / 2;
+                const strokeWidth = (1.0 + (avgDepth * 1.0)).toFixed(1);
+                const strokeOpacity = (0.2 + (avgDepth * 0.55)).toFixed(2);
+
                 linesHtml += `
-                    <line x1="${c1.x}%" y1="${c1.y}%" x2="${c2.x}%" y2="${c2.y}%" class="constellation-beam" stroke="${star.spectral_color || '#d4af37'}" stroke-width="1.5" stroke-dasharray="4,4" />
+                    <line x1="${c1.x}%" y1="${c1.y}%" x2="${c2.x}%" y2="${c2.y}%" 
+                          class="constellation-beam" 
+                          stroke="${star.spectral_color || '#d4af37'}" 
+                          stroke-width="${strokeWidth}" 
+                          stroke-opacity="${strokeOpacity}"
+                          stroke-dasharray="3,3" />
                 `;
             }
         });
     });
     svgCanvas.innerHTML = linesHtml;
 
-    // 2. Render Interactive Star Orbs
+    // 2. Render Star-Shaped Nodes with Z-Depth Scaling for Older Films
     stars.forEach((star, idx) => {
-        const coords = star.coordinates || defaultCoords[idx % defaultCoords.length];
-        const spectralColors = ['#d4af37', '#38bdf8', '#818cf8', '#f59e0b', '#ec4899'];
+        const coords = star.coordinates || irregularAsterismDefaults[idx % irregularAsterismDefaults.length];
+        const spectralColors = ['#d4af37', '#38bdf8', '#818cf8', '#f59e0b', '#ec4899', '#34d399', '#a855f7'];
         const spectralColor = star.spectral_color || spectralColors[idx % spectralColors.length];
         const posterUrl = star.poster_url || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop";
+        const depth = star.depth_factor !== undefined ? star.depth_factor : 1.0;
+
+        // Depth categorization
+        let depthClass = 'depth-foreground';
+        let scaleFactor = 1.0;
+        if (depth < 0.65) {
+            depthClass = 'depth-deep';
+            scaleFactor = 0.70;
+        } else if (depth < 0.85) {
+            depthClass = 'depth-midground';
+            scaleFactor = 0.85;
+        }
 
         const orb = document.createElement('div');
-        orb.className = `constellation-star-orb ${idx === 0 ? 'active' : ''}`;
+        orb.className = `constellation-star-orb ${depthClass} ${idx === 0 ? 'active' : ''}`;
         orb.id = `star-orb-${idx}`;
         orb.style.left = `${coords.x}%`;
         orb.style.top = `${coords.y}%`;
+        orb.style.transform = `translate(-50%, -50%) scale(${scaleFactor})`;
         orb.style.setProperty('--spectral-glow', spectralColor);
 
+        // Radiant 4-Point Star Geometry with Flaring Rays & Centered Poster Thumbnail
         orb.innerHTML = `
-            <div class="star-pulse-ring" style="border-color: ${spectralColor};"></div>
-            <div class="star-orb-thumb" style="border-color: ${spectralColor};">
-                <img src="${posterUrl}" alt="${star.title}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80'">
+            <div class="star-shape-wrapper">
+                <div class="star-celestial-flare">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Radiant Diamond Star Spikes -->
+                        <polygon points="50,2 62,38 98,50 62,62 50,98 38,62 2,50 38,38" fill="${spectralColor}" fill-opacity="0.35" stroke="${spectralColor}" stroke-width="1.5" />
+                        <!-- Diagonal Secondary Sparkle Rays -->
+                        <polygon points="50,18 58,42 82,50 58,58 50,82 42,58 18,50 42,42" fill="${spectralColor}" fill-opacity="0.2" />
+                    </svg>
+                </div>
+                <div class="star-pulse-ring" style="border-color: ${spectralColor};"></div>
+                <div class="star-orb-thumb" style="border-color: ${spectralColor};">
+                    <img src="${posterUrl}" alt="${star.title}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80'">
+                </div>
             </div>
-            <div class="star-label-badge" style="background: rgba(10, 8, 6, 0.85); border-color: ${spectralColor};">
-                <span class="star-num">STAR 0${idx + 1} &bull; ${star.harmonic_chord_name || 'CHORD'}</span>
-                <span class="star-name">${star.title || 'Cinema Star'}</span>
+            <div class="star-label-badge" style="border-color: ${spectralColor};">
+                <span class="star-num">STAR 0${idx + 1} &bull; ${depth < 0.65 ? 'DEEP' : (depth < 0.85 ? 'MID' : 'FORE')}</span>
+                <span class="star-name">${star.title || 'Film'}</span>
             </div>
         `;
 
@@ -2206,7 +2204,7 @@ function renderConstellationSkyMap(data) {
         stepper.innerHTML = stars.map((s, idx) => `
             <button type="button" class="star-step-btn ${idx === 0 ? 'active' : ''}" onclick="selectConstellationStar(${idx}, true)" style="--step-color: ${s.spectral_color || '#d4af37'}">
                 <span class="step-dot"></span>
-                <span>Star 0${idx + 1}: ${s.title || 'Film'} (${s.harmonic_chord_name || s.emotional_valence || ''})</span>
+                <span>Star 0${idx + 1}: ${s.title || 'Film'}</span>
             </button>
         `).join('');
     }
@@ -2219,14 +2217,24 @@ function selectConstellationStar(starIndex, playSound = true) {
 
     activeStarIndex = starIndex;
     const star = stars[starIndex];
+    const depth = star.depth_factor !== undefined ? star.depth_factor : 1.0;
 
-    // Highlight active orb in sky map
+    // Highlight active star orb in sky map with depth preservation
     document.querySelectorAll('.constellation-star-orb').forEach((el, idx) => {
-        if (idx === starIndex) el.classList.add('active');
-        else el.classList.remove('active');
+        const s = stars[idx];
+        const d = (s && s.depth_factor !== undefined) ? s.depth_factor : 1.0;
+        let scaleFactor = d < 0.65 ? 0.70 : (d < 0.85 ? 0.85 : 1.0);
+
+        if (idx === starIndex) {
+            el.classList.add('active');
+            el.style.transform = `translate(-50%, -50%) scale(1.25)`;
+        } else {
+            el.classList.remove('active');
+            el.style.transform = `translate(-50%, -50%) scale(${scaleFactor})`;
+        }
     });
 
-    // Highlight active step button
+    // Highlight active stepper button
     document.querySelectorAll('.star-step-btn').forEach((btn, idx) => {
         if (idx === starIndex) btn.classList.add('active');
         else btn.classList.remove('active');
@@ -2237,7 +2245,7 @@ function selectConstellationStar(starIndex, playSound = true) {
     const directorEl = document.getElementById('storyboard-film-director');
     const posterEl = document.getElementById('biopic-active-poster');
     const pillEl = document.getElementById('observatory-star-pill');
-    const freqEl = document.getElementById('observatory-star-freq');
+    const depthBadgeEl = document.getElementById('observatory-star-depth');
     const emotionalBeatEl = document.getElementById('storyboard-emotional-beat');
     const resonanceNoteEl = document.getElementById('biopic-voiceover-text');
 
@@ -2246,37 +2254,91 @@ function selectConstellationStar(starIndex, playSound = true) {
     if (posterEl) posterEl.src = star.poster_url || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop";
 
     if (pillEl) {
-        pillEl.innerText = `STAR 0${starIndex + 1} • ${(star.harmonic_chord_name ? star.harmonic_chord_name + ' • ' : '')}${(star.emotional_valence || 'RESONANCE').toUpperCase()}`;
+        pillEl.innerText = `STAR 0${starIndex + 1} • ${(star.emotional_valence || 'RESONANCE').toUpperCase()}`;
         pillEl.style.color = star.spectral_color || '#d4af37';
         pillEl.style.borderColor = star.spectral_color || 'rgba(212, 175, 55, 0.4)';
     }
 
-    const freqVal = star.audio_frequency || [293.66, 329.63, 392.00, 440.00, 587.33][starIndex % 5];
-    if (freqEl) freqEl.innerHTML = `<i class="fas fa-wave-square"></i> ${freqVal} Hz (${star.harmonic_chord_name || 'Harmonic'})`;
+    if (depthBadgeEl) {
+        if (depth >= 0.85) {
+            depthBadgeEl.innerHTML = `<i class="fas fa-cube"></i> Foreground (Newest)`;
+            depthBadgeEl.style.color = '#38bdf8';
+            depthBadgeEl.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+        } else if (depth >= 0.65) {
+            depthBadgeEl.innerHTML = `<i class="fas fa-layer-group"></i> Midground Orbit`;
+            depthBadgeEl.style.color = '#818cf8';
+            depthBadgeEl.style.borderColor = 'rgba(129, 140, 248, 0.3)';
+        } else {
+            depthBadgeEl.innerHTML = `<i class="fas fa-satellite"></i> Deep Space Memory`;
+            depthBadgeEl.style.color = '#cbd5e1';
+            depthBadgeEl.style.borderColor = 'rgba(203, 213, 225, 0.3)';
+        }
+    }
 
     if (emotionalBeatEl) emotionalBeatEl.innerText = star.emotional_valence || "Emotional Elevation";
-    if (resonanceNoteEl) resonanceNoteEl.innerText = star.resonance_note || star.director_note || "Harmonic stellar alignment in the emotional sky.";
+    if (resonanceNoteEl) resonanceNoteEl.innerText = star.resonance_note || star.director_note || "Cinematic stellar alignment in cosmic space.";
 
-    // Play star mood-harmonic chord
+    // Update 5s Leitmotif Card & Timeline
+    updateLeitmotifUI(star);
+
+    // Play 5-second cinematic leitmotif
     if (playSound) {
-        playLyriaAcousticStarSound(freqVal, star.chord_notes || [freqVal * 0.5, freqVal * 0.75, freqVal, freqVal * 1.5]);
+        playCinematicLeitmotif(star);
     }
 }
 
 window.selectConstellationStar = selectConstellationStar;
 
-function playActiveStarChord() {
-    if (!currentConstellationData || !currentConstellationData.stars) return;
-    const star = currentConstellationData.stars[activeStarIndex];
-    if (!star) return;
-    const freqVal = star.audio_frequency || [293.66, 329.63, 392.00, 440.00, 587.33][activeStarIndex % 5];
-    playLyriaAcousticStarSound(freqVal, star.chord_notes || [freqVal * 0.5, freqVal * 0.75, freqVal, freqVal * 1.5]);
+function updateLeitmotifUI(star) {
+    const leitmotif = (star && star.leitmotif) || {};
+    const timbrePill = document.getElementById('leitmotif-timbre-badge');
+    const descEl = document.getElementById('leitmotif-cinematic-desc');
+    const tempoTag = document.getElementById('leitmotif-tempo-tag');
+    const keyTag = document.getElementById('leitmotif-key-tag');
+    const notesTrack = document.getElementById('leitmotif-notes-track');
+    const progressBar = document.getElementById('leitmotif-progress-bar');
+
+    const timbre = leitmotif.timbre || 'space_synth';
+    if (timbrePill) timbrePill.innerText = timbre.replace('_', ' ').toUpperCase();
+    if (descEl) descEl.innerText = leitmotif.cinematic_style || leitmotif.title || `Cinematic melodic theme inspired by ${star.title}.`;
+    if (tempoTag) tempoTag.innerHTML = `<i class="fas fa-drum"></i> ${leitmotif.tempo_bpm || 68} BPM`;
+    if (keyTag) keyTag.innerHTML = `<i class="fas fa-music"></i> ${leitmotif.title || 'Original 5s Theme'}`;
+
+    if (progressBar) progressBar.style.width = '0%';
+
+    // Render note markers on 5-second timeline track
+    if (notesTrack) {
+        notesTrack.innerHTML = '';
+        const notes = leitmotif.notes || [
+            { time: 0.0, freq: 293.66, note: "D4" },
+            { time: 1.0, freq: 369.99, note: "F#4" },
+            { time: 2.2, freq: 440.00, note: "A4" },
+            { time: 3.5, freq: 587.33, note: "D5" }
+        ];
+
+        notes.forEach((n, i) => {
+            const pct = Math.min(96, Math.max(4, (n.time / 5.0) * 100));
+            const marker = document.createElement('div');
+            marker.className = 'leitmotif-note-marker';
+            marker.id = `note-marker-${i}`;
+            marker.style.left = `${pct}%`;
+            marker.style.backgroundColor = star.spectral_color || '#d4af37';
+            marker.title = `${n.note || ''} (${Math.round(n.freq || 440)}Hz) at ${n.time}s`;
+            notesTrack.appendChild(marker);
+        });
+    }
 }
 
-window.playActiveStarChord = playActiveStarChord;
+function playActiveStarLeitmotif() {
+    if (!currentConstellationData || !currentConstellationData.stars) return;
+    const star = currentConstellationData.stars[activeStarIndex];
+    if (star) playCinematicLeitmotif(star);
+}
+
+window.playActiveStarLeitmotif = playActiveStarLeitmotif;
 
 // ---------------------------------------------------------------------------
-// Google Lyria WebAudio Acoustic Music Synthesizer
+// Google Lyria WebAudio 5-Second Cinematic Leitmotif Synthesizer
 // ---------------------------------------------------------------------------
 
 function getAudioContext() {
@@ -2290,6 +2352,182 @@ function getAudioContext() {
     return lyriaAudioContext;
 }
 
+function stopCurrentLeitmotif() {
+    if (activeLeitmotifNodes && activeLeitmotifNodes.length) {
+        activeLeitmotifNodes.forEach(node => {
+            try { node.stop(); node.disconnect(); } catch (e) {}
+        });
+        activeLeitmotifNodes = [];
+    }
+    if (leitmotifProgressAnimId) {
+        cancelAnimationFrame(leitmotifProgressAnimId);
+        leitmotifProgressAnimId = null;
+    }
+    const progressBar = document.getElementById('leitmotif-progress-bar');
+    if (progressBar) progressBar.style.width = '0%';
+    const btn = document.getElementById('play-active-star-note-btn');
+    const btnText = document.getElementById('leitmotif-btn-text');
+    if (btn) btn.classList.remove('playing');
+    if (btnText) btnText.innerText = "Play 5s Cinematic Leitmotif";
+    document.querySelectorAll('.leitmotif-note-marker').forEach(m => m.classList.remove('hit'));
+}
+
+function playCinematicLeitmotif(star) {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    stopCurrentLeitmotif();
+
+    const leitmotif = (star && star.leitmotif) || {};
+    const timbre = leitmotif.timbre || 'space_synth';
+    const notes = leitmotif.notes || [
+        { time: 0.0, duration: 0.9, freq: 293.66, note: "D4", gain: 0.8 },
+        { time: 0.8, duration: 0.8, freq: 349.23, note: "F4", gain: 0.75 },
+        { time: 1.5, duration: 1.2, freq: 440.00, note: "A4", gain: 0.85 },
+        { time: 2.6, duration: 0.9, freq: 392.00, note: "G4", gain: 0.7 },
+        { time: 3.4, duration: 1.5, freq: 329.63, note: "E4", gain: 0.65 }
+    ];
+
+    const startTime = ctx.currentTime + 0.05;
+    const totalDuration = 5.0;
+
+    // Master Leitmotif Gain & Reverb Filter Node
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0.35, startTime);
+
+    // Warm Lowpass/Bandpass filter tailored to timbre
+    const filter = ctx.createBiquadFilter();
+    if (timbre === 'space_synth') {
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(480, startTime);
+        filter.frequency.exponentialRampToValueAtTime(1400, startTime + 2.5);
+        filter.Q.setValueAtTime(2.5, startTime);
+    } else if (timbre === 'celesta_bell') {
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1200, startTime);
+        filter.Q.setValueAtTime(1.2, startTime);
+    } else if (timbre === 'noir_piano') {
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(700, startTime);
+        filter.Q.setValueAtTime(1.0, startTime);
+    } else if (timbre === 'cinematic_strings') {
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(900, startTime);
+        filter.Q.setValueAtTime(0.8, startTime);
+    } else {
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(800, startTime);
+    }
+
+    masterGain.connect(filter);
+    filter.connect(ctx.destination);
+
+    // Schedule 5-second note events
+    notes.forEach((n, idx) => {
+        const noteStart = startTime + (n.time || 0);
+        const noteDur = Math.max(0.3, n.duration || 0.8);
+        const freq = n.freq || 440;
+        const noteGainVal = (n.gain || 0.75) * 0.35;
+
+        // Primary Oscillator
+        const osc = ctx.createOscillator();
+        const noteGain = ctx.createGain();
+
+        // Secondary detuned chorus oscillator for lush cinematic warmth
+        const subOsc = ctx.createOscillator();
+        const subGain = ctx.createGain();
+
+        if (timbre === 'space_synth') {
+            osc.type = 'sawtooth';
+            subOsc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, noteStart);
+            subOsc.frequency.setValueAtTime(freq * 0.5 + 0.4, noteStart); // Sub octave with chorus detune
+        } else if (timbre === 'celesta_bell') {
+            osc.type = 'sine';
+            subOsc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, noteStart);
+            subOsc.frequency.setValueAtTime(freq * 2.0, noteStart); // Sparkling octave overtone
+        } else if (timbre === 'noir_piano') {
+            osc.type = 'triangle';
+            subOsc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, noteStart);
+            subOsc.frequency.setValueAtTime(freq + 0.8, noteStart);
+        } else if (timbre === 'cinematic_strings') {
+            osc.type = 'sawtooth';
+            subOsc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, noteStart);
+            subOsc.frequency.setValueAtTime(freq + 0.6, noteStart);
+        } else {
+            osc.type = 'triangle';
+            subOsc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, noteStart);
+            subOsc.frequency.setValueAtTime(freq * 0.5, noteStart);
+        }
+
+        // ADSR Envelope
+        const attack = timbre === 'celesta_bell' ? 0.02 : (timbre === 'cinematic_strings' ? 0.22 : 0.08);
+        const decay = noteDur * 0.85;
+
+        noteGain.gain.setValueAtTime(0.0001, noteStart);
+        noteGain.gain.exponentialRampToValueAtTime(noteGainVal, noteStart + attack);
+        noteGain.gain.exponentialRampToValueAtTime(0.0001, noteStart + attack + decay);
+
+        subGain.gain.setValueAtTime(0.0001, noteStart);
+        subGain.gain.exponentialRampToValueAtTime(noteGainVal * 0.5, noteStart + attack);
+        subGain.gain.exponentialRampToValueAtTime(0.0001, noteStart + attack + decay);
+
+        osc.connect(noteGain);
+        subOsc.connect(subGain);
+        noteGain.connect(masterGain);
+        subGain.connect(masterGain);
+
+        osc.start(noteStart);
+        osc.stop(noteStart + attack + decay + 0.1);
+        subOsc.start(noteStart);
+        subOsc.stop(noteStart + attack + decay + 0.1);
+
+        activeLeitmotifNodes.push(osc, subOsc);
+    });
+
+    // Animate Progress Bar & Note Markers in UI over 5 seconds
+    const animStart = performance.now();
+    const btn = document.getElementById('play-active-star-note-btn');
+    const btnText = document.getElementById('leitmotif-btn-text');
+    const progressBar = document.getElementById('leitmotif-progress-bar');
+    if (btn) btn.classList.add('playing');
+    if (btnText) btnText.innerText = "Playing 5s Leitmotif...";
+
+    function animateProgress(now) {
+        const elapsed = (now - animStart) / 1000;
+        const pct = Math.min(100, (elapsed / totalDuration) * 100);
+        if (progressBar) progressBar.style.width = `${pct}%`;
+
+        // Highlight hit note markers
+        notes.forEach((n, idx) => {
+            const marker = document.getElementById(`note-marker-${idx}`);
+            if (marker) {
+                if (elapsed >= (n.time || 0) && elapsed <= (n.time || 0) + 0.6) {
+                    marker.classList.add('hit');
+                } else if (elapsed > (n.time || 0) + 0.6) {
+                    marker.classList.remove('hit');
+                }
+            }
+        });
+
+        if (elapsed < totalDuration) {
+            leitmotifProgressAnimId = requestAnimationFrame(animateProgress);
+        } else {
+            stopCurrentLeitmotif();
+        }
+    }
+
+    leitmotifProgressAnimId = requestAnimationFrame(animateProgress);
+}
+
+// ---------------------------------------------------------------------------
+// Ambient Celestial Background Pad
+// ---------------------------------------------------------------------------
+
 function startLyriaAmbientPad(key = "D Minor", tempo = "64 BPM") {
     const ctx = getAudioContext();
     if (!ctx) return;
@@ -2299,23 +2537,21 @@ function startLyriaAmbientPad(key = "D Minor", tempo = "64 BPM") {
     try {
         ambientGainNode = ctx.createGain();
         ambientGainNode.gain.setValueAtTime(0.0001, ctx.currentTime);
-        ambientGainNode.gain.exponentialRampToValueAtTime(0.0035, ctx.currentTime + 3.0); // Whisper-soft ambient texture
+        ambientGainNode.gain.exponentialRampToValueAtTime(0.0025, ctx.currentTime + 3.0); // Whisper-soft background texture
 
-        // Lowpass filter for deep cinematic warmth
         const filter = ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(220, ctx.currentTime);
+        filter.frequency.setValueAtTime(200, ctx.currentTime);
 
         ambientGainNode.connect(filter);
         filter.connect(ctx.destination);
 
-        // Ambient chord frequencies based on key
-        const baseChord = [146.83, 220.00, 293.66, 349.23, 440.00]; // Dm9 (D3, A3, D4, F4, A4)
+        const baseChord = [146.83, 220.00, 293.66, 349.23, 440.00]; // Dm9
 
         baseChord.forEach((freq, i) => {
             const osc = ctx.createOscillator();
             osc.type = (i % 2 === 0) ? 'sine' : 'triangle';
-            osc.frequency.setValueAtTime(freq + (i * 0.4), ctx.currentTime); // subtle chorus detune
+            osc.frequency.setValueAtTime(freq + (i * 0.3), ctx.currentTime);
             osc.connect(ambientGainNode);
             osc.start();
             ambientOscillators.push(osc);
@@ -2324,7 +2560,7 @@ function startLyriaAmbientPad(key = "D Minor", tempo = "64 BPM") {
         isLyriaSoundscapePlaying = true;
         updateAudioButtonState();
     } catch (e) {
-        console.warn("Lyria audio synth notice:", e);
+        console.warn("Lyria ambient pad notice:", e);
     }
 }
 
@@ -2366,71 +2602,6 @@ function updateAudioButtonState() {
         btnText.innerHTML = `Lyria: Muted`;
     }
 }
-
-function playLyriaAcousticStarSound(rootFreq, chordNotes) {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
-    try {
-        const now = ctx.currentTime;
-        const notes = chordNotes || [rootFreq, rootFreq * 1.25, rootFreq * 1.5, rootFreq * 2];
-
-        // Crystalline Celesta Bell Arpeggio (Soft and delicate)
-        notes.forEach((freq, idx) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = (idx === 0) ? 'triangle' : 'sine';
-            osc.frequency.setValueAtTime(freq, now + (idx * 0.12));
-
-            gain.gain.setValueAtTime(0.0001, now + (idx * 0.12));
-            gain.gain.exponentialRampToValueAtTime(0.018, now + (idx * 0.12) + 0.04);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + (idx * 0.12) + 2.5);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start(now + (idx * 0.12));
-            osc.stop(now + (idx * 0.12) + 2.8);
-        });
-    } catch (e) {}
-}
-
-function playChordIndex(index) {
-    const defaultChords = [
-        [146.83, 220.00, 293.66, 349.23, 440.00], // Dm9 (Solitude)
-        [174.61, 261.63, 329.63, 369.99, 523.25], // FMaj7#11 (Wonder)
-        [164.81, 246.94, 329.63, 392.00, 493.88], // Em9 (Awe)
-        [196.00, 246.94, 293.66, 392.00, 440.00], // Gmaj9 (Joy)
-        [146.83, 220.00, 293.66, 369.99, 587.33]  // Dadd9 (Catharsis)
-    ];
-
-    let notes = defaultChords[index % defaultChords.length];
-
-    if (currentConstellationData && currentConstellationData.ambient_soundscape) {
-        const prog = currentConstellationData.ambient_soundscape.harmonic_progression;
-        if (prog && prog[index] && prog[index].frequencies) {
-            notes = prog[index].frequencies;
-        }
-    }
-
-    playLyriaAcousticStarSound(notes[0], notes);
-
-    // Also select matching star in constellation map
-    selectConstellationStar(index, false);
-
-    // Visual button ripple
-    const buttons = document.querySelectorAll('.harmonic-chords-row .chord-pill');
-    buttons.forEach((b, i) => {
-        if (i === index) b.classList.add('playing');
-        else b.classList.remove('playing');
-    });
-    setTimeout(() => {
-        buttons.forEach(b => b.classList.remove('playing'));
-    }, 1500);
-}
-
-window.playChordIndex = playChordIndex;
 
 // ---------------------------------------------------------------------------
 // Starfield Dynamic Particle Background Canvas

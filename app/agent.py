@@ -189,119 +189,70 @@ master_orchestrator_agent = Agent(
 emotional_constellation_agent = Agent(
     name="emotional_constellation_agent",
     model="gemini-3.5-flash",
-    description="Cosmic Cinema Cartographer & Lyria Acoustic Soundscape Composer. Plots an interactive 5-star constellation map of watched films with mood-harmonic audio chords and stellar coordinates.",
+    description="Cosmic Cinema Cartographer & Lyria Acoustic Soundscape Composer. Plots an interactive irregular constellation map of all watched films with original 5-second cinematic leitmotifs and stellar depth coordinates.",
     instruction="""
     You are the Feel & Film Cosmic Cinema Cartographer & Google Lyria Soundscape Composer.
     You will receive a JSON payload containing:
     - 'user_name': Name of the cinephile.
-    - 'watched_films': Array of up to 5 watched movies with 'title', 'director', 'primary_mood', 'desired_atmosphere', 'poster_url'.
+    - 'watched_films': Array of watched movies (sorted from most recent to oldest) with 'title', 'director', 'primary_mood', 'desired_atmosphere', 'poster_url', 'timestamp'.
 
-    Your mission is to map the user's cinema history into an Interactive Emotional Constellation & Audio Soundscape across their 5 watched films.
-    
-    CRITICAL MUSIC THEORY & MOOD-FREQUENCY RULES:
-    Each star's audio frequency and chord progression must directly correlate with the emotional mood of that film:
-    1. Melancholy / Solitude / Vulnerability -> Minor 9th chord (e.g. Dm9, Am9, base 146Hz–220Hz, deep reflective tone).
-    2. Curiosity / Wonder / Discovery -> Lydian Major 7#11 (e.g. FMaj7#11, Cmaj9, base 261Hz–329Hz, sparkling celesta).
-    3. Tension / Mystery / Intensity -> Minor 7b5 / Phrygian (e.g. Em7b5, Bm7, base 164Hz–246Hz, sub-harmonic warmth).
-    4. Euphoria / Warmth / Connection -> Major 9th / Add9 (e.g. Gmaj9, Aadd9, base 196Hz–220Hz, luminous acoustic resonance).
-    5. Catharsis / Serenity / Elevation -> Suspended Major / Ethereal (e.g. Dadd9, Cmaj7, base 293Hz–523Hz, peaceful resolution).
+    Your mission is to map ALL watched films into an Organic, Irregular Interactive Celestial Constellation (resembling real astronomical asterisms like Orion, Ursa Major, or Cassiopeia) where each film node holds an original ~5-second Cinematic Leitmotif inspired by the film's musical/cinematic soul.
+
+    CRITICAL ASTRO-CARTOGRAPHY & DEPTH RULES:
+    1. GEOMETRY: The constellation must be IRREGULAR and ASYMMETRICAL (not a rigid line, circle, or standard sinusoidal wave). Group stars into natural cosmic branches, triads, and celestial arms.
+    2. DEPTH & AGE (Z-LAYERING):
+       - If there are > 5 films (or any number of films), the newest films are in the foreground (depth_factor: 1.0 to 0.85, higher prominence).
+       - Older films are positioned in deeper cosmic space (depth_factor: 0.70 down to 0.35, smaller scale, lower opacity in sky map).
+    3. ORIGINAL 5-SECOND CINEMATIC LEITMOTIF (Google Lyria Engine):
+       - Replace static chords with an original 5-SECOND MELODIC LEITMOTIF for each star.
+       - Timbre options: 'space_synth' (sci-fi/cosmic), 'celesta_bell' (whimsical/wonder), 'noir_piano' (introspective/drama), 'cinematic_strings' (epic/emotional), 'warm_ambient' (solace/peace), 'french_accordion_synth' (playful/nostalgic).
+       - Provide a sequence of notes spanning 0.0 to 5.0 seconds with exact frequencies (Hz), note names, start times, and durations.
 
     Output ONLY valid raw JSON matching this schema (no markdown backticks):
     {
-      "constellation_name": "The Nocturnal Sanctuary Galaxy",
+      "constellation_name": "The Nocturnal Sanctuary Asterism",
       "celestial_archetype": "The Contemplative Dreamer",
-      "cosmic_narrative": "A luminous celestial journey across 5 cinematic milestones, mapping how quiet introspection resonated with distant stars, guiding the spirit toward emotional elevation and serenity.",
+      "cosmic_narrative": "An irregular celestial asterism charting your cinematic journey across deep cosmic time, where distant memories shimmer gently in deep space and recent awakenings shine brightly in the foreground.",
       "ambient_soundscape": {
         "soundscape_title": "Celestial Reverie in D Minor",
         "key": "D Minor",
         "tempo": "64 BPM",
         "instrumentation": "Warm Polyphonic Ambient Synthesizer, Glass Celesta & Sub-Bass Resonances",
-        "harmonic_progression": [
-          {"chord": "Dm9", "mood": "Solitude & Refuge", "frequencies": [146.83, 220.00, 293.66, 349.23, 440.00]},
-          {"chord": "FMaj7#11", "mood": "Wonder & Discovery", "frequencies": [174.61, 261.63, 329.63, 369.99, 523.25]},
-          {"chord": "Em9", "mood": "Transcendent Awe", "frequencies": [164.81, 246.94, 329.63, 392.00, 493.88]},
-          {"chord": "Gmaj9", "mood": "Warmth & Euphoria", "frequencies": [196.00, 246.94, 293.66, 392.00, 440.00]},
-          {"chord": "Dadd9", "mood": "Catharsis & Serenity", "frequencies": [146.83, 220.00, 293.66, 369.99, 587.33]}
-        ],
-        "leitmotif_description": "Lush, slow-evolving ambient cinematic pads with crystalline arpeggios that instill weightless tranquility."
+        "leitmotif_description": "Lush, slow-evolving ambient cinematic pads that harmonically cradle each star's 5-second leitmotif."
       },
       "stars": [
         {
           "star_id": 1,
-          "title": "Film 1 Title",
-          "director": "Director 1",
+          "title": "Film Title",
+          "director": "Director Name",
           "poster_url": "HD Poster URL",
           "spectral_color": "#d4af37",
           "emotional_valence": "Solace & Refuge",
-          "harmonic_chord_name": "Dm9",
-          "coordinates": {"x": 18, "y": 68},
-          "audio_frequency": 293.66,
-          "chord_notes": [146.83, 220.00, 293.66, 349.23, 440.00],
-          "connections": [2],
-          "resonance_note": "A sanctuary star offering introspective shelter from emotional fatigue."
-        },
-        {
-          "star_id": 2,
-          "title": "Film 2 Title",
-          "director": "Director 2",
-          "poster_url": "HD Poster URL",
-          "spectral_color": "#38bdf8",
-          "emotional_valence": "Curiosity & Wonder",
-          "harmonic_chord_name": "FMaj7#11",
-          "coordinates": {"x": 36, "y": 32},
-          "audio_frequency": 329.63,
-          "chord_notes": [174.61, 261.63, 329.63, 369.99, 523.25],
-          "connections": [1, 3],
-          "resonance_note": "A luminous stellar apex expanding imagination into weightless discovery."
-        },
-        {
-          "star_id": 3,
-          "title": "Film 3 Title",
-          "director": "Director 3",
-          "poster_url": "HD Poster URL",
-          "spectral_color": "#818cf8",
-          "emotional_valence": "Transcendent Awe",
-          "harmonic_chord_name": "Em9",
-          "coordinates": {"x": 52, "y": 72},
-          "audio_frequency": 392.00,
-          "chord_notes": [164.81, 246.94, 329.63, 392.00, 493.88],
-          "connections": [2, 4],
-          "resonance_note": "A deep horizon star gazing into the mystery of human destiny."
-        },
-        {
-          "star_id": 4,
-          "title": "Film 4 Title",
-          "director": "Director 4",
-          "poster_url": "HD Poster URL",
-          "spectral_color": "#f59e0b",
-          "emotional_valence": "Warmth & Joy",
-          "harmonic_chord_name": "Gmaj9",
-          "coordinates": {"x": 68, "y": 28},
-          "audio_frequency": 440.00,
-          "chord_notes": [196.00, 246.94, 293.66, 392.00, 440.00],
-          "connections": [3, 5],
-          "resonance_note": "A golden glowing star celebrating shared emotion and human tenderness."
-        },
-        {
-          "star_id": 5,
-          "title": "Film 5 Title",
-          "director": "Director 5",
-          "poster_url": "HD Poster URL",
-          "spectral_color": "#ec4899",
-          "emotional_valence": "Catharsis & Serenity",
-          "harmonic_chord_name": "Dadd9",
-          "coordinates": {"x": 84, "y": 62},
-          "audio_frequency": 587.33,
-          "chord_notes": [146.83, 220.00, 293.66, 369.99, 587.33],
-          "connections": [4],
-          "resonance_note": "A peaceful supernova where emotional catharsis harmonizes into lasting serenity."
+          "depth_factor": 1.0,
+          "coordinates": {"x": 24, "y": 62},
+          "connections": [2, 3],
+          "resonance_note": "A sanctuary star offering introspective shelter from emotional fatigue.",
+          "leitmotif": {
+            "title": "Nostalgic Solitude Theme",
+            "cinematic_style": "Vangelis & Jóhann Jóhannsson inspired analogue synth pads and melancholic melodic line",
+            "timbre": "space_synth",
+            "tempo_bpm": 68,
+            "duration_seconds": 5.0,
+            "notes": [
+              {"time": 0.0, "duration": 0.8, "freq": 293.66, "note": "D4", "gain": 0.8},
+              {"time": 0.7, "duration": 0.7, "freq": 349.23, "note": "F4", "gain": 0.75},
+              {"time": 1.4, "duration": 1.1, "freq": 440.00, "note": "A4", "gain": 0.85},
+              {"time": 2.4, "duration": 0.9, "freq": 392.00, "note": "G4", "gain": 0.7},
+              {"time": 3.2, "duration": 1.8, "freq": 329.63, "note": "E4", "gain": 0.6}
+            ]
+          }
         }
       ],
       "central_supernova": {
         "title": "Core Emotional Convergence",
-        "narrative": "Where your 5 cinematic memories orbit in harmonic balance, illuminating your creative soul."
+        "narrative": "Where your cinematic memories orbit across cosmic depth, illuminating your creative soul."
       },
-      "credits": "Cartography by Google Gemini 3.5 Flash • Harmonic Soundscape by Google Lyria"
+      "credits": "Cartography by Google Gemini 3.5 Flash • 5s Cinematic Leitmotifs by Google Lyria Engine"
     }
     """
 )
@@ -962,8 +913,8 @@ async def orchestrate_cinematic_experience(
 
 async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_name: str = "Cinephile") -> dict:
     """
-    Synthesizes the user's emotional cinema history into an interactive 5-Star Emotional Constellation,
-    generating astronomical coordinates, spectral colors, and Google Lyria mood-harmonic soundscape leitmotifs.
+    Synthesizes the user's emotional cinema history into an interactive Organic Emotional Constellation,
+    generating irregular astronomical coordinates, z-depth factors, and Google Lyria 5-second cinematic leitmotifs.
     """
     if not watched_films:
         watched_films = [
@@ -974,33 +925,118 @@ async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_n
             {"title": "Roma", "director": "Alfonso Cuarón", "primary_mood": "Contemplative", "desired_atmosphere": "Catharsis & Peace", "poster_url": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"}
         ]
 
+    # Pre-process all films with depth ranking (0 = newest, higher = older)
+    total_films_count = len(watched_films)
+    payload_films = []
+    for idx, f in enumerate(watched_films):
+        depth = round(max(0.35, 1.0 - (idx * 0.12)), 2)
+        payload_films.append({
+            "film_index": idx + 1,
+            "title": f.get("title") or f.get("film_title", "Cinema Paradiso"),
+            "director": f.get("director") or f.get("film_director", "Auteur Director"),
+            "primary_mood": f.get("primary_mood") or f.get("initial_mood", "Reflective"),
+            "desired_atmosphere": f.get("desired_atmosphere") or f.get("desired_shift", "Uplifting"),
+            "poster_url": f.get("poster_url") or "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90",
+            "timestamp": f.get("timestamp", ""),
+            "depth_factor": depth
+        })
+
     payload = {
         "user_name": user_name,
-        "watched_films": [
-            {
-                "title": f.get("title") or f.get("film_title", "Cinema Paradiso"),
-                "director": f.get("director") or f.get("film_director", "Auteur Director"),
-                "primary_mood": f.get("primary_mood") or f.get("initial_mood", "Reflective"),
-                "desired_atmosphere": f.get("desired_atmosphere") or f.get("desired_shift", "Uplifting"),
-                "poster_url": f.get("poster_url") or "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&q=80",
-                "timestamp": f.get("timestamp", "")
-            }
-            for f in watched_films[:10]
-        ]
+        "watched_films": payload_films
     }
 
     try:
         raw, _ = await run_adk_agent(emotional_constellation_agent, payload, "emotional_constellation")
         constellation = parse_json_safely(raw, None)
-        if not constellation or not isinstance(constellation, dict) or "stars" not in constellation:
+        if not constellation or not isinstance(constellation, dict) or "stars" not in constellation or not constellation["stars"]:
             raise ValueError("Failed to parse constellation JSON from agent")
     except Exception as e:
         print("Emotional Constellation Agent fallback synthesis:", e)
-        f1 = watched_films[0] if len(watched_films) > 0 else {}
-        f2 = watched_films[1] if len(watched_films) > 1 else {}
-        f3 = watched_films[2] if len(watched_films) > 2 else {}
-        f4 = watched_films[3] if len(watched_films) > 3 else {}
-        f5 = watched_films[4] if len(watched_films) > 4 else {}
+
+        # Irregular realistic celestial coordinates generator (asymmetrical asterism)
+        # Generates organic star groupings resembling Orion / Pleiades / Cassiopeia
+        base_irregular_coords = [
+            {"x": 22, "y": 65}, {"x": 38, "y": 28}, {"x": 58, "y": 36},
+            {"x": 76, "y": 24}, {"x": 84, "y": 68}, {"x": 48, "y": 74},
+            {"x": 66, "y": 80}, {"x": 16, "y": 38}, {"x": 32, "y": 82},
+            {"x": 90, "y": 42}, {"x": 52, "y": 18}, {"x": 70, "y": 54}
+        ]
+
+        preset_leitmotifs = [
+            {
+                "title": "Blade Runner Vangelis Noir",
+                "cinematic_style": "Vangelis & Jóhannsson dark synth brass and lonely neon pulse",
+                "timbre": "space_synth",
+                "tempo_bpm": 64,
+                "duration_seconds": 5.0,
+                "notes": [
+                    {"time": 0.0, "duration": 0.9, "freq": 293.66, "note": "D4", "gain": 0.8},
+                    {"time": 0.8, "duration": 0.8, "freq": 349.23, "note": "F4", "gain": 0.75},
+                    {"time": 1.5, "duration": 1.2, "freq": 440.00, "note": "A4", "gain": 0.85},
+                    {"time": 2.6, "duration": 0.9, "freq": 392.00, "note": "G4", "gain": 0.7},
+                    {"time": 3.4, "duration": 1.6, "freq": 329.63, "note": "E4", "gain": 0.65}
+                ]
+            },
+            {
+                "title": "Spirited Away Joe Hisaishi Celesta",
+                "cinematic_style": "Joe Hisaishi whimsical glass bells and soaring nostalgic wonder",
+                "timbre": "celesta_bell",
+                "tempo_bpm": 76,
+                "duration_seconds": 5.0,
+                "notes": [
+                    {"time": 0.0, "duration": 0.6, "freq": 523.25, "note": "C5", "gain": 0.8},
+                    {"time": 0.5, "duration": 0.6, "freq": 587.33, "note": "D5", "gain": 0.75},
+                    {"time": 1.0, "duration": 0.8, "freq": 659.25, "note": "E5", "gain": 0.85},
+                    {"time": 1.7, "duration": 1.0, "freq": 783.99, "note": "G5", "gain": 0.9},
+                    {"time": 2.6, "duration": 0.7, "freq": 659.25, "note": "E5", "gain": 0.75},
+                    {"time": 3.2, "duration": 1.8, "freq": 523.25, "note": "C5", "gain": 0.7}
+                ]
+            },
+            {
+                "title": "Interstellar Hans Zimmer Organ Horizon",
+                "cinematic_style": "Hans Zimmer ascending church organ resonance and celestial awe",
+                "timbre": "space_synth",
+                "tempo_bpm": 60,
+                "duration_seconds": 5.0,
+                "notes": [
+                    {"time": 0.0, "duration": 1.0, "freq": 164.81, "note": "E3", "gain": 0.85},
+                    {"time": 0.9, "duration": 1.0, "freq": 246.94, "note": "B3", "gain": 0.8},
+                    {"time": 1.8, "duration": 1.2, "freq": 329.63, "note": "E4", "gain": 0.9},
+                    {"time": 2.9, "duration": 1.0, "freq": 392.00, "note": "G4", "gain": 0.85},
+                    {"time": 3.8, "duration": 1.2, "freq": 493.88, "note": "B4", "gain": 0.8}
+                ]
+            },
+            {
+                "title": "Amélie Yann Tiersen Waltz",
+                "cinematic_style": "Yann Tiersen lively Parisian accordion waltz and joyful warmth",
+                "timbre": "french_accordion_synth",
+                "tempo_bpm": 88,
+                "duration_seconds": 5.0,
+                "notes": [
+                    {"time": 0.0, "duration": 0.45, "freq": 392.00, "note": "G4", "gain": 0.8},
+                    {"time": 0.4, "duration": 0.45, "freq": 440.00, "note": "A4", "gain": 0.75},
+                    {"time": 0.8, "duration": 0.5, "freq": 493.88, "note": "B4", "gain": 0.85},
+                    {"time": 1.3, "duration": 0.6, "freq": 587.33, "note": "D5", "gain": 0.9},
+                    {"time": 1.9, "duration": 0.8, "freq": 493.88, "note": "B4", "gain": 0.8},
+                    {"time": 2.7, "duration": 0.6, "freq": 440.00, "note": "A4", "gain": 0.75},
+                    {"time": 3.3, "duration": 1.7, "freq": 392.00, "note": "G4", "gain": 0.7}
+                ]
+            },
+            {
+                "title": "Roma Alfonso Cuarón Serenity",
+                "cinematic_style": "Ethereal acoustic string resonance and deep cathartic silence",
+                "timbre": "cinematic_strings",
+                "tempo_bpm": 56,
+                "duration_seconds": 5.0,
+                "notes": [
+                    {"time": 0.0, "duration": 1.2, "freq": 293.66, "note": "D4", "gain": 0.8},
+                    {"time": 1.1, "duration": 1.2, "freq": 369.99, "note": "F#4", "gain": 0.85},
+                    {"time": 2.2, "duration": 1.3, "freq": 440.00, "note": "A4", "gain": 0.9},
+                    {"time": 3.4, "duration": 1.6, "freq": 587.33, "note": "D5", "gain": 0.75}
+                ]
+            }
+        ]
 
         def get_hd_img(f, default_url):
             url = f.get("poster_url") or f.get("backdrop_url") or ""
@@ -1008,105 +1044,68 @@ async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_n
                 return url.replace("/w300/", "/w1280/").replace("/w500/", "/w1280/")
             return default_url
 
+        spectral_palette = ["#d4af37", "#38bdf8", "#818cf8", "#f59e0b", "#ec4899", "#34d399", "#a855f7", "#f43f5e"]
+
+        stars_list = []
+        for i, f in enumerate(watched_films):
+            depth = round(max(0.35, 1.0 - (i * 0.12)), 2)
+            coords = base_irregular_coords[i % len(base_irregular_coords)]
+            # Add subtle natural jitter for realistic asterism
+            jitter_x = ((i * 7) % 9) - 4
+            jitter_y = ((i * 11) % 9) - 4
+            actual_coords = {
+                "x": max(10, min(90, coords["x"] + jitter_x)),
+                "y": max(12, min(88, coords["y"] + jitter_y))
+            }
+            # Realistic irregular asterism connections (linking to adjacent/clustered stars)
+            connections = []
+            if i > 0:
+                connections.append(i) # Connect to previous star
+            if i >= 2 and (i % 2 == 0):
+                connections.append(i - 1)
+
+            leitmotif_data = preset_leitmotifs[i % len(preset_leitmotifs)].copy()
+            # Personalize title if title available
+            leitmotif_data["title"] = f"{f.get('title', 'Cinema')} Leitmotif"
+
+            stars_list.append({
+                "star_id": i + 1,
+                "title": f.get("title", f"Cinema Milestone {i + 1}"),
+                "director": f.get("director", "Auteur Director"),
+                "poster_url": get_hd_img(f, "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"),
+                "spectral_color": spectral_palette[i % len(spectral_palette)],
+                "emotional_valence": f.get("primary_mood") or f.get("desired_atmosphere") or "Cinematic Solace",
+                "depth_factor": depth,
+                "coordinates": actual_coords,
+                "connections": connections,
+                "resonance_note": f"A celestial star reflecting {f.get('title', 'this film')}'s unique emotional atmosphere across space.",
+                "leitmotif": leitmotif_data
+            })
+
         constellation = {
-            "constellation_name": f"The Luminous Orbit of {user_name}",
-            "celestial_archetype": "The Nocturnal Contemplative",
-            "cosmic_narrative": f"A celestial dialogue across {user_name}'s 5 cinematic milestones, mapping how quiet vulnerability resonated with distant stars, guiding the spirit toward emotional elevation, shared warmth, and lasting harmony.",
+            "constellation_name": f"The Luminous Asterism of {user_name}",
+            "celestial_archetype": "The Cosmic Cinephile",
+            "cosmic_narrative": f"An irregular organic asterism mapping {len(watched_films)} cinema milestones in deep space, where recent emotional discoveries shine radiantly in the foreground and older cinephile memories shimmer gracefully in cosmic depth.",
             "ambient_soundscape": {
                 "soundscape_title": "Celestial Reverie in D Minor",
                 "key": "D Minor",
                 "tempo": "64 BPM",
-                "instrumentation": "Warm Polyphonic Ambient Synthesizer, Glass Celesta & Sub-Bass Resonances",
-                "harmonic_progression": [
-                    {"chord": "Dm9", "mood": "Solitude & Refuge", "frequencies": [146.83, 220.00, 293.66, 349.23, 440.00]},
-                    {"chord": "FMaj7#11", "mood": "Wonder & Discovery", "frequencies": [174.61, 261.63, 329.63, 369.99, 523.25]},
-                    {"chord": "Em9", "mood": "Transcendent Awe", "frequencies": [164.81, 246.94, 329.63, 392.00, 493.88]},
-                    {"chord": "Gmaj9", "mood": "Warmth & Joy", "frequencies": [196.00, 246.94, 293.66, 392.00, 440.00]},
-                    {"chord": "Dadd9", "mood": "Catharsis & Serenity", "frequencies": [146.83, 220.00, 293.66, 369.99, 587.33]}
-                ],
-                "leitmotif_description": "Lush, slow-evolving ambient cinematic pads with crystalline arpeggios that instill weightless tranquility."
+                "instrumentation": "Warm Polyphonic Ambient Synthesizer & Harmonic Lyria Engine",
+                "leitmotif_description": "Lush ambient celestial backdrop providing harmonic resonance for individual 5-second film leitmotifs."
             },
-            "stars": [
-                {
-                    "star_id": 1,
-                    "title": f1.get("title", "Blade Runner 2049"),
-                    "director": f1.get("director", "Denis Villeneuve"),
-                    "poster_url": get_hd_img(f1, "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90&auto=format&fit=crop"),
-                    "spectral_color": "#d4af37",
-                    "emotional_valence": f1.get("primary_mood", "Solace & Refuge"),
-                    "harmonic_chord_name": "Dm9",
-                    "coordinates": {"x": 18, "y": 68},
-                    "audio_frequency": 293.66,
-                    "chord_notes": [146.83, 220.00, 293.66, 349.23, 440.00],
-                    "connections": [2],
-                    "resonance_note": "A sanctuary star offering introspective shelter from emotional fatigue."
-                },
-                {
-                    "star_id": 2,
-                    "title": f2.get("title", "Spirited Away"),
-                    "director": f2.get("director", "Hayao Miyazaki"),
-                    "poster_url": get_hd_img(f2, "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=90&auto=format&fit=crop"),
-                    "spectral_color": "#38bdf8",
-                    "emotional_valence": f2.get("desired_atmosphere", "Wonder & Curiosity"),
-                    "harmonic_chord_name": "FMaj7#11",
-                    "coordinates": {"x": 36, "y": 32},
-                    "audio_frequency": 329.63,
-                    "chord_notes": [174.61, 261.63, 329.63, 369.99, 523.25],
-                    "connections": [1, 3],
-                    "resonance_note": "A luminous stellar apex expanding imagination into weightless discovery."
-                },
-                {
-                    "star_id": 3,
-                    "title": f3.get("title", "Interstellar"),
-                    "director": f3.get("director", "Christopher Nolan"),
-                    "poster_url": get_hd_img(f3, "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=90&auto=format&fit=crop"),
-                    "spectral_color": "#818cf8",
-                    "emotional_valence": "Transcendent Awe",
-                    "harmonic_chord_name": "Em9",
-                    "coordinates": {"x": 52, "y": 72},
-                    "audio_frequency": 392.00,
-                    "chord_notes": [164.81, 246.94, 329.63, 392.00, 493.88],
-                    "connections": [2, 4],
-                    "resonance_note": "A deep horizon star gazing into the transcendent mystery of space and love."
-                },
-                {
-                    "star_id": 4,
-                    "title": f4.get("title", "Amélie"),
-                    "director": f4.get("director", "Jean-Pierre Jeunet"),
-                    "poster_url": get_hd_img(f4, "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=1600&q=90&auto=format&fit=crop"),
-                    "spectral_color": "#f59e0b",
-                    "emotional_valence": "Warmth & Playful Joy",
-                    "harmonic_chord_name": "Gmaj9",
-                    "coordinates": {"x": 68, "y": 28},
-                    "audio_frequency": 440.00,
-                    "chord_notes": [196.00, 246.94, 293.66, 392.00, 440.00],
-                    "connections": [3, 5],
-                    "resonance_note": "A golden radiant star celebrating shared laughter and human tenderness."
-                },
-                {
-                    "star_id": 5,
-                    "title": f5.get("title", "Roma"),
-                    "director": f5.get("director", "Alfonso Cuarón"),
-                    "poster_url": get_hd_img(f5, "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=90&auto=format&fit=crop"),
-                    "spectral_color": "#ec4899",
-                    "emotional_valence": "Catharsis & Peace",
-                    "harmonic_chord_name": "Dadd9",
-                    "coordinates": {"x": 84, "y": 62},
-                    "audio_frequency": 587.33,
-                    "chord_notes": [146.83, 220.00, 293.66, 369.99, 587.33],
-                    "connections": [4],
-                    "resonance_note": "A peaceful supernova where emotional catharsis harmonizes into lasting serenity."
-                }
-            ],
+            "stars": stars_list,
             "central_supernova": {
                 "title": "Core Emotional Convergence",
-                "narrative": "Where your 5 cinematic memories orbit in harmonic balance, illuminating your creative soul."
+                "narrative": f"Where your {len(watched_films)} cinematic milestones orbit across astronomical depth in harmonious balance."
             },
-            "credits": "Cartography by Google Gemini 3.5 Flash • Harmonic Soundscape by Google Lyria"
+            "credits": "Cartography by Google Gemini 3.5 Flash • 5s Leitmotif Engine by Google Lyria"
         }
 
-    # Ensure HD images for stars
+    # Ensure depth_factor and HD images for all stars
+    total_stars = len(constellation.get("stars", []))
     for i, star in enumerate(constellation.get("stars", [])):
+        if "depth_factor" not in star or not star["depth_factor"]:
+            star["depth_factor"] = round(max(0.35, 1.0 - (i * 0.12)), 2)
         if i < len(watched_films):
             raw_url = watched_films[i].get("poster_url") or watched_films[i].get("backdrop_url")
             if raw_url:
@@ -1126,19 +1125,9 @@ async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_n
             "featured_director": s.get("director"),
             "poster_url": s.get("poster_url"),
             "emotional_state": s.get("emotional_valence"),
+            "depth_factor": s.get("depth_factor", 1.0),
             "director_note": s.get("resonance_note", "Cosmic harmonic alignment."),
-            "art_direction": {
-                "lighting_style": f"Spectral {s.get('spectral_color', '#d4af37')} Glow",
-                "composition": "Cosmic orbital framing",
-                "atmosphere_tone": s.get("emotional_valence")
-            },
-            "lyria_score": {
-                "movement_name": f"Harmonic Orbit in {constellation.get('ambient_soundscape', {}).get('key', 'D Minor')}",
-                "key": constellation.get("ambient_soundscape", {}).get("key", "D Minor"),
-                "tempo": constellation.get("ambient_soundscape", {}).get("tempo", "64 BPM"),
-                "instrumentation": constellation.get("ambient_soundscape", {}).get("instrumentation", "Warm Synthesizer & Celesta"),
-                "vibe": constellation.get("ambient_soundscape", {}).get("leitmotif_description", "Cosmic tranquility")
-            }
+            "leitmotif": s.get("leitmotif", {})
         }
         for idx, s in enumerate(constellation.get("stars", []))
     ]

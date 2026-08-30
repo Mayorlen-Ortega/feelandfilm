@@ -2950,7 +2950,7 @@ button:disabled {
     bottom: 0;
 }
 
-/* Interactive Star Orb */
+/* Interactive Celestial Star Node (Star Shape & Radiant Spikes) */
 .constellation-star-orb {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -2960,17 +2960,78 @@ button:disabled {
     align-items: center;
     gap: 4px;
     z-index: 5;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, filter 0.35s ease;
+    will-change: transform, opacity;
 }
 
-.constellation-star-orb:hover {
-    transform: translate(-50%, -50%) scale(1.15);
+/* Z-Depth & Cosmic Distance Layers for > 5 Films */
+.constellation-star-orb.depth-foreground {
+    opacity: 1.0;
     z-index: 10;
 }
 
+.constellation-star-orb.depth-midground {
+    opacity: 0.80;
+    z-index: 6;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
+}
+
+.constellation-star-orb.depth-deep {
+    opacity: 0.52;
+    z-index: 3;
+    filter: brightness(0.85) drop-shadow(0 0 10px rgba(0, 0, 0, 0.9));
+}
+
+.constellation-star-orb:hover {
+    transform: translate(-50%, -50%) scale(1.18) !important;
+    opacity: 1 !important;
+    z-index: 25 !important;
+    filter: brightness(1.2) drop-shadow(0 0 20px var(--spectral-glow, #d4af37));
+}
+
 .constellation-star-orb.active {
-    transform: translate(-50%, -50%) scale(1.2);
-    z-index: 15;
+    transform: translate(-50%, -50%) scale(1.25) !important;
+    opacity: 1 !important;
+    z-index: 30 !important;
+    filter: brightness(1.25) drop-shadow(0 0 25px var(--spectral-glow, #d4af37));
+}
+
+/* Radiant 4-Point Star Geometry Container */
+.star-shape-wrapper {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Celestial Star Flaring Spikes (SVG / Pseudo-element diamond rays) */
+.star-celestial-flare {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.star-celestial-flare svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 8px var(--spectral-glow, #d4af37));
+}
+
+.constellation-star-orb.active .star-celestial-flare {
+    animation: starPulseGlow 2.5s ease-in-out infinite;
+    transform: translate(-50%, -50%) scale(1.25);
+}
+
+@keyframes starPulseGlow {
+    0%, 100% { transform: translate(-50%, -50%) scale(1.2) rotate(0deg); opacity: 0.9; }
+    50% { transform: translate(-50%, -50%) scale(1.4) rotate(45deg); opacity: 1; filter: drop-shadow(0 0 16px var(--spectral-glow, #d4af37)); }
 }
 
 .star-pulse-ring {
@@ -2979,14 +3040,16 @@ button:disabled {
     height: 58px;
     border-radius: 50%;
     border: 1.5px dashed var(--spectral-glow, #d4af37);
-    animation: spinRing 12s linear infinite;
+    animation: spinRing 14s linear infinite;
     pointer-events: none;
+    opacity: 0.6;
 }
 
 .constellation-star-orb.active .star-pulse-ring {
     border-style: solid;
     box-shadow: 0 0 20px var(--spectral-glow, #d4af37);
     animation: spinRing 6s linear infinite;
+    opacity: 1;
 }
 
 @keyframes spinRing {
@@ -2994,14 +3057,17 @@ button:disabled {
     to { transform: rotate(360deg); }
 }
 
+/* Embedded Circular Movie Core in Center of Star */
 .star-orb-thumb {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     border: 2px solid var(--spectral-glow, #d4af37);
     overflow: hidden;
-    background: #000;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    background: #050508;
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.9), inset 0 0 6px rgba(0,0,0,0.8);
+    position: relative;
+    z-index: 2;
 }
 
 .star-orb-thumb img {
@@ -3011,16 +3077,19 @@ button:disabled {
 }
 
 .star-label-badge {
-    padding: 2px 6px;
+    padding: 2px 7px;
     border-radius: 10px;
     border: 1px solid var(--spectral-glow, #d4af37);
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+    background: rgba(10, 8, 14, 0.88);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.85);
     pointer-events: none;
-    max-width: 95px;
+    max-width: 105px;
+    transition: opacity 0.3s ease;
 }
 
 .star-label-badge .star-num {
@@ -3028,6 +3097,7 @@ button:disabled {
     font-family: 'Cinzel', serif;
     color: var(--accent);
     font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .star-label-badge .star-name {
@@ -3036,26 +3106,30 @@ button:disabled {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 85px;
+    max-width: 95px;
 }
 
 .constellation-canvas-hint {
     position: absolute;
-    bottom: 6px;
-    left: 10px;
+    bottom: 8px;
+    left: 12px;
     font-size: 0.66rem;
-    color: #94a3b8;
-    background: rgba(0, 0, 0, 0.65);
-    padding: 3px 8px;
-    border-radius: 10px;
+    color: #cbd5e1;
+    background: rgba(10, 8, 16, 0.8);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    padding: 4px 10px;
+    border-radius: 12px;
     pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-/* Right: Active Star & Los Acordes Panel */
+/* Right: Active Star & Leitmotif Panel */
 .constellation-observatory-panel {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     justify-content: space-between;
 }
 
@@ -3092,11 +3166,12 @@ button:disabled {
     border-radius: 8px;
 }
 
-.star-freq-badge {
-    font-size: 0.62rem;
-    font-family: 'Fira Code', monospace;
+.star-depth-badge {
+    font-size: 0.60rem;
+    font-family: 'Cinzel', serif;
     color: #38bdf8;
     background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
     padding: 1px 6px;
     border-radius: 8px;
 }
@@ -3162,48 +3237,136 @@ button:disabled {
     border: 1px solid var(--accent);
     color: #fef08a;
     font-family: 'Cinzel', serif;
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     font-weight: 700;
-    padding: 6px 10px;
+    padding: 7px 12px;
     border-radius: 6px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    transition: all 0.2s ease;
+    gap: 7px;
+    transition: all 0.25s ease;
     margin-top: 2px;
 }
 
 .btn-play-star-note:hover {
     background: var(--accent);
     color: #111 !important;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.6);
 }
 
-.lyria-architecture-card {
-    background: rgba(10, 8, 14, 0.85);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    border-radius: 8px;
-    padding: 8px 12px;
+.btn-play-star-note.playing {
+    background: #38bdf8;
+    color: #0f172a !important;
+    border-color: #7dd3fc;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+}
+
+/* 5s Cinematic Leitmotif Master Card */
+.leitmotif-master-card {
+    background: rgba(10, 8, 18, 0.9);
+    border: 1.5px solid rgba(56, 189, 248, 0.35);
+    border-radius: 10px;
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
 }
 
-.lyria-arch-header {
+.leitmotif-timbre-pill {
+    font-size: 0.58rem;
     font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    color: #a5f3fc;
+    font-weight: 700;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 6px;
+    text-transform: uppercase;
+}
+
+.leitmotif-duration-tag {
+    font-size: 0.64rem;
+    font-family: 'Fira Code', monospace;
+    color: #fef08a;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 1px 6px;
+    border-radius: 8px;
+}
+
+.leitmotif-desc-text {
+    font-size: 0.72rem;
+    color: #cbd5e1;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    line-height: 1.35;
+    margin: 0;
+}
+
+/* 5-Second Melodic Progress & Notes Track */
+.leitmotif-timeline-container {
+    position: relative;
+    width: 100%;
+    height: 24px;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 6px;
+    overflow: hidden;
     display: flex;
     align-items: center;
-    gap: 5px;
 }
 
-.harmonic-chords-row {
+.leitmotif-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.3) 0%, rgba(56, 189, 248, 0.55) 100%);
+    border-right: 2px solid #38bdf8;
+    box-shadow: 0 0 10px #38bdf8;
+    transition: width 0.05s linear;
+    pointer-events: none;
+}
+
+.leitmotif-notes-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+    align-items: center;
+    pointer-events: none;
+}
+
+.leitmotif-note-marker {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d4af37;
+    box-shadow: 0 0 6px #d4af37;
+    transform: translate(-50%, 0);
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.leitmotif-note-marker.hit {
+    background: #38bdf8 !important;
+    box-shadow: 0 0 12px #38bdf8, 0 0 20px #fff !important;
+    transform: translate(-50%, -2px) scale(1.4) !important;
+}
+
+.leitmotif-footer-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62rem;
+    color: #94a3b8;
+    font-family: 'Fira Code', monospace;
 }
 
 .constellation-bottom-actions {

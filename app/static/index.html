@@ -585,18 +585,18 @@
                         </div>
                         
                         <div class="constellation-canvas-hint">
-                            <i class="fas fa-hand-pointer"></i> Click any star to resonate its harmonic chord
+                            <i class="fas fa-sparkles"></i> Click any star to resonate its 5-second cinematic leitmotif • Older films shine in deep space
                         </div>
                     </div>
 
-                    <!-- Right: Active Star & Harmonic Chords Panel -->
+                    <!-- Right: Active Star & 5s Cinematic Leitmotif Panel -->
                     <div class="constellation-observatory-panel">
                         <!-- Active Star Inspection Card -->
                         <div class="observatory-star-card" id="observatory-star-card">
                             <div class="observatory-star-header">
                                 <div class="star-badge-row">
                                     <span class="star-spectral-pill" id="observatory-star-pill">STAR 01 &bull; SANCTUARY</span>
-                                    <span class="star-freq-badge" id="observatory-star-freq"><i class="fas fa-wave-square"></i> 293.66 Hz</span>
+                                    <span class="star-depth-badge" id="observatory-star-depth"><i class="fas fa-cube"></i> Foreground</span>
                                 </div>
                                 <h4 class="observatory-film-title" id="storyboard-film-title">Blade Runner 2049</h4>
                                 <div class="observatory-director" id="storyboard-film-director"><i class="fas fa-video"></i> Denis Villeneuve</div>
@@ -612,18 +612,36 @@
                                 </div>
                             </div>
 
-                            <button type="button" class="btn-play-star-note" id="play-active-star-note-btn" onclick="playActiveStarChord()">
-                                <i class="fas fa-volume-high"></i> Play Star Harmonic Chord
+                            <button type="button" class="btn-play-star-note" id="play-active-star-note-btn" onclick="playActiveStarLeitmotif()">
+                                <i class="fas fa-play"></i> <span id="leitmotif-btn-text">Play 5s Cinematic Leitmotif</span>
                             </button>
                         </div>
 
-                        <!-- Harmonic Chords Lyria -->
-                        <div class="lyria-architecture-card">
+                        <!-- 5-Second Cinematic Leitmotif (Google Lyria) -->
+                        <div class="lyria-architecture-card leitmotif-master-card">
                             <div class="lyria-arch-header">
-                                <i class="fas fa-music"></i> <strong>Harmonic Chords (Google Lyria)</strong>
+                                <div>
+                                    <i class="fas fa-music"></i> <strong>5s Cinematic Leitmotif</strong>
+                                    <span class="leitmotif-timbre-pill" id="leitmotif-timbre-badge">SPACE SYNTH</span>
+                                </div>
+                                <span class="leitmotif-duration-tag"><i class="fas fa-stopwatch"></i> 5.0s</span>
                             </div>
-                            <div class="harmonic-chords-row" id="constellation-chords-row">
-                                <!-- Populated dynamically with mood chords -->
+                            
+                            <p class="leitmotif-desc-text" id="leitmotif-cinematic-desc">
+                                Vangelis-inspired analog synth pads and melancholic melodic line reflecting deep neon introspection.
+                            </p>
+
+                            <!-- Interactive 5-Second Melodic Wave Timeline -->
+                            <div class="leitmotif-timeline-container" id="leitmotif-timeline-container">
+                                <div class="leitmotif-progress-bar" id="leitmotif-progress-bar"></div>
+                                <div class="leitmotif-notes-track" id="leitmotif-notes-track">
+                                    <!-- Dynamic note markers -->
+                                </div>
+                            </div>
+
+                            <div class="leitmotif-footer-meta">
+                                <span id="leitmotif-tempo-tag"><i class="fas fa-drum"></i> 64 BPM</span>
+                                <span id="leitmotif-key-tag"><i class="fas fa-sliders"></i> Lyria Engine</span>
                             </div>
                         </div>
 
