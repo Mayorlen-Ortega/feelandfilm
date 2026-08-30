@@ -28,7 +28,7 @@ Los sistemas tradicionales de recomendación de películas se limitan a filtros 
 5. **Memoria Activa y Aprendizaje Continuo:** Aprende activamente del feedback del usuario a lo largo de las sesiones, generando notas colaborativas explícitas (*"He recordado que prefieres maridajes sin alcohol..."*).
 6. **The Cinémathèque Archive y Registro de Vistas:** Bóveda vintage de gavetas de bronce con ordenamiento multicriterio (*Más recientes, Más antiguas, Mejor calificadas, Vistas primero, No vistas primero, Título A-Z, Director A-Z*) y gavetas de filtro (*Vistas, No vistas, 5★ Top Rated, Estados de ánimo*).
 7. **Matriz de Alineación y Fidelidad Multi-Restricción (`Alt+A` / `Option+A`):** Panel interactivo de evaluación cuantitativa que mide cómo las recomendaciones respetan múltiples restricciones simultáneas (*estado de ánimo vs director/década/tema/dieta explícitos*) a lo largo de las 10 sesiones más recientes, con notas de arbitraje Pareto, tarjetas de KPIs y exportaciones en 1-clic (*CSV, JSON, Markdown*).
-8. **Constelación Emocional & Paisaje Acústico de Google Lyria (*Interactive Cosmic Galaxy*):** Barra de hitos (5 películas vistas) que desbloquea un mapa interactivo de cielo cósmico donde cada una de las 5 películas es una estrella orbital con su propio acorde armónico vinculado directamente a su estado de ánimo (*Melancolía -> Dm9, Asombro -> FMaj7#11, Éxtasis -> Gmaj9, Catarsis -> Dadd9*), líneas de haz de luz SVG, partículas estelares y un sintetizador de música ambiental generado por **Google Lyria** con acordes interactivos (*WebAudio API*).
+8. **Constelación Emocional 3D & Motor de Leitmotivs de Google Lyria (*Cosmic Cinema Cartography*):** Asterismo cósmico interactivo donde todo el historial de películas vistas se cartografía en nodos con forma de estrella radiante y enlaces orgánicos. Cuenta con **escalado de profundidad cósmica ($Z$-Depth)** para $>5$ películas (las más recientes brillan en primer plano al 100% mientras las más antiguas se alejan hacia el fondo cósmico con menor opacidad y escala). Mediante **Google Lyria**, cada estrella sintetiza un **leitmotiv cinematográfico original de 5 segundos** (*Space Synth, Celesta Bell, Noir Piano, Orchestral Strings, Vals Parisino*) con convolución de reverberación de catedral en tiempo real, colchón de sub-bajo y línea de tiempo sincronizada.
 9. **Agente Mayordomo de Correo (*Cinema Courier & Epistle Agent*):** Genera y despacha cartas editoriales personalizadas a tu correo con la justificación del curador, la receta paso a paso del cóctel/snack para tu cocina y la guía de streaming para organizar tu noche de cine en 1 clic.
 10. **Exploración Rápida en 1-Clic (*Instant Re-roll*) y Modo Batería Segura:** Botón directo para pedir otra película alternativa manteniendo el mismo mood sin repetir formularios, con arquitectura tolerante a fallos y avisos amigables de recarga de créditos (cero errores 500).
 
@@ -103,11 +103,11 @@ Para el mapeo técnico completo de componentes, consulta [ARCHITECTURE.md](ARCHI
                ┌─────────────────────────────┴─────────────────────────────┐
                ▼                                                           ▼
 ┌──────────────────────────────────────────────┐    ┌──────────────────────────────────────────────┐
-│  Matriz de Alineación y Fidelidad de IA      │    │ Constelación Emocional 5★ & Sintetizador     │
-│  • Puntuación de Fidelidad (94.2%)           │    │ • Lienzo Espacio Profundo y Haces SVG        │
-│  • Arbitraje de Pareto en Restricciones      │    │ • Cartografía Celestial Gemini 3.5 Flash     │
-│  • Tabla Histórica de Auditoría (10 Sesiones)│    │ • Sintetizador Acústico Google Lyria         │
-│  • Exportación en 1-Clic (CSV, JSON, MD)     │    │ • Teclado Armónico (Dm9, FMaj7, Dadd9)       │
+│  Matriz de Alineación y Fidelidad de IA      │    │ Constelación Emocional 3D (Google Lyria)     │
+│  • Puntuación de Fidelidad (94.2%)           │    │ • Asterismo Irregular y Nodos Estrella      │
+│  • Arbitraje de Pareto en Restricciones      │    │ • Capas de Profundidad Z (>5 Películas)     │
+│  • Tabla Histórica de Auditoría (10 Sesiones)│    │ • Leitmotivs Cinematográficos de 5s (Lyria)  │
+│  • Exportación en 1-Clic (CSV, JSON, MD)     │    │ • DSP Reverb de Catedral y Sincronización    │
 └──────────────────────────────────────────────┘    └──────────────────────────────────────────────┘
                                              │
                                              ▼
@@ -276,9 +276,10 @@ docker run -p 8000:8000 --env-file .env feelandfilm
   - **Puntuación de Fidelidad Cuantitativa**: Mide el porcentaje de cumplimiento sobre directivas complejas y múltiples.
   - **Arbitraje de Pareto**: Analiza cómo el Master Orchestrator equilibra el estado de ánimo emocional frente a directivas explícitas (*p. ej. "Alivio del estrés" + "Denis Villeneuve", manteniendo la relajación sin traicionar el estilo del director*).
   - **Auditoría y Exportaciones**: Tabla con 10 sesiones recientes y botones para exportar en Markdown, CSV y JSON.
-* **Constelación Emocional 5★ & Paisaje Acústico Google Lyria:**
-  - **Cartografía Longitudinal**: Sintetiza 5 películas vistas en un mapa estelar interactivo.
-  - **Sintetizador Acústico Google Lyria**: Genera acordes armónicos para cada estrella (*Dm9, FMaj7#11, Em9, Gmaj9, Dadd9*) con un colchón sonoro de ambiente ultra-suave.
+* **Constelación Emocional 3D & Motor de Leitmotivs Google Lyria:**
+  - **Cartografía Longitudinal**: Sintetiza todo el historial de películas vistas en un asterismo cósmico orgánico e irregular.
+  - **Escalado de Profundidad $Z$-Depth**: Películas recientes en primer plano y filmes antiguos atenuados en el fondo cósmico ($>5$ películas vistas).
+  - **Sintetizador Acústico Google Lyria**: Genera un leitmotiv original de 5 segundos para cada nodo estelar (*Space Synth, Celesta Bell, Noir Piano, Orchestral Strings, Vals Parisino*) con convolución de reverberación de catedral en tiempo real, colchón de sub-bajo y línea de tiempo sincronizada.
 * **Memoria Continua y Aprendizaje Colaborativo (*Collaborative Partner*):** Recuerda preferencias dietéticas y estilo a lo largo de las sesiones, generando notas colaborativas explícitas (*"He recordado que prefieres maridajes sin alcohol..."*).
 * **The Cinémathèque Archive (ClickHouse Cloud):** Bóveda vintage de gavetas con:
   - **Ordenamiento Multicriterio**: Más recientes, Más antiguas, Mejor calificadas (5★), Vistas primero, No vistas primero, Título (A-Z), Director (A-Z).

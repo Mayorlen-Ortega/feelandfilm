@@ -124,16 +124,16 @@
       <text x="18" y="126" class="code-txt" fill="#f87171">DELETE /api/cinematheque/{session_id}</text>
     </g>
 
-    <!-- 5-Star Emotional Constellation & Lyria Soundscape -->
+    <!-- 3D Irregular Emotional Constellation & Lyria Leitmotif Engine -->
     <g transform="translate(15, 555)">
       <rect width="290" height="175" fill="#0b1120" stroke="#a855f7" stroke-width="1.5" rx="8"/>
-      <text x="12" y="18" class="box-title" fill="#c084fc">🌌 5-Star Emotional Constellation</text>
-      <text x="12" y="34" class="box-desc">• Milestone Progress: 5 Watched Films</text>
-      <text x="12" y="48" class="box-desc">• Deep Space Canvas &amp; SVG Orbital Beams</text>
-      <text x="12" y="62" class="box-desc">• Google Lyria Ambient Polyphonic Synthesizer</text>
-      <text x="12" y="76" class="box-desc">• Interactive Mood-Harmonic Keyboard:</text>
-      <text x="12" y="90" class="box-desc">  Dm9(Solitude), FMaj7#11(Wonder), Em9(Awe),</text>
-      <text x="12" y="104" class="box-desc">  Gmaj9(Joy), Dadd9(Catharsis)</text>
+      <text x="12" y="18" class="box-title" fill="#c084fc">🌌 3D Emotional Constellation (Lyria)</text>
+      <text x="12" y="34" class="box-desc">• Irregular Real-World Asterism Map</text>
+      <text x="12" y="48" class="box-desc">• Radiant Star-Shaped Nodes &amp; Orbital Beams</text>
+      <text x="12" y="62" class="box-desc">• Z-Depth Cosmic Layering (&gt;5 Watched Films)</text>
+      <text x="12" y="76" class="box-desc">• Original 5-Second Cinematic Leitmotifs</text>
+      <text x="12" y="90" class="box-desc">• WebAudio DSP: Reverb, Chorus &amp; Sub-Bass</text>
+      <text x="12" y="104" class="box-desc">• Visual Note Marker Timeline Sync</text>
       <rect x="12" y="120" width="266" height="20" fill="#c084fc" fill-opacity="0.2" rx="4"/>
       <text x="18" y="134" class="code-txt" fill="#e9d5ff">POST /api/generate-biopic-trailer</text>
     </g>
@@ -191,8 +191,8 @@
         <rect width="305" height="80" fill="#0b1120" stroke="#a855f7" stroke-width="1.2" rx="8"/>
         <text x="12" y="18" class="code-txt" fill="#e9d5ff">POST /api/generate-biopic-trailer</text>
         <text x="12" y="34" class="box-desc">• Runs emotional_constellation_agent (Gemini)</text>
-        <text x="12" y="48" class="box-desc">• Google Lyria ambient soundscape synthesis</text>
-        <text x="12" y="62" class="box-desc">• Generates 5-star coordinates &amp; mood chords</text>
+        <text x="12" y="48" class="box-desc">• Irregular 3D asterism cartography (depth factors)</text>
+        <text x="12" y="62" class="box-desc">• Composes 5s Lyria leitmotifs for all watched films</text>
       </g>
 
       <!-- /api/cinematheque -->
@@ -299,11 +299,11 @@
     <g transform="translate(15, 598)">
       <rect width="315" height="120" fill="url(#agentGrad)" stroke="#a855f7" stroke-width="1.5" rx="8"/>
       <text x="14" y="20" class="box-title" fill="#e9d5ff">🌌 emotional_constellation_agent (Google Lyria)</text>
-      <text x="14" y="36" class="box-desc">• Model: gemini-3.5-flash + Google Lyria Specs</text>
-      <text x="14" y="52" class="box-desc">• 5-Star celestial cartography (coordinates, colors)</text>
-      <text x="14" y="68" class="box-desc">• Google Lyria Ambient Soundscape generation</text>
-      <text x="14" y="84" class="box-desc">• Maps emotions to exact WebAudio frequencies:</text>
-      <text x="14" y="98" class="box-desc">  Dm9(Solitude), FMaj7#11(Wonder), Dadd9(Catharsis)</text>
+      <text x="14" y="36" class="box-desc">• Model: gemini-3.5-flash + Lyria Acoustic Engine</text>
+      <text x="14" y="52" class="box-desc">• 3D Irregular Asterism cartography &amp; Z-depth scaling</text>
+      <text x="14" y="68" class="box-desc">• 5s Melodic Leitmotif generation per film star</text>
+      <text x="14" y="84" class="box-desc">• Cinema Timbres: Space Synth, Celesta, Noir Piano,</text>
+      <text x="14" y="98" class="box-desc">  Orchestral Strings &amp; French Waltz with Reverb DSP</text>
     </g>
 
     <!-- Additional Models -->
