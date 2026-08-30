@@ -37,13 +37,20 @@ Follow these steps to deliver a compelling, high-impact demonstration of **Feel 
     > *"Collaborative Partner Note: I remembered your preference for (Non-alcoholic pairings only) and tailored tonight's concession pairing to accompany [Film]."*
   - Point out that the Sommelier strictly selected a botanical mocktail/craft soda.
 
-### 5. 🗄️ The Cinémathèque Archive in ClickHouse Cloud (4:00 - 4:45)
+### 5. 🗄️ The Cinémathèque Archive in ClickHouse Cloud (4:00 - 4:30)
 - **Show the Archive section:**
   - Browse vintage brass filing drawers (`[All Records]`, `[Stressed]`, `[Sad]`, `[Tired]`, `[Excited]`, `[Curious]`).
   - Demonstrate individual card deletion (`🗑️` button) and pagination collapse (`[Show All Curations (X)]`).
   - Explain that all records are indexed and stored in **ClickHouse Cloud**.
 
-### 6. 🛡️ Responsible AI & Safety Guardrail (4:45 - 5:00)
+### 6. 🌌 3D Emotional Constellation & Google Lyria Leitmotif Engine (4:30 - 4:50, ~20s)
+- **Voiceover script (20 seconds):**
+  > *"By marking watched films, we unlock our Emotional Constellation: a 3D celestial asterism where our Gemini Cartographer Agent maps our emotional journey across deep space. Each star radiates an original 5-second leitmotif composed by Google Lyria reflecting the film's sonic identity, while older cinema memories gently drift into deep space."*
+- **Acciones en vivo:**
+  - Click `[ Open Emotional Constellation ]`.
+  - Click on star nodes to trigger the real-time 5-second acoustic leitmotifs (synthesized via Web Audio / Google Lyria Engine) and showcase the depth-fading of older films in deep space.
+
+### 7. 🛡️ Responsible AI & Safety Guardrail (4:50 - 5:00)
 - **Explain safety:** Show how the system includes a multilingual content safety guardrail protecting against NSFW, gore, or malicious inputs in multiple languages before any API call is made.
 
 ---
