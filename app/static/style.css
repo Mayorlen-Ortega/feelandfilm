@@ -3840,9 +3840,9 @@ button:disabled {
 .auth-bar {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
-    padding: 10px 0 18px 0;
+    padding: 6px 0 16px 0;
     margin-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     gap: 20px;
@@ -3851,8 +3851,10 @@ button:disabled {
 
 .auth-left-actions {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
+    margin: 0;
+    padding: 0;
 }
 
 .auth-logged-out {
@@ -3860,6 +3862,7 @@ button:disabled {
     align-items: center;
     gap: 16px;
     margin-left: auto;
+    margin-top: 0;
 }
 
 .auth-logged-in {
@@ -3867,6 +3870,7 @@ button:disabled {
     align-items: center;
     gap: 14px;
     margin-left: auto;
+    margin-top: 0;
 }
 
 .alignment-matrix-nav-btn {
@@ -3876,7 +3880,7 @@ button:disabled {
     font-family: 'Cinzel', serif;
     font-size: 0.75rem;
     font-weight: 700;
-    padding: 6px 14px;
+    padding: 7px 16px;
     border-radius: 20px;
     cursor: pointer;
     display: inline-flex;
@@ -3884,6 +3888,8 @@ button:disabled {
     gap: 8px;
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    align-self: flex-start;
+    margin-top: 0;
 }
 
 .alignment-matrix-nav-btn:hover {
