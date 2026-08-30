@@ -213,26 +213,28 @@
         <text x="12" y="62" class="box-desc">• Injects preferences into future curation prompts</text>
       </g>
 
-      <!-- External Enrichment Routers -->
+      <!-- External Enrichment Routers & Alignment Matrix -->
       <g transform="translate(0, 548)">
-        <rect width="305" height="75" fill="#0b1120" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
-        <text x="12" y="18" class="code-txt" fill="#7dd3fc">GET /api/watch-providers | /api/poster</text>
-        <text x="12" y="34" class="box-desc">• TMDB JustWatch streaming detection by country</text>
-        <text x="12" y="48" class="box-desc">• TMDB poster search &amp; HD image resolver</text>
-        <text x="12" y="62" class="box-desc">• Standalone soundtrack &amp; sommelier endpoints</text>
+        <rect width="305" height="120" fill="#0b1120" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
+        <text x="12" y="18" class="code-txt" fill="#7dd3fc">GET /api/alignment-matrix (Alt+A)</text>
+        <text x="12" y="32" class="box-desc">• Multi-Constraint Fidelity Scoring (94.2%)</text>
+        <text x="12" y="46" class="box-desc">• Pareto Arbitration &amp; 10-Session Historical Audit</text>
+        <text x="12" y="60" class="code-txt" fill="#93c5fd">GET /api/watch-providers | /api/poster</text>
+        <text x="12" y="74" class="box-desc">• TMDB JustWatch regional streaming detection</text>
+        <text x="12" y="88" class="box-desc">• TMDB HD poster search &amp; image resolver</text>
+        <text x="12" y="102" class="box-desc">• Standalone soundtrack &amp; sommelier endpoints</text>
       </g>
     </g>
 
     <!-- ADK Engine Architecture Badge -->
-    <g transform="translate(15, 680)">
-      <rect width="305" height="168" fill="#172033" stroke="#3b82f6" stroke-width="1.2" rx="8"/>
+    <g transform="translate(15, 725)">
+      <rect width="305" height="125" fill="#172033" stroke="#3b82f6" stroke-width="1.2" rx="8"/>
       <text x="12" y="20" class="box-title" fill="#93c5fd">⚡ Google ADK Autonomous Orchestrator</text>
       <text x="12" y="38" class="box-desc">• Framework: google.adk.agents.Agent &amp; Runner</text>
       <text x="12" y="54" class="box-desc">• Session Service: InMemorySessionService()</text>
       <text x="12" y="70" class="box-desc">• Single Autonomous Cycle Multi-Agent Pipeline</text>
       <text x="12" y="86" class="box-desc">• Dynamic Error Mitigation &amp; AI Safe Mode</text>
-      <text x="12" y="102" class="box-desc">• Multi-lingual prompt translation &amp; parsing</text>
-      <text x="12" y="118" class="box-desc">• Real-time Agent Trace Generation</text>
+      <text x="12" y="102" class="box-desc">• Real-time Agent Trace Generation</text>
     </g>
   </g>
 

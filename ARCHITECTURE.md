@@ -117,6 +117,8 @@ Designed specifically for the **Collaborative Partner Track**, the platform tran
 ### 3. Backend Gateway & Memory Management (`app/main.py`)
 - **`POST /api/curate-experience`**:
   - Master autonomous orchestration endpoint. Executes safety guardrails, user memory synchronization, multi-agent synthesis, poster/streaming enrichment, ClickHouse persistence, and AI Battery Safe Mode.
+- **`GET /api/alignment-matrix`**:
+  - AI Alignment & Multi-Constraint Fidelity evaluation engine. Computes quantitative compliance scores (Fidelity %, Hard Constraints %, Mood Resonance %) across the last 10 sessions with Pareto trade-off arbitration notes and 1-click exports (CSV, JSON, Markdown).
 - **`POST /api/send-cinema-email`**:
   - Concierge email dispatcher with live `.env` dynamic reload.
 - **`POST /api/generate-biopic-trailer`**:
@@ -131,6 +133,7 @@ Designed specifically for the **Collaborative Partner Track**, the platform tran
 ### 4. Presentation Layer (`app/static/`)
 - **Interactive 4-Scene Modal Workflow**: Immersive step-by-step screening setup.
 - **Cinema Night Stage**: High-definition film showcase, musicology, gastronomy, streaming links, and instant re-roll.
+- **AI Alignment & Fidelity Matrix Modal (`Alt+A`)**: Comprehensive benchmarking dashboard with KPI cards, arbitration breakdown, and multi-format export buttons.
 - **The Cinémathèque Vault**: Vintage brass filing drawers with multi-criteria sorting, rating stars, and package relive.
 - **5-Star Emotional Constellation Modal**: Starfield canvas, SVG orbital beams, glowing star orbs, and interactive Lyria keyboard.
 - **Behind-the-Scenes AI Crew View & Terminal Drawer**: Real-time transparency and execution logs.
