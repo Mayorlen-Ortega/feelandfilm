@@ -1,13 +1,13 @@
 *Leer en [Inglés](README.md).*
 
-# Feel & Film — Autonomous Multi-Agent Cinema & Collaborative Partner
+# Feel & Film — Cine Autónomo Multi-Agente y Socio Colaborativo
 
 > **Agentic Cinema: The Blockbuster Hackathon**  
 > **Track:** *Collaborative Partner*  
-> **Motor LLM Principal:** Google Gemini 3.5 Flash  
-> **Guion y Director del Biopic:** Google Gemma 2 (con soporte local en Ollama)  
+> **Motor LLM Principal:** Google Gemini 3.5 Flash (`gemini-3.5-flash` vía Google GenAI SDK)  
+> **Guion y Director del Biopic:** Google Gemma 2 (`gemma2` / soporte local en Ollama)  
 > **Motor de Cinematografía y Video:** Google Veo (Prompts de Fotografía 35mm)  
-> **Motor de Composición y Leitmotifs:** Google Lyria (Partitura Armónica Orquestal)  
+> **Motor de Composición y Leitmotifs:** Google Lyria (Partitura Armónica y Sintetizador)  
 > **Framework de Agentes:** Google Agent Development Kit (`google-adk`)  
 > **Base de Datos y Memoria:** ClickHouse Cloud (Bóveda OLAP)  
 > **Autenticación:** Google Identity Services (OAuth 2.0 / GIS)  
@@ -21,15 +21,16 @@ Los sistemas tradicionales de recomendación de películas se limitan a filtros 
 
 **Feel & Film** actúa como un auténtico **Socio Colaborativo Inteligente (*Collaborative Partner*)**. Coordinado por un **Master Orchestrator Agent** impulsado por **Google ADK** y **Google Gemini 3.5 Flash**, el sistema traduce emociones humanas complejas y desestructuradas en una **Experiencia Completa de Noche de Cine** en un **único ciclo autónomo**:
 
-1. **Curaduría Emocional de Cine:** Descubrimiento semántico en tiempo real sobre 800,000+ películas de TMDB con enrutamiento inteligente para directores, estudios (*Studio Ghibli, A24*) y décadas (*años 80, 90s*).
+1. **Curaduría Emocional de Cine:** Descubrimiento semántico en tiempo real sobre 800,000+ películas de TMDB con enrutamiento inteligente para directores de autor (*Denis Villeneuve, Alfred Hitchcock*), estudios (*Studio Ghibli, A24*), décadas (*años 80, 90s*) y temáticas internacionales.
 2. **Análisis Musicológico de Banda Sonora:** Desglose profundo de la BSO extrayendo el compositor, la vibra atmosférica y el tema principal.
 3. **Maridaje Gastronómico Personalizado:** Creación de maridajes de bebida y snack adaptados estrictamente a las restricciones dietéticas del usuario (*100% libre de alcohol, mocktails botánicos, snacks veganos*).
 4. **Buscador de Streaming Regional (*Where to Watch*):** Detección instantánea de plataformas disponibles (*Netflix, Prime Video, Apple TV, Max*) con datos de JustWatch.
 5. **Memoria Activa y Aprendizaje Continuo:** Aprende activamente del feedback del usuario a lo largo de las sesiones, generando notas colaborativas explícitas (*"He recordado que prefieres maridajes sin alcohol..."*).
 6. **The Cinémathèque Archive y Registro de Vistas:** Bóveda vintage de gavetas de bronce con ordenamiento multicriterio (*Más recientes, Más antiguas, Mejor calificadas, Vistas primero, No vistas primero, Título A-Z, Director A-Z*) y gavetas de filtro (*Vistas, No vistas, 5★ Top Rated, Estados de ánimo*).
-7. **Constelación Emocional & Paisaje Acústico de Google Lyria (*Interactive Cosmic Galaxy*):** Barra de hitos (5 películas vistas) que desbloquea un mapa interactivo de cielo cósmico donde cada una de las 5 películas es una estrella orbital con su propia frecuencia armónica y acorde vinculado directamente a su estado de ánimo (*Melancolía -> Dm9, Asombro -> FMaj7#11, Éxtasis -> Gmaj9, Catarsis -> Dadd9*), líneas de haz de luz SVG, partículas estelares y un sintetizador de música ambiental generado por **Google Lyria** con teclado de acordes interactivos (*WebAudio API*).
-8. **Agente Mayordomo de Correo (*Cinema Courier & Epistle Agent*):** Genera y despacha cartas editoriales personalizadas a tu correo con la justificación del curador, la receta paso a paso del cóctel/snack para tu cocina y la guía de streaming para organizar tu noche de cine en 1 clic.
-9. **Exploración Rápida en 1-Clic (*Instant Re-roll*) y Modo de Batería Segura:** Botón directo para pedir otra película alternativa manteniendo el mismo mood sin repetir formularios, con tolerancia a fallos y modo *Batería Segura* (cero errores HTTP 500 si la cuota de IA se agota).
+7. **Matriz de Alineación y Fidelidad Multi-Restricción (`Alt+A` / `Option+A`):** Panel interactivo de evaluación cuantitativa que mide cómo las recomendaciones respetan múltiples restricciones simultáneas (*estado de ánimo vs director/década/tema/dieta explícitos*) a lo largo de las 10 sesiones más recientes, con notas de arbitraje Pareto, tarjetas de KPIs y exportaciones en 1-clic (*CSV, JSON, Markdown*).
+8. **Constelación Emocional & Paisaje Acústico de Google Lyria (*Interactive Cosmic Galaxy*):** Barra de hitos (5 películas vistas) que desbloquea un mapa interactivo de cielo cósmico donde cada una de las 5 películas es una estrella orbital con su propio acorde armónico vinculado directamente a su estado de ánimo (*Melancolía -> Dm9, Asombro -> FMaj7#11, Éxtasis -> Gmaj9, Catarsis -> Dadd9*), líneas de haz de luz SVG, partículas estelares y un sintetizador de música ambiental generado por **Google Lyria** con acordes interactivos (*WebAudio API*).
+9. **Agente Mayordomo de Correo (*Cinema Courier & Epistle Agent*):** Genera y despacha cartas editoriales personalizadas a tu correo con la justificación del curador, la receta paso a paso del cóctel/snack para tu cocina y la guía de streaming para organizar tu noche de cine en 1 clic.
+10. **Exploración Rápida en 1-Clic (*Instant Re-roll*) y Modo Batería Segura:** Botón directo para pedir otra película alternativa manteniendo el mismo mood sin repetir formularios, con arquitectura tolerante a fallos y avisos amigables de recarga de créditos (cero errores 500).
 
 ---
 
@@ -47,7 +48,7 @@ Para el mapeo técnico completo de componentes, consulta [ARCHITECTURE.md](ARCHI
                                              ▼
                     ┌─────────────────────────────────────────────────┐
                     │  Capa 0: Filtro de IA Responsable y Seguridad   │
-                    │  (Guardrail Multilingüe NSFW, Violencia y Gore) │
+                    │  (Guardrail Multilingüe NSFW, Violencia y Cine) │
                     └────────────────────────┬────────────────────────┘
                                              │ (Petición Segura)
                                              ▼
@@ -98,15 +99,16 @@ Para el mapeo técnico completo de componentes, consulta [ARCHITECTURE.md](ARCHI
                     │    • 🎬 1-Clic Revivir Paquete desde la Bóveda  │
                     │    • Eliminación Inmediata (🗑️) y Sincronización│
                     └────────────────────────┬────────────────────────┘
-                                             │ (Hito de 5 Películas Vistas)
-                                             ▼
-                    ┌─────────────────────────────────────────────────┐
-                    │   Constelación Emocional 5★ & Sintetizador Lyria│
-                    │   • Lienzo de Espacio Profundo y Haces SVG      │
-                    │   • Cartografía Celestial Google Gemini 3.5     │
-                    │   • Sintetizador Polifónico Google Lyria        │
-                    │   • Teclado Armónico (Dm9, FMaj7#11, Dadd9)     │
-                    └────────────────────────┬────────────────────────┘
+                                             │
+               ┌─────────────────────────────┴─────────────────────────────┐
+               ▼                                                           ▼
+┌──────────────────────────────────────────────┐    ┌──────────────────────────────────────────────┐
+│  Matriz de Alineación y Fidelidad de IA      │    │ Constelación Emocional 5★ & Sintetizador     │
+│  • Puntuación de Fidelidad (94.2%)           │    │ • Lienzo Espacio Profundo y Haces SVG        │
+│  • Arbitraje de Pareto en Restricciones      │    │ • Cartografía Celestial Gemini 3.5 Flash     │
+│  • Tabla Histórica de Auditoría (10 Sesiones)│    │ • Sintetizador Acústico Google Lyria         │
+│  • Exportación en 1-Clic (CSV, JSON, MD)     │    │ • Teclado Armónico (Dm9, FMaj7, Dadd9)       │
+└──────────────────────────────────────────────┘    └──────────────────────────────────────────────┘
                                              │
                                              ▼
                     ┌─────────────────────────────────────────────────┐
@@ -124,7 +126,7 @@ Para el mapeo técnico completo de componentes, consulta [ARCHITECTURE.md](ARCHI
 * **Motor LLM Principal:** Google Gemini 3.5 Flash (`gemini-3.5-flash` vía SDK Google GenAI / Vertex AI)
 * **Guion y Dirección Narrativa:** Google Gemma 2 (`gemma2` / soporte local en Ollama)
 * **Motor de Video y Cinematografía:** Google Veo (Arquitectura de composición y prompts 35mm)
-* **Composición Musical:** Google Lyria (Estructura armónica y leitmotifs)
+* **Composición Musical y Ambiente:** Google Lyria (Estructura armónica, leitmotifs y sintetizador)
 * **Backend API & Servidor:** FastAPI (Python 3.11+) con servidor ASGI Uvicorn
 * **Base de Datos y Memoria OLAP:** ClickHouse Cloud (vía driver `clickhouse-connect`)
 * **Autenticación:** Google Identity Services (GIS / Verificación de Tokens JWT OAuth 2.0)
@@ -136,7 +138,7 @@ Para el mapeo técnico completo de componentes, consulta [ARCHITECTURE.md](ARCHI
 
 ## 🚀 Guía de Inicio Paso a Paso (Reproducción Local)
 
-Sigue estos pasos para clonar, configurar y ejecutar el proyecto desde cero en menos de 3 minutos.
+Sigue estos pasos para clonar, configurar y ejecutar el proyecto desde cero en menos de 3 minutos:
 
 ### 1. Prerrequisitos
 - **Python:** 3.10, 3.11 o 3.12 instalado ([python.org](https://www.python.org/downloads/))
@@ -249,60 +251,62 @@ Feel & Film está completamente contenerizado con un `Dockerfile` optimizado par
 4. En **Configuración de compilación**, selecciona **Dockerfile** (ruta: `/Dockerfile`).
 5. En **Autenticación**, selecciona **Permitir invocaciones no autenticadas**.
 6. En **Contenedor, Variables y Secretos**, añade tus variables de entorno (`GEMINI_API_KEY`, `TMDB_API_KEY`, `GOOGLE_CLIENT_ID`, `CLICKHOUSE_HOST`, etc.).
-7. Haz clic en **Crear** para desplegar. Cloud Run generará automáticamente una URL segura `https://*.run.app`.
+7. Haz clic en **Crear**. Cloud Run construirá y desplegará automáticamente el contenedor, proporcionando una URL segura `https://*.run.app`.
 
-### Opción B: Despliegue local con Docker
+### Opción B: Despliegue Local con Docker
 ```bash
 # 1. Construir la imagen Docker
 docker build -t feelandfilm .
 
-# 2. Ejecutar el contenedor Docker
+# 2. Ejecutar el contenedor
 docker run -p 8000:8000 --env-file .env feelandfilm
 ```
 
 ---
 
-## 🌟 Características Principales e Innovaciones
+## 🌟 Características Clave e Innovaciones
 
-* **Orquestación en 1 Solo Clic:** Paquete completo de noche de cine generado autónomamente sin interacciones fragmentadas.
-* **Motor Dinámico de Descubrimiento TMDB 100% en Vivo:** Búsqueda en tiempo real sobre 800,000+ películas con enrutador multi-vía:
-  - *Directores reales* (créditos oficiales de dirección)
-  - *Estudios de Cine* (Studio Ghibli, A24, Pixar, Marvel)
-  - *Épocas y Décadas* (años 80, 90s, 70s, 60s)
-  - *Temáticas y Cine Internacional* (Latinoamericano, Asiático, Francés, etc.)
-* **Memoria Activa y Aprendizaje Continuo (*Collaborative Partner*):** El agente recuerda feedbacks previos y restricciones dietéticas a lo largo de las sesiones, generando notas explícitas (*"He recordado tu preferencia de maridajes sin alcohol..."*).
-* **Motor de Tráiler Biopic "Mira Tu Propia Película":**
-  - **Google Gemma 2**: Dirección narrativa y guion estructurado en 3 Actos (*Catalizador, Viaje, Catarsis*).
-  - **Google Veo**: Prompts cinematográficos de fotografía en 35mm y composición de planos.
-  - **Google Lyria**: Composición de leitmotifs y atmósfera musical orquestal.
-  - **Reproductor de Cine en Pantalla Completa**: Animación Ken Burns, locución por voz en vivo y acordes armónicos.
-  - **Modo Demo para Jueces**: Permite a los evaluadores del hackathon probar el tráiler en 1 clic.
-* **The Cinémathèque Archive (ClickHouse Cloud):** Archivador vintage con:
+* **Orquestación Autónoma en 1 Clic:** Genera el paquete completo de la noche de cine en una sola pasada sin interacciones fragmentadas.
+* **Motor TMDB Dinámico 100% en Vivo:** Descubrimiento semántico en tiempo real sobre 800,000+ títulos con enrutamiento para:
+  - *Directores de autor* (verificación oficial en créditos de dirección)
+  - *Estudios cinematográficos* (Studio Ghibli, A24, Pixar, Marvel)
+  - *Eras y décadas* (años 80, 90, 70, cine clásico)
+  - *Temáticas internacionales* (cine latinoamericano, cine japonés, cine noir francés)
+* **Matriz de Alineación y Fidelidad de IA (`Alt+A`):**
+  - **Puntuación de Fidelidad Cuantitativa**: Mide el porcentaje de cumplimiento sobre directivas complejas y múltiples.
+  - **Arbitraje de Pareto**: Analiza cómo el Master Orchestrator equilibra el estado de ánimo emocional frente a directivas explícitas (*p. ej. "Alivio del estrés" + "Denis Villeneuve", manteniendo la relajación sin traicionar el estilo del director*).
+  - **Auditoría y Exportaciones**: Tabla con 10 sesiones recientes y botones para exportar en Markdown, CSV y JSON.
+* **Constelación Emocional 5★ & Paisaje Acústico Google Lyria:**
+  - **Cartografía Longitudinal**: Sintetiza 5 películas vistas en un mapa estelar interactivo.
+  - **Sintetizador Acústico Google Lyria**: Genera acordes armónicos para cada estrella (*Dm9, FMaj7#11, Em9, Gmaj9, Dadd9*) con un colchón sonoro de ambiente ultra-suave.
+* **Memoria Continua y Aprendizaje Colaborativo (*Collaborative Partner*):** Recuerda preferencias dietéticas y estilo a lo largo de las sesiones, generando notas colaborativas explícitas (*"He recordado que prefieres maridajes sin alcohol..."*).
+* **The Cinémathèque Archive (ClickHouse Cloud):** Bóveda vintage de gavetas con:
   - **Ordenamiento Multicriterio**: Más recientes, Más antiguas, Mejor calificadas (5★), Vistas primero, No vistas primero, Título (A-Z), Director (A-Z).
-  - **Filtros por Gavetas**: Solo Vistas, No Vistas/Watchlist, 5★ Top Rated, Estresado, Triste, Cansado, Emocionado, Curioso.
-  - **Marcado de Películas Vistas y Calificación por Estrellas Separada**: Seguimiento de hitos y evaluación post-película.
-  - **Eliminación Instantánea (🗑️)**: Desvanecimiento visual inmediato y sincronización con ClickHouse.
-* **Panel Visual "Behind the Scenes":** Línea de tiempo de 4 agentes especialistas al final de la página con cajón técnico desplegable para los logs de Google ADK.
-* **Guardrail de Seguridad de IA Responsable Multilingüe:** Filtra y mitiga contenido NSFW, violencia explícita o gore en Español, Inglés, Francés, Portugués, Italiano, Alemán y Japonés antes de cualquier consulta.
-* **Autenticación Federada con Google (GIS):** Inicio de sesión con Google OAuth 2.0 y verificación JWT para sincronizar la memoria del usuario.
-* **Buscador de Streaming Regional:** Consulta directa de plataformas (Netflix, Prime Video, Max, Apple TV, etc.) basada en datos de TMDB y JustWatch.
+  - **Gavetas de Filtro**: Vistas, No vistas/Watchlist, 5★ Top Rated, y estados de ánimo (Stressed, Melancholic, Tired, Excited, Curious).
+  - **Interruptor Interactivo de Vistas y Calificación por Estrellas**: Marca tus películas vistas y califícalas post-visionado.
+  - **Eliminación Inmediata Optimista (`🗑️`)**: Remoción fluida sincronizada con ClickHouse.
+* **Panel Visual de la Tripulación de IA y Terminal de Logs:** 4 tarjetas de agentes especialistas con terminal desplegable de trazas en vivo para auditorías de los jueces.
+* **Filtro de Contenido Responsable con Whitelist de Cine:** Bloquea contenido NSFW y violencia explícita protegiendo nombres de la industria (*evitando falsos positivos con directores como Alfred Hitchcock*).
+* **Modo Batería Segura y Cero Errores 500:** Recuperación automática ante límites de cuota de API, sirviendo alternativas de autor con avisos elegantes de recarga en pantalla.
+* **Autenticación Federada (GIS):** Inicia sesión con Google (OAuth 2.0 / JWT) para sincronizar tu bóveda cinematográfica personal.
+* **Buscador Regional de Streaming (*Where to Watch*):** Disponibilidad en tiempo real para Netflix, Prime Video, Apple TV, Max, etc.
 
 ---
 
-## 📜 Código de Terceros, Divulgaciones y Créditos
+## 📜 Código de Terceros, Divulgaciones y Atribución
 
-En cumplimiento con las directrices de transparencia del hackathon, se detalla la atribución de todas las librerías, servicios y activos de terceros utilizados:
+En cumplimiento con las directrices de transparencia del Hackathon, se atribuyen a continuación todas las librerías, servicios y activos de terceros utilizados:
 
-1. **Google Agent Development Kit (`google-adk`):** Framework de Google para la orquestación multi-agente, control de estado y runners.
-2. **Google GenAI SDK (`google-genai`):** Interfaz para los modelos Google Gemini 3.5 Flash y Google Gemma 2.
-3. **The Movie Database (API TMDB):** Metadatos de películas en vivo, créditos de directores y pósters en HD. *(Este producto utiliza la API de TMDB pero no está respaldado ni certificado por TMDB).*
-4. **Datos de JustWatch (vía TMDB Watch Providers):** Detección de disponibilidad regional en plataformas de streaming.
-5. **Driver Python de ClickHouse (`clickhouse-connect`):** Conectividad con la base de datos OLAP ClickHouse Cloud.
-6. **FastAPI y Uvicorn:** Framework web asíncrono y servidor ASGI para Python.
-7. **Pydantic:** Validación estricta de esquemas de datos.
-8. **FontAwesome 6 y Google Fonts (Cinzel, Playfair Display, Outfit, Fira Code):** Tipografías e iconografía bajo licencias abiertas estándar.
+1. **Google Agent Development Kit (`google-adk`):** Framework de Google para control de estado, ejecutores multi-agente y orquestación.
+2. **Google GenAI SDK (`google-genai`):** Librería cliente para Google Gemini 3.5 Flash y Google Gemma 2.
+3. **The Movie Database (API TMDB):** Metadatos en vivo, créditos de dirección y pósters en HD. *(Este producto utiliza la API de TMDB pero no está respaldado ni certificado por TMDB).*
+4. **Datos de JustWatch (vía TMDB Watch Providers):** Detección de disponibilidad regional en streaming.
+5. **Driver Python de ClickHouse (`clickhouse-connect`):** Conectividad OLAP de alto rendimiento con ClickHouse Cloud.
+6. **FastAPI & Uvicorn:** Framework web asíncrono y servidor ASGI para Python.
+7. **Pydantic:** Validación de tipos y análisis de datos estructurados.
+8. **FontAwesome 6 y Google Fonts (Cinzel, Playfair Display, Outfit, Fira Code):** Tipografía e iconografía de código abierto.
 
 ---
 
 ## 📄 Licencia
-Este proyecto está licenciado bajo la **Licencia MIT** — consulta el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto es de código abierto y está bajo la **Licencia MIT** — consulta el archivo [LICENSE](LICENSE) para más detalles.
