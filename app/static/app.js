@@ -2372,6 +2372,22 @@ function stopCurrentLeitmotif() {
     document.querySelectorAll('.leitmotif-note-marker').forEach(m => m.classList.remove('hit'));
 }
 
+function createCinematicReverbBuffer(ctx, duration = 2.6, decay = 2.2) {
+    const sampleRate = ctx.sampleRate;
+    const length = sampleRate * duration;
+    const impulse = ctx.createBuffer(2, length, sampleRate);
+    const left = impulse.getChannelData(0);
+    const right = impulse.getChannelData(1);
+    for (let i = 0; i < length; i++) {
+        const t = i / sampleRate;
+        const env = Math.exp(-t * decay);
+        // Stereo diffused white noise with exponential decay
+        left[i] = (Math.random() * 2 - 1) * env;
+        right[i] = (Math.random() * 2 - 1) * env;
+    }
+    return impulse;
+}
+
 function playCinematicLeitmotif(star) {
     const ctx = getAudioContext();
     if (!ctx) return;
@@ -2380,116 +2396,208 @@ function playCinematicLeitmotif(star) {
 
     const leitmotif = (star && star.leitmotif) || {};
     const timbre = leitmotif.timbre || 'space_synth';
-    const notes = leitmotif.notes || [
-        { time: 0.0, duration: 0.9, freq: 293.66, note: "D4", gain: 0.8 },
-        { time: 0.8, duration: 0.8, freq: 349.23, note: "F4", gain: 0.75 },
-        { time: 1.5, duration: 1.2, freq: 440.00, note: "A4", gain: 0.85 },
-        { time: 2.6, duration: 0.9, freq: 392.00, note: "G4", gain: 0.7 },
-        { time: 3.4, duration: 1.5, freq: 329.63, note: "E4", gain: 0.65 }
+    const notes = (leitmotif.notes && leitmotif.notes.length) ? leitmotif.notes : [
+        { time: 0.0, duration: 1.0, freq: 293.66, note: "D4", gain: 0.85 },
+        { time: 0.8, duration: 0.9, freq: 349.23, note: "F4", gain: 0.8 },
+        { time: 1.6, duration: 1.2, freq: 440.00, note: "A4", gain: 0.9 },
+        { time: 2.6, duration: 1.0, freq: 392.00, note: "G4", gain: 0.8 },
+        { time: 3.4, duration: 1.6, freq: 329.63, note: "E4", gain: 0.75 }
     ];
 
     const startTime = ctx.currentTime + 0.05;
     const totalDuration = 5.0;
 
-    // Master Leitmotif Gain & Reverb Filter Node
+    // --- Master Bus & Studio Spatial Reverb Architecture ---
     const masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(0.35, startTime);
+    masterGain.gain.setValueAtTime(0.48, startTime);
 
-    // Warm Lowpass/Bandpass filter tailored to timbre
-    const filter = ctx.createBiquadFilter();
-    if (timbre === 'space_synth') {
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(480, startTime);
-        filter.frequency.exponentialRampToValueAtTime(1400, startTime + 2.5);
-        filter.Q.setValueAtTime(2.5, startTime);
-    } else if (timbre === 'celesta_bell') {
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(1200, startTime);
-        filter.Q.setValueAtTime(1.2, startTime);
-    } else if (timbre === 'noir_piano') {
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(700, startTime);
-        filter.Q.setValueAtTime(1.0, startTime);
-    } else if (timbre === 'cinematic_strings') {
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(900, startTime);
-        filter.Q.setValueAtTime(0.8, startTime);
-    } else {
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(800, startTime);
-    }
+    // Warm Master Analog EQ
+    const masterFilter = ctx.createBiquadFilter();
+    masterFilter.type = 'lowpass';
+    masterFilter.frequency.setValueAtTime(timbre === 'celesta_bell' ? 3200 : (timbre === 'space_synth' ? 2200 : 1600), startTime);
+    masterFilter.Q.setValueAtTime(1.2, startTime);
 
-    masterGain.connect(filter);
-    filter.connect(ctx.destination);
+    // Procedural Cathedral Reverb Convolver
+    const reverbNode = ctx.createConvolver();
+    try {
+        reverbNode.buffer = createCinematicReverbBuffer(ctx, 2.6, 2.0);
+    } catch (e) {}
 
-    // Schedule 5-second note events
+    const reverbGain = ctx.createGain();
+    reverbGain.gain.setValueAtTime(timbre === 'celesta_bell' ? 0.45 : 0.38, startTime);
+
+    // Stereo Space Delay / Shimmer feedback
+    const delayNode = ctx.createDelay();
+    delayNode.delayTime.setValueAtTime(0.28, startTime);
+    const delayFeedback = ctx.createGain();
+    delayFeedback.gain.setValueAtTime(0.32, startTime);
+    const delayFilter = ctx.createBiquadFilter();
+    delayFilter.type = 'lowpass';
+    delayFilter.frequency.setValueAtTime(1400, startTime);
+
+    // Dry & Wet Signal Routing
+    masterGain.connect(masterFilter);
+    masterFilter.connect(ctx.destination); // Direct Warm Dry Sound
+
+    masterFilter.connect(reverbNode);
+    reverbNode.connect(reverbGain);
+    reverbGain.connect(ctx.destination);   // Lush Reverb Tail
+
+    masterFilter.connect(delayNode);
+    delayNode.connect(delayFilter);
+    delayFilter.connect(delayFeedback);
+    delayFeedback.connect(delayNode);
+    delayFilter.connect(reverbNode);       // Shimmer into Reverb
+
+    // --- 1. Warm Analog Sub-Bass & Harmonic Pad Foundation ---
+    try {
+        const rootFreq = notes[0] ? (notes[0].freq || 293.66) : 293.66;
+        const subBaseFreq = rootFreq > 320 ? rootFreq * 0.25 : rootFreq * 0.5;
+
+        const padOsc1 = ctx.createOscillator();
+        const padOsc2 = ctx.createOscillator();
+        const padOsc3 = ctx.createOscillator();
+        const padGain = ctx.createGain();
+        const padFilter = ctx.createBiquadFilter();
+
+        padOsc1.type = 'sine';
+        padOsc2.type = 'triangle';
+        padOsc3.type = 'sine';
+        padOsc1.frequency.setValueAtTime(subBaseFreq, startTime);
+        padOsc2.frequency.setValueAtTime(subBaseFreq * 1.5, startTime);  // 5th interval harmony
+        padOsc3.frequency.setValueAtTime(subBaseFreq * 2.0, startTime);  // Octave anchor
+
+        padFilter.type = 'lowpass';
+        padFilter.frequency.setValueAtTime(180, startTime);
+        padFilter.frequency.exponentialRampToValueAtTime(380, startTime + 2.0);
+        padFilter.frequency.exponentialRampToValueAtTime(200, startTime + 4.5);
+
+        padGain.gain.setValueAtTime(0.0001, startTime);
+        padGain.gain.exponentialRampToValueAtTime(0.20, startTime + 1.0);
+        padGain.gain.exponentialRampToValueAtTime(0.0001, startTime + totalDuration);
+
+        padOsc1.connect(padFilter);
+        padOsc2.connect(padFilter);
+        padOsc3.connect(padFilter);
+        padFilter.connect(padGain);
+        padGain.connect(masterGain);
+
+        padOsc1.start(startTime);
+        padOsc2.start(startTime);
+        padOsc3.start(startTime);
+        padOsc1.stop(startTime + totalDuration + 0.6);
+        padOsc2.stop(startTime + totalDuration + 0.6);
+        padOsc3.stop(startTime + totalDuration + 0.6);
+
+        activeLeitmotifNodes.push(padOsc1, padOsc2, padOsc3);
+    } catch (e) {}
+
+    // --- 2. Polyphonic Melodic Voice with Harmonic Overtones & Warm Envelopes ---
     notes.forEach((n, idx) => {
         const noteStart = startTime + (n.time || 0);
-        const noteDur = Math.max(0.3, n.duration || 0.8);
+        const noteDur = Math.max(0.4, n.duration || 0.85);
         const freq = n.freq || 440;
-        const noteGainVal = (n.gain || 0.75) * 0.35;
+        const noteGainVal = (n.gain || 0.85) * 0.42;
 
-        // Primary Oscillator
-        const osc = ctx.createOscillator();
-        const noteGain = ctx.createGain();
-
-        // Secondary detuned chorus oscillator for lush cinematic warmth
-        const subOsc = ctx.createOscillator();
-        const subGain = ctx.createGain();
+        // Tri-Oscillator Layering (Lead Voice + Chorus Detune + Harmonic Underpinning)
+        const oscLead = ctx.createOscillator();
+        const oscChorus = ctx.createOscillator();
+        const oscHarmonic = ctx.createOscillator();
+        const voiceGain = ctx.createGain();
+        const voiceFilter = ctx.createBiquadFilter();
 
         if (timbre === 'space_synth') {
-            osc.type = 'sawtooth';
-            subOsc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, noteStart);
-            subOsc.frequency.setValueAtTime(freq * 0.5 + 0.4, noteStart); // Sub octave with chorus detune
+            // Vangelis / Zimmer Analogue CS-80 Synth (Rich Sawtooth with Warm Resonant Filter Sweep)
+            oscLead.type = 'sawtooth';
+            oscChorus.type = 'sawtooth';
+            oscHarmonic.type = 'triangle';
+            oscLead.frequency.setValueAtTime(freq, noteStart);
+            oscChorus.frequency.setValueAtTime(freq + (freq * 0.007), noteStart); // Lush detune
+            oscHarmonic.frequency.setValueAtTime(freq * 0.5, noteStart); // Warm chest resonance
+
+            voiceFilter.type = 'lowpass';
+            voiceFilter.frequency.setValueAtTime(380, noteStart);
+            voiceFilter.frequency.exponentialRampToValueAtTime(2400, noteStart + 0.18); // Iconic brass opening
+            voiceFilter.frequency.exponentialRampToValueAtTime(700, noteStart + noteDur);
+            voiceFilter.Q.setValueAtTime(3.6, noteStart);
         } else if (timbre === 'celesta_bell') {
-            osc.type = 'sine';
-            subOsc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, noteStart);
-            subOsc.frequency.setValueAtTime(freq * 2.0, noteStart); // Sparkling octave overtone
+            // Joe Hisaishi / Spirited Away Shimmering Glass Celesta (Crystal Bell Strike & Harmonic Ring)
+            oscLead.type = 'sine';
+            oscChorus.type = 'sine';
+            oscHarmonic.type = 'triangle';
+            oscLead.frequency.setValueAtTime(freq, noteStart);
+            oscChorus.frequency.setValueAtTime(freq * 2.003, noteStart); // Sparkling octave bell
+            oscHarmonic.frequency.setValueAtTime(freq * 3.01, noteStart); // 5th harmonic chime
+
+            voiceFilter.type = 'bandpass';
+            voiceFilter.frequency.setValueAtTime(freq * 1.6, noteStart);
+            voiceFilter.Q.setValueAtTime(2.2, noteStart);
         } else if (timbre === 'noir_piano') {
-            osc.type = 'triangle';
-            subOsc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, noteStart);
-            subOsc.frequency.setValueAtTime(freq + 0.8, noteStart);
+            // Introspective Felt Piano with warm hammer strike and natural wood resonance
+            oscLead.type = 'triangle';
+            oscChorus.type = 'sine';
+            oscHarmonic.type = 'sine';
+            oscLead.frequency.setValueAtTime(freq, noteStart);
+            oscChorus.frequency.setValueAtTime(freq + 0.6, noteStart);
+            oscHarmonic.frequency.setValueAtTime(freq * 0.5, noteStart);
+
+            voiceFilter.type = 'lowpass';
+            voiceFilter.frequency.setValueAtTime(1100, noteStart);
+            voiceFilter.frequency.exponentialRampToValueAtTime(350, noteStart + noteDur);
+            voiceFilter.Q.setValueAtTime(1.2, noteStart);
         } else if (timbre === 'cinematic_strings') {
-            osc.type = 'sawtooth';
-            subOsc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, noteStart);
-            subOsc.frequency.setValueAtTime(freq + 0.6, noteStart);
+            // Bowed Orchestral Strings (Ennio Morricone / Cinema Paradiso nostalgia)
+            oscLead.type = 'sawtooth';
+            oscChorus.type = 'triangle';
+            oscHarmonic.type = 'sine';
+            oscLead.frequency.setValueAtTime(freq, noteStart);
+            oscChorus.frequency.setValueAtTime(freq + (freq * 0.005), noteStart);
+            oscHarmonic.frequency.setValueAtTime(freq * 1.5, noteStart); // 5th interval string
+
+            voiceFilter.type = 'lowpass';
+            voiceFilter.frequency.setValueAtTime(1200, noteStart);
+            voiceFilter.Q.setValueAtTime(1.1, noteStart);
         } else {
-            osc.type = 'triangle';
-            subOsc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, noteStart);
-            subOsc.frequency.setValueAtTime(freq * 0.5, noteStart);
+            // Yann Tiersen Parisian Waltz Accordion / Playful Woodwinds
+            oscLead.type = 'triangle';
+            oscChorus.type = 'sine';
+            oscHarmonic.type = 'sawtooth';
+            oscLead.frequency.setValueAtTime(freq, noteStart);
+            oscChorus.frequency.setValueAtTime(freq * 1.004, noteStart);
+            oscHarmonic.frequency.setValueAtTime(freq * 0.5, noteStart);
+
+            voiceFilter.type = 'lowpass';
+            voiceFilter.frequency.setValueAtTime(1400, noteStart);
+            voiceFilter.Q.setValueAtTime(1.4, noteStart);
         }
 
-        // ADSR Envelope
-        const attack = timbre === 'celesta_bell' ? 0.02 : (timbre === 'cinematic_strings' ? 0.22 : 0.08);
-        const decay = noteDur * 0.85;
+        // Expressive ADSR Envelope
+        const attack = (timbre === 'celesta_bell' || timbre === 'noir_piano') ? 0.02 : (timbre === 'cinematic_strings' ? 0.24 : 0.07);
+        const release = noteDur * 1.25;
 
-        noteGain.gain.setValueAtTime(0.0001, noteStart);
-        noteGain.gain.exponentialRampToValueAtTime(noteGainVal, noteStart + attack);
-        noteGain.gain.exponentialRampToValueAtTime(0.0001, noteStart + attack + decay);
+        voiceGain.gain.setValueAtTime(0.0001, noteStart);
+        voiceGain.gain.exponentialRampToValueAtTime(noteGainVal, noteStart + attack);
+        voiceGain.gain.exponentialRampToValueAtTime(noteGainVal * 0.72, noteStart + attack + (noteDur * 0.35));
+        voiceGain.gain.exponentialRampToValueAtTime(0.0001, noteStart + attack + release);
 
-        subGain.gain.setValueAtTime(0.0001, noteStart);
-        subGain.gain.exponentialRampToValueAtTime(noteGainVal * 0.5, noteStart + attack);
-        subGain.gain.exponentialRampToValueAtTime(0.0001, noteStart + attack + decay);
+        // Connections
+        oscLead.connect(voiceFilter);
+        oscChorus.connect(voiceFilter);
+        oscHarmonic.connect(voiceFilter);
+        voiceFilter.connect(voiceGain);
+        voiceGain.connect(masterGain);
 
-        osc.connect(noteGain);
-        subOsc.connect(subGain);
-        noteGain.connect(masterGain);
-        subGain.connect(masterGain);
+        oscLead.start(noteStart);
+        oscChorus.start(noteStart);
+        oscHarmonic.start(noteStart);
+        oscLead.stop(noteStart + attack + release + 0.2);
+        oscChorus.stop(noteStart + attack + release + 0.2);
+        oscHarmonic.stop(noteStart + attack + release + 0.2);
 
-        osc.start(noteStart);
-        osc.stop(noteStart + attack + decay + 0.1);
-        subOsc.start(noteStart);
-        subOsc.stop(noteStart + attack + decay + 0.1);
-
-        activeLeitmotifNodes.push(osc, subOsc);
+        activeLeitmotifNodes.push(oscLead, oscChorus, oscHarmonic);
     });
 
-    // Animate Progress Bar & Note Markers in UI over 5 seconds
+    // --- 3. UI Timeline & Note Marker Progress Sync ---
     const animStart = performance.now();
     const btn = document.getElementById('play-active-star-note-btn');
     const btnText = document.getElementById('leitmotif-btn-text');
@@ -2502,13 +2610,13 @@ function playCinematicLeitmotif(star) {
         const pct = Math.min(100, (elapsed / totalDuration) * 100);
         if (progressBar) progressBar.style.width = `${pct}%`;
 
-        // Highlight hit note markers
+        // Highlight hit note markers dynamically
         notes.forEach((n, idx) => {
             const marker = document.getElementById(`note-marker-${idx}`);
             if (marker) {
-                if (elapsed >= (n.time || 0) && elapsed <= (n.time || 0) + 0.6) {
+                if (elapsed >= (n.time || 0) && elapsed <= (n.time || 0) + 0.65) {
                     marker.classList.add('hit');
-                } else if (elapsed > (n.time || 0) + 0.6) {
+                } else if (elapsed > (n.time || 0) + 0.65) {
                     marker.classList.remove('hit');
                 }
             }

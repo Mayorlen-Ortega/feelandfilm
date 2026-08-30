@@ -965,75 +965,88 @@ async def generate_emotional_biopic_storyboard(watched_films: list[dict], user_n
 
         preset_leitmotifs = [
             {
-                "title": "Blade Runner Vangelis Noir",
-                "cinematic_style": "Vangelis & Jóhannsson dark synth brass and lonely neon pulse",
+                "title": "Blade Runner 2049 Vangelis Synth Pulse",
+                "cinematic_style": "Vangelis & Jóhann Jóhannsson analog CS-80 brass swell with neon solitude",
                 "timbre": "space_synth",
                 "tempo_bpm": 64,
                 "duration_seconds": 5.0,
                 "notes": [
-                    {"time": 0.0, "duration": 0.9, "freq": 293.66, "note": "D4", "gain": 0.8},
-                    {"time": 0.8, "duration": 0.8, "freq": 349.23, "note": "F4", "gain": 0.75},
-                    {"time": 1.5, "duration": 1.2, "freq": 440.00, "note": "A4", "gain": 0.85},
-                    {"time": 2.6, "duration": 0.9, "freq": 392.00, "note": "G4", "gain": 0.7},
-                    {"time": 3.4, "duration": 1.6, "freq": 329.63, "note": "E4", "gain": 0.65}
+                    {"time": 0.0, "duration": 1.1, "freq": 293.66, "note": "D4", "gain": 0.85},
+                    {"time": 0.9, "duration": 0.9, "freq": 349.23, "note": "F4", "gain": 0.82},
+                    {"time": 1.7, "duration": 1.3, "freq": 440.00, "note": "A4", "gain": 0.92},
+                    {"time": 2.7, "duration": 1.0, "freq": 392.00, "note": "G4", "gain": 0.80},
+                    {"time": 3.5, "duration": 1.5, "freq": 329.63, "note": "E4", "gain": 0.78}
                 ]
             },
             {
-                "title": "Spirited Away Joe Hisaishi Celesta",
-                "cinematic_style": "Joe Hisaishi whimsical glass bells and soaring nostalgic wonder",
+                "title": "Spirited Away Joe Hisaishi Glass Reverie",
+                "cinematic_style": "Joe Hisaishi sparkling celestial celesta bells and lyrical nostalgic wonder",
                 "timbre": "celesta_bell",
                 "tempo_bpm": 76,
                 "duration_seconds": 5.0,
                 "notes": [
-                    {"time": 0.0, "duration": 0.6, "freq": 523.25, "note": "C5", "gain": 0.8},
-                    {"time": 0.5, "duration": 0.6, "freq": 587.33, "note": "D5", "gain": 0.75},
-                    {"time": 1.0, "duration": 0.8, "freq": 659.25, "note": "E5", "gain": 0.85},
-                    {"time": 1.7, "duration": 1.0, "freq": 783.99, "note": "G5", "gain": 0.9},
-                    {"time": 2.6, "duration": 0.7, "freq": 659.25, "note": "E5", "gain": 0.75},
-                    {"time": 3.2, "duration": 1.8, "freq": 523.25, "note": "C5", "gain": 0.7}
+                    {"time": 0.0, "duration": 0.7, "freq": 523.25, "note": "C5", "gain": 0.85},
+                    {"time": 0.5, "duration": 0.7, "freq": 587.33, "note": "D5", "gain": 0.82},
+                    {"time": 1.1, "duration": 0.9, "freq": 659.25, "note": "E5", "gain": 0.90},
+                    {"time": 1.8, "duration": 1.1, "freq": 783.99, "note": "G5", "gain": 0.95},
+                    {"time": 2.7, "duration": 0.8, "freq": 880.00, "note": "A5", "gain": 0.88},
+                    {"time": 3.3, "duration": 1.7, "freq": 659.25, "note": "E5", "gain": 0.78}
                 ]
             },
             {
-                "title": "Interstellar Hans Zimmer Organ Horizon",
-                "cinematic_style": "Hans Zimmer ascending church organ resonance and celestial awe",
+                "title": "Interstellar Hans Zimmer Cosmic Organ Horizon",
+                "cinematic_style": "Hans Zimmer ascending church organ resonance, cosmic pulse, and transcendent gravity",
                 "timbre": "space_synth",
                 "tempo_bpm": 60,
                 "duration_seconds": 5.0,
                 "notes": [
-                    {"time": 0.0, "duration": 1.0, "freq": 164.81, "note": "E3", "gain": 0.85},
-                    {"time": 0.9, "duration": 1.0, "freq": 246.94, "note": "B3", "gain": 0.8},
-                    {"time": 1.8, "duration": 1.2, "freq": 329.63, "note": "E4", "gain": 0.9},
-                    {"time": 2.9, "duration": 1.0, "freq": 392.00, "note": "G4", "gain": 0.85},
-                    {"time": 3.8, "duration": 1.2, "freq": 493.88, "note": "B4", "gain": 0.8}
+                    {"time": 0.0, "duration": 1.1, "freq": 164.81, "note": "E3", "gain": 0.88},
+                    {"time": 0.9, "duration": 1.1, "freq": 246.94, "note": "B3", "gain": 0.85},
+                    {"time": 1.8, "duration": 1.3, "freq": 329.63, "note": "E4", "gain": 0.95},
+                    {"time": 2.9, "duration": 1.1, "freq": 392.00, "note": "G4", "gain": 0.90},
+                    {"time": 3.8, "duration": 1.2, "freq": 493.88, "note": "B4", "gain": 0.85}
                 ]
             },
             {
-                "title": "Amélie Yann Tiersen Waltz",
-                "cinematic_style": "Yann Tiersen lively Parisian accordion waltz and joyful warmth",
+                "title": "Amélie Yann Tiersen Parisian Waltz",
+                "cinematic_style": "Yann Tiersen joyful Parisian accordion waltz, acoustic warmth, and tender playfulness",
                 "timbre": "french_accordion_synth",
                 "tempo_bpm": 88,
                 "duration_seconds": 5.0,
                 "notes": [
-                    {"time": 0.0, "duration": 0.45, "freq": 392.00, "note": "G4", "gain": 0.8},
-                    {"time": 0.4, "duration": 0.45, "freq": 440.00, "note": "A4", "gain": 0.75},
-                    {"time": 0.8, "duration": 0.5, "freq": 493.88, "note": "B4", "gain": 0.85},
-                    {"time": 1.3, "duration": 0.6, "freq": 587.33, "note": "D5", "gain": 0.9},
-                    {"time": 1.9, "duration": 0.8, "freq": 493.88, "note": "B4", "gain": 0.8},
-                    {"time": 2.7, "duration": 0.6, "freq": 440.00, "note": "A4", "gain": 0.75},
-                    {"time": 3.3, "duration": 1.7, "freq": 392.00, "note": "G4", "gain": 0.7}
+                    {"time": 0.0, "duration": 0.5, "freq": 392.00, "note": "G4", "gain": 0.85},
+                    {"time": 0.45, "duration": 0.5, "freq": 440.00, "note": "A4", "gain": 0.82},
+                    {"time": 0.9, "duration": 0.6, "freq": 493.88, "note": "B4", "gain": 0.90},
+                    {"time": 1.45, "duration": 0.7, "freq": 587.33, "note": "D5", "gain": 0.95},
+                    {"time": 2.1, "duration": 0.8, "freq": 493.88, "note": "B4", "gain": 0.88},
+                    {"time": 2.8, "duration": 0.7, "freq": 440.00, "note": "A4", "gain": 0.82},
+                    {"time": 3.4, "duration": 1.6, "freq": 392.00, "note": "G4", "gain": 0.78}
                 ]
             },
             {
-                "title": "Roma Alfonso Cuarón Serenity",
-                "cinematic_style": "Ethereal acoustic string resonance and deep cathartic silence",
+                "title": "Cinema Paradiso Ennio Morricone Strings",
+                "cinematic_style": "Ennio Morricone nostalgic bowed strings, bittersweet warmth, and timeless cinematic love",
                 "timbre": "cinematic_strings",
                 "tempo_bpm": 56,
                 "duration_seconds": 5.0,
                 "notes": [
-                    {"time": 0.0, "duration": 1.2, "freq": 293.66, "note": "D4", "gain": 0.8},
-                    {"time": 1.1, "duration": 1.2, "freq": 369.99, "note": "F#4", "gain": 0.85},
-                    {"time": 2.2, "duration": 1.3, "freq": 440.00, "note": "A4", "gain": 0.9},
-                    {"time": 3.4, "duration": 1.6, "freq": 587.33, "note": "D5", "gain": 0.75}
+                    {"time": 0.0, "duration": 1.2, "freq": 293.66, "note": "D4", "gain": 0.85},
+                    {"time": 1.0, "duration": 1.2, "freq": 369.99, "note": "F#4", "gain": 0.88},
+                    {"time": 2.1, "duration": 1.3, "freq": 440.00, "note": "A4", "gain": 0.95},
+                    {"time": 3.2, "duration": 1.8, "freq": 587.33, "note": "D5", "gain": 0.85}
+                ]
+            },
+            {
+                "title": "Inception Hans Zimmer Time Climax",
+                "cinematic_style": "Hans Zimmer slow-building emotional piano chords resolving into orchestral majesty",
+                "timbre": "noir_piano",
+                "tempo_bpm": 58,
+                "duration_seconds": 5.0,
+                "notes": [
+                    {"time": 0.0, "duration": 1.1, "freq": 220.00, "note": "A3", "gain": 0.85},
+                    {"time": 0.9, "duration": 1.1, "freq": 261.63, "note": "C4", "gain": 0.88},
+                    {"time": 1.9, "duration": 1.3, "freq": 329.63, "note": "E4", "gain": 0.95},
+                    {"time": 3.0, "duration": 2.0, "freq": 440.00, "note": "A4", "gain": 0.90}
                 ]
             }
         ]
