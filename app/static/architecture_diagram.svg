@@ -1,348 +1,282 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 940" width="100%" height="100%">
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#08090d"/>
+    <!-- Background Canvas -->
+    <linearGradient id="bgCanvas" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080a0f"/>
       <stop offset="50%" stop-color="#0e131d"/>
       <stop offset="100%" stop-color="#06070a"/>
     </linearGradient>
 
-    <!-- Gold Accent Gradient -->
+    <!-- Master Gold Gradient -->
     <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#c59b27"/>
       <stop offset="50%" stop-color="#f3d069"/>
       <stop offset="100%" stop-color="#d4af37"/>
     </linearGradient>
 
-    <!-- Card Background Gradient -->
-    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#141a26"/>
-      <stop offset="100%" stop-color="#0c1017"/>
-    </linearGradient>
-
-    <!-- Master Brain Gradient -->
+    <!-- Brain Hero Gradient -->
     <linearGradient id="brainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#241e10"/>
-      <stop offset="100%" stop-color="#121008"/>
+      <stop offset="0%" stop-color="#2a2211"/>
+      <stop offset="100%" stop-color="#141108"/>
     </linearGradient>
 
-    <!-- Drop Shadows & Glow -->
-    <filter id="boxShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/>
+    <!-- Card Base -->
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#141a26"/>
+      <stop offset="100%" stop-color="#0d1118"/>
+    </linearGradient>
+
+    <!-- Filters & Shadows -->
+    <filter id="softGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity="0.6"/>
     </filter>
     <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="3" result="blur"/>
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
 
-    <!-- Arrow Markers -->
-    <marker id="arrowGold" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-      <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="#d4af37"/>
+    <!-- Markers -->
+    <marker id="mainArrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#f3d069"/>
     </marker>
-    <marker id="arrowBlue" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-      <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="#38bdf8"/>
+    <marker id="subArrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <path d="M 1 1 L 6 3.5 L 1 6 Z" fill="#94a3b8"/>
     </marker>
-    <marker id="arrowPurple" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-      <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="#c084fc"/>
+    <marker id="blueArrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <path d="M 1 1 L 6 3.5 L 1 6 Z" fill="#38bdf8"/>
     </marker>
-    <marker id="arrowGreen" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-      <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="#34d399"/>
+    <marker id="purpleArrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <path d="M 1 1 L 6 3.5 L 1 6 Z" fill="#c084fc"/>
+    </marker>
+    <marker id="greenArrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <path d="M 1 1 L 6 3.5 L 1 6 Z" fill="#34d399"/>
     </marker>
   </defs>
 
   <style>
-    .header-title { font-family: 'Cinzel', 'Georgia', serif; font-size: 26px; font-weight: 700; fill: #f3d069; letter-spacing: 2px; }
-    .header-sub { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; letter-spacing: 1px; }
-    .layer-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: bold; fill: #e2e8f0; letter-spacing: 1.5px; }
-    .card-title { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 700; fill: #ffffff; }
-    .card-sub { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
-    .badge-txt { font-family: 'Inter', system-ui, sans-serif; font-size: 10px; font-weight: 600; fill: #d4af37; }
+    .h-title { font-family: 'Cinzel', 'Georgia', serif; font-size: 24px; font-weight: 700; fill: #f3d069; letter-spacing: 2px; }
+    .h-sub { font-family: 'Inter', system-ui, sans-serif; font-size: 12px; fill: #94a3b8; letter-spacing: 0.5px; }
+    .stage-label { font-family: 'Cinzel', serif; font-size: 11px; font-weight: bold; fill: #d4af37; letter-spacing: 1.5px; }
+    .box-title { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 700; fill: #ffffff; }
+    .box-bullet { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    .hero-title { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; font-weight: 800; fill: #fef08a; }
+    .hero-bullet { font-family: 'Inter', system-ui, sans-serif; font-size: 11.5px; fill: #cbd5e1; }
+    .badge { font-family: 'Inter', monospace; font-size: 9.5px; font-weight: 600; fill: #facc15; }
   </style>
 
   <!-- Background Base -->
-  <rect width="1440" height="900" fill="url(#bgGrad)" rx="16"/>
-  <rect x="20" y="20" width="1400" height="860" fill="none" stroke="#222d40" stroke-width="1.5" rx="12" stroke-dasharray="6,6"/>
+  <rect width="1200" height="940" fill="url(#bgCanvas)" rx="16"/>
+  <rect x="15" y="15" width="1170" height="910" fill="none" stroke="#1e293b" stroke-width="1.2" rx="12"/>
 
   <!-- ================= HEADER ================= -->
-  <g transform="translate(60, 42)">
-    <text x="0" y="24" class="header-title">FEEL &amp; FILM</text>
-    <text x="175" y="24" class="header-title" fill="#ffffff">— SYSTEM ARCHITECTURE</text>
-    <text x="0" y="46" class="header-sub">Autonomous Multi-Agent Cinema Experience • Google ADK &amp; Gemini 3.5 Flash • Google Lyria • ClickHouse Cloud</text>
-    <line x1="0" y1="58" x2="1320" y2="58" stroke="url(#goldGrad)" stroke-width="2"/>
+  <g transform="translate(45, 30)">
+    <text x="0" y="22" class="h-title">FEEL &amp; FILM</text>
+    <text x="165" y="22" class="h-title" fill="#ffffff">— SYSTEM ARCHITECTURE</text>
+    <text x="0" y="42" class="h-sub">Autonomous Multi-Agent Cinema Sanctuary • Google ADK &amp; Gemini 3.5 Flash • Google Lyria • ClickHouse Cloud</text>
+    <line x1="0" y1="52" x2="1110" y2="52" stroke="url(#goldGrad)" stroke-width="1.8"/>
   </g>
 
-  <!-- ================= 1. CLIENT PRESENTATION LAYER ================= -->
-  <g transform="translate(60, 125)">
-    <rect width="280" height="710" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#boxShadow)"/>
-    <rect x="0" y="0" width="280" height="36" fill="#1e293b" rx="12"/>
-    <rect x="0" y="24" width="280" height="12" fill="#1e293b"/>
-    <text x="18" y="24" class="layer-title">1. CLIENT PRESENTATION</text>
-
-    <!-- Block 1: Input -->
-    <g transform="translate(15, 52)">
-      <rect width="250" height="110" fill="#0b1120" stroke="#d4af37" stroke-width="1.2" rx="8"/>
-      <text x="14" y="24" class="card-title">🎬 4-Scene Emotional Input</text>
-      <text x="14" y="44" class="card-sub">• Mood &amp; Feelings (#initial_mood)</text>
-      <text x="14" y="60" class="card-sub">• Cinema Atmosphere &amp; Era</text>
-      <text x="14" y="76" class="card-sub">• Dietary &amp; Age Restrictions</text>
-      <text x="14" y="94" class="badge-txt">POST /api/curate-experience</text>
+  <!-- ================= STAGE 1: USER & CLIENT LAYER ================= -->
+  <g transform="translate(45, 98)">
+    <text x="0" y="10" class="stage-label">1. USER EMOTIONAL INPUT &amp; CLIENT UI</text>
+    
+    <!-- Box 1: Emotional Input -->
+    <g transform="translate(0, 20)">
+      <rect width="350" height="75" fill="url(#boxGrad)" stroke="#d4af37" stroke-width="1.2" rx="8" filter="url(#softGlow)"/>
+      <text x="14" y="22" class="box-title">🎬 4-Scene Emotional Input</text>
+      <text x="14" y="42" class="box-bullet">• Raw feelings &amp; desired atmosphere</text>
+      <text x="14" y="60" class="box-bullet">• Dietary &amp; age boundaries (18+ / Kids)</text>
     </g>
 
-    <!-- Block 2: Experience Stage -->
-    <g transform="translate(15, 178)">
-      <rect width="250" height="110" fill="#0b1120" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
-      <text x="14" y="24" class="card-title">🎞️ Cinema Night Showcase</text>
-      <text x="14" y="44" class="card-sub">• Auteur Film + Synopsis + HD Poster</text>
-      <text x="14" y="60" class="card-sub">• OST Musicology &amp; Sommelier Pairing</text>
-      <text x="14" y="76" class="card-sub">• Where to Watch (JustWatch Live)</text>
-      <text x="14" y="94" class="badge-txt" fill="#38bdf8">✉️ 1-Click Cinema Courier Dispatch</text>
+    <!-- Box 2: Memory & Preferences -->
+    <g transform="translate(380, 20)">
+      <rect width="350" height="75" fill="url(#boxGrad)" stroke="#38bdf8" stroke-width="1" rx="8" filter="url(#softGlow)"/>
+      <text x="14" y="22" class="box-title">🔑 Google Identity &amp; Active Profile</text>
+      <text x="14" y="42" class="box-bullet">• OAuth 2.0 JWT Token verification</text>
+      <text x="14" y="60" class="box-bullet">• Learned dietary &amp; style preference sync</text>
     </g>
 
-    <!-- Block 3: Constellation -->
-    <g transform="translate(15, 304)">
-      <rect width="250" height="125" fill="#0b1120" stroke="#c084fc" stroke-width="1.2" rx="8"/>
-      <text x="14" y="24" class="card-title" fill="#e9d5ff">🌌 3D Emotional Constellation</text>
-      <text x="14" y="44" class="card-sub">• Irregular Celestial Asterism Map</text>
-      <text x="14" y="60" class="card-sub">• Radiant Star Nodes &amp; Z-Depth Layers</text>
-      <text x="14" y="76" class="card-sub">• 5s Original Lyria Leitmotifs (DSP)</text>
-      <text x="14" y="92" class="card-sub">• Interactive Note Timeline Sync</text>
-      <text x="14" y="110" class="badge-txt" fill="#c084fc">Google Lyria WebAudio Engine</text>
-    </g>
-
-    <!-- Block 4: Archive -->
-    <g transform="translate(15, 445)">
-      <rect width="250" height="110" fill="#0b1120" stroke="#34d399" stroke-width="1.2" rx="8"/>
-      <text x="14" y="24" class="card-title" fill="#6ee7b7">🗄️ The Cinémathèque Archive</text>
-      <text x="14" y="44" class="card-sub">• Vintage Filing Drawers &amp; Sorting</text>
-      <text x="14" y="60" class="card-sub">• 1-Click Watched Toggle &amp; Ratings</text>
-      <text x="14" y="76" class="card-sub">• 🎬 1-Click Vault Package Relive</text>
-      <text x="14" y="94" class="badge-txt" fill="#34d399">ClickHouse Cloud Memory Sync</text>
-    </g>
-
-    <!-- Block 5: Transparency -->
-    <g transform="translate(15, 570)">
-      <rect width="250" height="110" fill="#0b1120" stroke="#64748b" stroke-width="1.2" rx="8"/>
-      <text x="14" y="24" class="card-title" fill="#cbd5e1">🤖 AI Crew &amp; Alignment Matrix</text>
-      <text x="14" y="44" class="card-sub">• 4 Specialist Agent Decision Cards</text>
-      <text x="14" y="60" class="card-sub">• Live ADK Terminal Log Drawer</text>
-      <text x="14" y="76" class="card-sub">• Constraint Fidelity Audit (Alt+A)</text>
-      <text x="14" y="94" class="badge-txt" fill="#94a3b8">94.2% Pareto Compliance Score</text>
+    <!-- Box 3: Instant Re-roll & Safety -->
+    <g transform="translate(760, 20)">
+      <rect width="350" height="75" fill="url(#boxGrad)" stroke="#64748b" stroke-width="1" rx="8" filter="url(#softGlow)"/>
+      <text x="14" y="22" class="box-title">🎲 Experience Controls</text>
+      <text x="14" y="42" class="box-bullet">• 1-Click instant mood re-roll</text>
+      <text x="14" y="60" class="box-bullet">• AI battery recharge safe mode</text>
     </g>
   </g>
 
-  <!-- ================= 2. BACKEND API GATEWAY ================= -->
-  <g transform="translate(370, 125)">
-    <rect width="260" height="710" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#boxShadow)"/>
-    <rect x="0" y="0" width="260" height="36" fill="#1e293b" rx="12"/>
-    <rect x="0" y="24" width="260" height="12" fill="#1e293b"/>
-    <text x="18" y="24" class="layer-title">2. BACKEND GATEWAY</text>
+  <!-- MAIN FLOW ARROW 1 -> 2 -->
+  <line x1="600" y1="202" x2="600" y2="225" stroke="#f3d069" stroke-width="2.5" marker-end="url(#mainArrow)"/>
 
-    <!-- Safety Filter -->
-    <g transform="translate(15, 52)">
-      <rect width="230" height="85" fill="#0b1120" stroke="#f59e0b" stroke-width="1.2" rx="8"/>
-      <text x="12" y="22" class="card-title" fill="#fbbf24">🛡️ Layer 0: Safety Filter</text>
-      <text x="12" y="42" class="card-sub">• Multilingual NSFW &amp; Violence Guard</text>
-      <text x="12" y="58" class="card-sub">• Cinema Whitelist Protection</text>
-      <text x="12" y="74" class="badge-txt" fill="#fbbf24">Responsible AI Guardrail</text>
-    </g>
-
-    <!-- Endpoints List -->
-    <g transform="translate(15, 150)">
-      <rect width="230" height="390" fill="#0b1120" stroke="#475569" stroke-width="1.2" rx="8"/>
-      <text x="12" y="24" class="card-title">⚡ FastAPI REST Endpoints</text>
+  <!-- ================= STAGE 2: SAFETY FILTER & FASTAPI GATEWAY ================= -->
+  <g transform="translate(45, 232)">
+    <text x="0" y="10" class="stage-label">2. RESPONSIBLE AI FILTER &amp; API GATEWAY</text>
+    
+    <g transform="translate(0, 20)">
+      <rect width="1110" height="65" fill="url(#boxGrad)" stroke="#f59e0b" stroke-width="1.5" rx="8" filter="url(#softGlow)"/>
       
-      <g transform="translate(10, 36)">
-        <rect width="210" height="48" fill="#131d2e" rx="4"/>
-        <text x="8" y="18" class="badge-txt" fill="#facc15">POST /api/curate-experience</text>
-        <text x="8" y="34" class="card-sub">Autonomous single-cycle orchestration</text>
-      </g>
+      <!-- Sub-col A: Safety Guardrail -->
+      <text x="20" y="24" class="box-title" fill="#fbbf24">🛡️ Layer 0: Safety Guardrail</text>
+      <text x="20" y="44" class="box-bullet">• Multilingual NSFW &amp; violence filter</text>
+      <text x="20" y="58" class="box-bullet">• Cinema director whitelist protection</text>
 
-      <g transform="translate(10, 94)">
-        <rect width="210" height="48" fill="#131d2e" rx="4"/>
-        <text x="8" y="18" class="badge-txt" fill="#c084fc">POST /api/generate-biopic-trailer</text>
-        <text x="8" y="34" class="card-sub">3D Constellation &amp; Lyria Leitmotifs</text>
-      </g>
+      <line x1="370" y1="10" x2="370" y2="55" stroke="#334155" stroke-width="1"/>
 
-      <g transform="translate(10, 152)">
-        <rect width="210" height="48" fill="#131d2e" rx="4"/>
-        <text x="8" y="18" class="badge-txt" fill="#38bdf8">POST /api/send-cinema-email</text>
-        <text x="8" y="34" class="card-sub">Cinema Courier HTML Epistle dispatch</text>
-      </g>
+      <!-- Sub-col B: Core Router -->
+      <text x="390" y="24" class="box-title" fill="#fde047">⚡ FastAPI Orchestration Engine</text>
+      <text x="390" y="44" class="box-bullet">• Single autonomous execution cycle</text>
+      <text x="390" y="58" class="box-bullet">• Asynchronous Uvicorn &amp; error recovery</text>
 
-      <g transform="translate(10, 210)">
-        <rect width="210" height="48" fill="#131d2e" rx="4"/>
-        <text x="8" y="18" class="badge-txt" fill="#34d399">GET /api/cinematheque</text>
-        <text x="8" y="34" class="card-sub">Archive sync &amp; watched toggles</text>
-      </g>
+      <line x1="750" y1="10" x2="750" y2="55" stroke="#334155" stroke-width="1"/>
 
-      <g transform="translate(10, 268)">
-        <rect width="210" height="48" fill="#131d2e" rx="4"/>
-        <text x="8" y="18" class="badge-txt" fill="#f472b6">POST /api/feedback &amp; /memory</text>
-        <text x="8" y="34" class="card-sub">Collaborative learning feedback loop</text>
-      </g>
-
-      <g transform="translate(10, 326)">
-        <rect width="210" height="48" fill="#131d2e" rx="4"/>
-        <text x="8" y="18" class="badge-txt" fill="#93c5fd">GET /api/alignment-matrix</text>
-        <text x="8" y="34" class="card-sub">Fidelity audit &amp; Pareto analytics</text>
-      </g>
-    </g>
-
-    <!-- Resilient Safe Mode -->
-    <g transform="translate(15, 555)">
-      <rect width="230" height="125" fill="#0b1120" stroke="#3b82f6" stroke-width="1.2" rx="8"/>
-      <text x="12" y="24" class="card-title" fill="#93c5fd">🔋 Zero-500 Safe Mode</text>
-      <text x="12" y="44" class="card-sub">• Resilient quota exception handling</text>
-      <text x="12" y="60" class="card-sub">• Local intelligent fallback generator</text>
-      <text x="12" y="76" class="card-sub">• Zero server crash guarantees</text>
-      <text x="12" y="96" class="badge-txt" fill="#60a5fa">FastAPI + Asynchronous Uvicorn</text>
+      <!-- Sub-col C: Alignment Matrix -->
+      <text x="770" y="24" class="box-title" fill="#7dd3fc">📊 AI Alignment Matrix (Alt+A)</text>
+      <text x="770" y="44" class="box-bullet">• Multi-constraint fidelity scoring (94.2%)</text>
+      <text x="770" y="58" class="box-bullet">• Pareto trade-off arbitration audit</text>
     </g>
   </g>
 
-  <!-- ================= 3. GOOGLE ADK MULTI-AGENT CORE ================= -->
-  <g transform="translate(660, 125)">
-    <rect width="430" height="710" fill="url(#cardGrad)" stroke="#d4af37" stroke-width="1.5" rx="12" filter="url(#boxShadow)"/>
-    <rect x="0" y="0" width="430" height="36" fill="#241e10" rx="12"/>
-    <rect x="0" y="24" width="430" height="12" fill="#241e10"/>
-    <text x="18" y="24" class="layer-title" fill="#facc15">3. GOOGLE ADK MULTI-AGENT CORE</text>
+  <!-- MAIN FLOW ARROW 2 -> 3 -->
+  <line x1="600" y1="324" x2="600" y2="348" stroke="#f3d069" stroke-width="2.5" marker-end="url(#mainArrow)"/>
 
-    <!-- Master Orchestrator (Brain) -->
-    <g transform="translate(15, 52)">
-      <rect width="400" height="120" fill="url(#brainGrad)" stroke="#d4af37" stroke-width="2" rx="10" filter="url(#goldGlow)"/>
-      <text x="16" y="26" class="card-title" font-size="15" fill="#fef08a">🧠 master_orchestrator_agent</text>
-      <text x="16" y="46" class="card-sub">• Model: Google Gemini 3.5 Flash (google-adk)</text>
-      <text x="16" y="62" class="card-sub">• Analyzes active user memory profile &amp; dietary constraints</text>
-      <text x="16" y="78" class="card-sub">• Synthesizes explicit Collaborative Partner Learning Notes</text>
-      <text x="16" y="96" class="badge-txt" fill="#facc15">⚡ Single Autonomous Cycle Multi-Agent Pipeline</text>
-    </g>
-
-    <!-- Sub-Agents Grid -->
-    <!-- Agent 1: Film Curator -->
-    <g transform="translate(15, 186)">
-      <rect width="400" height="85" fill="#0b1120" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
-      <text x="14" y="22" class="card-title" fill="#7dd3fc">🎥 film_curator_agent (Live TMDB Discovery)</text>
-      <text x="14" y="40" class="card-sub">• 4-Way Semantic Routing: Directors, Studios (Ghibli, A24),</text>
-      <text x="14" y="56" class="card-sub">  Eras (80s, 90s, Classic), and Age Demographics (G/PG)</text>
-      <text x="14" y="72" class="badge-txt" fill="#38bdf8">Live Tool Calling: discover_live_tmdb_film</text>
-    </g>
-
-    <!-- Agent 2: Soundtrack Maestro -->
-    <g transform="translate(15, 283)">
-      <rect width="400" height="85" fill="#0b1120" stroke="#818cf8" stroke-width="1.2" rx="8"/>
-      <text x="14" y="22" class="card-title" fill="#c7d2fe">🎵 soundtrack_agent (Soundtrack Maestro)</text>
-      <text x="14" y="40" class="card-sub">• Deep score musicology, composer identification &amp; mood analysis</text>
-      <text x="14" y="56" class="card-sub">• Selects standout tracks and acoustic orchestral atmosphere</text>
-      <text x="14" y="72" class="badge-txt" fill="#818cf8">Gemini 3.5 Flash Musicology Engine</text>
-    </g>
-
-    <!-- Agent 3: Cinema Sommelier -->
-    <g transform="translate(15, 380)">
-      <rect width="400" height="85" fill="#0b1120" stroke="#f472b6" stroke-width="1.2" rx="8"/>
-      <text x="14" y="22" class="card-title" fill="#fbcfe8">🍿 sommelier_agent (Cinema Sommelier)</text>
-      <text x="14" y="40" class="card-sub">• Artisanal beverage &amp; concession pairings strictly tailored to diet</text>
-      <text x="14" y="56" class="card-sub">• 100% Non-alcoholic botanical mocktails, craft sodas &amp; vegan snacks</text>
-      <text x="14" y="72" class="badge-txt" fill="#f472b6">Dietary Constraint Enforcement</text>
-    </g>
-
-    <!-- Agent 4: Cinema Courier -->
-    <g transform="translate(15, 477)">
-      <rect width="400" height="85" fill="#0b1120" stroke="#60a5fa" stroke-width="1.2" rx="8"/>
-      <text x="14" y="22" class="card-title" fill="#93c5fd">✉️ cinema_courier_agent (Concierge Epistle)</text>
-      <text x="14" y="40" class="card-sub">• Composes bespoke HTML Cinema Night Epistle for 1-click email</text>
-      <text x="14" y="56" class="card-sub">• Formats step-by-step recipes, lighting tips &amp; streaming links</text>
-      <text x="14" y="72" class="badge-txt" fill="#60a5fa">Authenticated SMTP Gateway</text>
-    </g>
-
-    <!-- Agent 5: Emotional Constellation -->
-    <g transform="translate(15, 574)">
-      <rect width="400" height="105" fill="#0b1120" stroke="#c084fc" stroke-width="1.5" rx="8"/>
-      <text x="14" y="22" class="card-title" fill="#e9d5ff">🌌 emotional_constellation_agent (Google Lyria)</text>
-      <text x="14" y="40" class="card-sub">• 3D Celestial asterism cartography with Z-depth distance layers</text>
-      <text x="14" y="56" class="card-sub">• Composes original 5-second cinematic leitmotifs per film star</text>
-      <text x="14" y="72" class="card-sub">• Cinema Timbres: Space Synth, Celesta, Strings, Piano, Waltz</text>
-      <text x="14" y="92" class="badge-txt" fill="#c084fc">Google Lyria Music Theory &amp; DSP Architecture</text>
+  <!-- ================= STAGE 3: MASTER ORCHESTRATOR (THE BRAIN) ================= -->
+  <g transform="translate(45, 355)">
+    <text x="0" y="10" class="stage-label">3. AUTONOMOUS MULTI-AGENT ORCHESTRATION (GOOGLE ADK)</text>
+    
+    <!-- Hero Brain Box -->
+    <g transform="translate(0, 20)">
+      <rect width="1110" height="78" fill="url(#brainGrad)" stroke="#d4af37" stroke-width="2" rx="10" filter="url(#goldGlow)"/>
+      <text x="24" y="28" class="hero-title">🧠 Master Orchestrator Agent</text>
+      <text x="240" y="28" class="badge">Google ADK • Gemini 3.5 Flash</text>
+      <text x="24" y="50" class="hero-bullet">• Coordinates specialist sub-agents with shared memory and tool calling</text>
+      <text x="24" y="66" class="hero-bullet">• Synthesizes Collaborative Partner Notes &amp; enforces past vault film deduplication</text>
+      
+      <!-- Right Tag -->
+      <rect x="940" y="22" width="145" height="34" fill="#0b1120" stroke="#d4af37" stroke-width="1" rx="6"/>
+      <text x="955" y="43" class="badge" fill="#fde047">1 Autonomous Cycle</text>
     </g>
   </g>
 
-  <!-- ================= 4. PERSISTENCE & CLOUD SERVICES ================= -->
-  <g transform="translate(1120, 125)">
-    <rect width="260" height="710" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" rx="12" filter="url(#boxShadow)"/>
-    <rect x="0" y="0" width="260" height="36" fill="#1e293b" rx="12"/>
-    <rect x="0" y="24" width="260" height="12" fill="#1e293b"/>
-    <text x="18" y="24" class="layer-title">4. CLOUD &amp; DATA</text>
+  <!-- FAN-OUT CONNECTORS 3 -> 4 (Sub-Agents) -->
+  <path d="M 600 458 L 600 478" fill="none" stroke="#d4af37" stroke-width="2"/>
+  <path d="M 155 478 L 1045 478" fill="none" stroke="#d4af37" stroke-width="1.8"/>
+  <line x1="155" y1="478" x2="155" y2="495" stroke="#d4af37" stroke-width="1.8" marker-end="url(#mainArrow)"/>
+  <line x1="375" y1="478" x2="375" y2="495" stroke="#d4af37" stroke-width="1.8" marker-end="url(#mainArrow)"/>
+  <line x1="600" y1="478" x2="600" y2="495" stroke="#d4af37" stroke-width="1.8" marker-end="url(#mainArrow)"/>
+  <line x1="825" y1="478" x2="825" y2="495" stroke="#d4af37" stroke-width="1.8" marker-end="url(#mainArrow)"/>
+  <line x1="1045" y1="478" x2="1045" y2="495" stroke="#d4af37" stroke-width="1.8" marker-end="url(#mainArrow)"/>
 
-    <!-- ClickHouse Cloud -->
-    <g transform="translate(15, 52)">
-      <rect width="230" height="155" fill="#0b1120" stroke="#eab308" stroke-width="1.2" rx="8"/>
-      <text x="12" y="22" class="card-title" fill="#fde047">🗄️ ClickHouse Cloud</text>
-      <text x="12" y="40" class="card-sub">• High-Performance OLAP Engine</text>
-      <text x="12" y="56" class="card-sub">• Table: audience_sessions</text>
-      <text x="12" y="72" class="card-sub">• Stores user memories &amp; ratings</text>
-      <text x="12" y="88" class="card-sub">• 1-Click Watched sync &amp; deletes</text>
-      <text x="12" y="104" class="card-sub">• Deduplication guard (zero repeats)</text>
-      <text x="12" y="124" class="badge-txt" fill="#fde047">TLS Secure Port 8443 (connect)</text>
+  <!-- ================= STAGE 4: SPECIALIST SUB-AGENTS ================= -->
+  <g transform="translate(45, 502)">
+    <!-- Sub-Agent 1: Curator -->
+    <g transform="translate(0, 0)">
+      <rect width="210" height="95" fill="url(#boxGrad)" stroke="#38bdf8" stroke-width="1.2" rx="8" filter="url(#softGlow)"/>
+      <text x="12" y="22" class="box-title" fill="#7dd3fc">🎥 Film Curator</text>
+      <text x="12" y="42" class="box-bullet">• Semantic mood discovery</text>
+      <text x="12" y="58" class="box-bullet">• Directors, studios &amp; eras</text>
+      <text x="12" y="74" class="box-bullet">• Age constraint filter (G/PG)</text>
+      <text x="12" y="88" class="badge" fill="#38bdf8">Live TMDB Tool</text>
     </g>
 
-    <!-- TMDB & JustWatch -->
-    <g transform="translate(15, 219)">
-      <rect width="230" height="120" fill="#0b1120" stroke="#38bdf8" stroke-width="1.2" rx="8"/>
-      <text x="12" y="22" class="card-title" fill="#7dd3fc">🎬 TMDB &amp; JustWatch</text>
-      <text x="12" y="40" class="card-sub">• Live 800,000+ Film Database</text>
-      <text x="12" y="56" class="card-sub">• Official HD Movie Posters</text>
-      <text x="12" y="72" class="card-sub">• Regional Streaming (Netflix, Prime)</text>
-      <text x="12" y="92" class="badge-txt" fill="#38bdf8">TMDB REST API v3/v4</text>
+    <!-- Sub-Agent 2: Soundtrack -->
+    <g transform="translate(225, 0)">
+      <rect width="210" height="95" fill="url(#boxGrad)" stroke="#818cf8" stroke-width="1.2" rx="8" filter="url(#softGlow)"/>
+      <text x="12" y="22" class="box-title" fill="#c7d2fe">🎵 Soundtrack Maestro</text>
+      <text x="12" y="42" class="box-bullet">• Score musicology analysis</text>
+      <text x="12" y="58" class="box-bullet">• Composer &amp; standout track</text>
+      <text x="12" y="74" class="box-bullet">• Acoustic emotional atmosphere</text>
+      <text x="12" y="88" class="badge" fill="#818cf8">Gemini 3.5 Flash</text>
     </g>
 
-    <!-- Google Identity Services -->
-    <g transform="translate(15, 351)">
-      <rect width="230" height="105" fill="#0b1120" stroke="#ea4335" stroke-width="1.2" rx="8"/>
-      <text x="12" y="22" class="card-title" fill="#fca5a5">🔑 Google Identity (GIS)</text>
-      <text x="12" y="40" class="card-sub">• OAuth 2.0 Sign In with Google</text>
-      <text x="12" y="56" class="card-sub">• Cryptographic JWT Token verification</text>
-      <text x="12" y="72" class="card-sub">• Seamless Guest / User switching</text>
-      <text x="12" y="90" class="badge-txt" fill="#fca5a5">Google OAuth 2.0 Client</text>
+    <!-- Sub-Agent 3: Sommelier -->
+    <g transform="translate(450, 0)">
+      <rect width="210" height="95" fill="url(#boxGrad)" stroke="#f472b6" stroke-width="1.2" rx="8" filter="url(#softGlow)"/>
+      <text x="12" y="22" class="box-title" fill="#fbcfe8">🍿 Cinema Sommelier</text>
+      <text x="12" y="42" class="box-bullet">• Artisanal drink &amp; snack pairing</text>
+      <text x="12" y="58" class="box-bullet">• 100% Non-alcoholic &amp; vegan</text>
+      <text x="12" y="74" class="box-bullet">• Strict dietary enforcement</text>
+      <text x="12" y="88" class="badge" fill="#f472b6">Dietary Partner</text>
     </g>
 
-    <!-- Google Cloud Run & Docker -->
-    <g transform="translate(15, 468)">
-      <rect width="230" height="105" fill="#0b1120" stroke="#4285f4" stroke-width="1.2" rx="8"/>
-      <text x="12" y="22" class="card-title" fill="#93c5fd">☁️ Google Cloud Run</text>
-      <text x="12" y="40" class="card-sub">• Serverless Container Hosting</text>
-      <text x="12" y="56" class="card-sub">• Dockerfile (python:3.11-slim)</text>
-      <text x="12" y="72" class="card-sub">• Automatic HTTPS &amp; Scalability</text>
-      <text x="12" y="90" class="badge-txt" fill="#93c5fd">Google Cloud Production</text>
+    <!-- Sub-Agent 4: Courier -->
+    <g transform="translate(675, 0)">
+      <rect width="210" height="95" fill="url(#boxGrad)" stroke="#60a5fa" stroke-width="1.2" rx="8" filter="url(#softGlow)"/>
+      <text x="12" y="22" class="box-title" fill="#93c5fd">✉️ Cinema Courier</text>
+      <text x="12" y="42" class="box-bullet">• Bespoke HTML Cinema Epistle</text>
+      <text x="12" y="58" class="box-bullet">• Kitchen concession recipes</text>
+      <text x="12" y="74" class="box-bullet">• 1-Click SMTP email dispatch</text>
+      <text x="12" y="88" class="badge" fill="#60a5fa">Concierge Agent</text>
     </g>
 
-    <!-- WebAudio DSP -->
-    <g transform="translate(15, 585)">
-      <rect width="230" height="95" fill="#0b1120" stroke="#c084fc" stroke-width="1.2" rx="8"/>
-      <text x="12" y="22" class="card-title" fill="#e9d5ff">🎵 WebAudio DSP Engine</text>
-      <text x="12" y="40" class="card-sub">• Procedural Cathedral Reverb</text>
-      <text x="12" y="56" class="card-sub">• Tri-Oscillator Analog Detune</text>
-      <text x="12" y="76" class="badge-txt" fill="#c084fc">0-Latency Browser Synthesis</text>
+    <!-- Sub-Agent 5: Constellation -->
+    <g transform="translate(900, 0)">
+      <rect width="210" height="95" fill="url(#boxGrad)" stroke="#c084fc" stroke-width="1.5" rx="8" filter="url(#softGlow)"/>
+      <text x="12" y="22" class="box-title" fill="#e9d5ff">🌌 Constellation Cartography</text>
+      <text x="12" y="42" class="box-bullet">• 3D Asterism with Z-depth</text>
+      <text x="12" y="58" class="box-bullet">• 5s Melodic Leitmotif score</text>
+      <text x="12" y="74" class="box-bullet">• Cinematic acoustic timbres</text>
+      <text x="12" y="88" class="badge" fill="#c084fc">Google Lyria Engine</text>
     </g>
   </g>
 
-  <!-- ================= SLEEK FLOW CONNECTIONS ================= -->
-  <!-- 1. Form -> Gateway -->
-  <path d="M 340 180 L 370 180" fill="none" stroke="#d4af37" stroke-width="2" marker-end="url(#arrowGold)"/>
-  
-  <!-- 2. Gateway -> Master Orchestrator -->
-  <path d="M 630 180 L 660 180" fill="none" stroke="#d4af37" stroke-width="2" marker-end="url(#arrowGold)"/>
+  <!-- CONNECTORS 4 -> 5 (Cloud Services) -->
+  <line x1="155" y1="604" x2="225" y2="648" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#blueArrow)"/>
+  <line x1="1045" y1="604" x2="600" y2="648" stroke="#c084fc" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#purpleArrow)"/>
+  <line x1="600" y1="604" x2="975" y2="648" stroke="#34d399" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#greenArrow)"/>
 
-  <!-- 3. Orchestrator -> Sub-agents Flow -->
-  <path d="M 865 172 L 865 186" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+  <!-- ================= STAGE 5: DATA, AUDIO & CLOUD INFRASTRUCTURE ================= -->
+  <g transform="translate(45, 650)">
+    <text x="0" y="10" class="stage-label">4. DATA, AUDIO SYNTHESIS &amp; CLOUD INFRASTRUCTURE</text>
+    
+    <!-- Cloud 1: TMDB & JustWatch -->
+    <g transform="translate(0, 20)">
+      <rect width="350" height="78" fill="url(#boxGrad)" stroke="#38bdf8" stroke-width="1.2" rx="8" filter="url(#softGlow)"/>
+      <text x="14" y="22" class="box-title" fill="#7dd3fc">🎬 TMDB &amp; JustWatch Live</text>
+      <text x="14" y="42" class="box-bullet">• 800,000+ Film global catalog metadata</text>
+      <text x="14" y="58" class="box-bullet">• Official HD posters &amp; regional streaming links</text>
+      <text x="14" y="72" class="badge" fill="#38bdf8">Real-Time Data Feed</text>
+    </g>
 
-  <!-- 4. Orchestrator -> ClickHouse Memory -->
-  <path d="M 1090 110 Q 1105 110 1120 110" fill="none" stroke="#eab308" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowGold)"/>
+    <!-- Cloud 2: Google Lyria DSP -->
+    <g transform="translate(380, 20)">
+      <rect width="350" height="78" fill="url(#boxGrad)" stroke="#c084fc" stroke-width="1.2" rx="8" filter="url(#softGlow)"/>
+      <text x="14" y="22" class="box-title" fill="#e9d5ff">🎵 Google Lyria &amp; WebAudio DSP</text>
+      <text x="14" y="42" class="box-bullet">• Procedural cathedral convolution reverb</text>
+      <text x="14" y="58" class="box-bullet">• Polyphonic analog chorus &amp; sub-bass pads</text>
+      <text x="14" y="72" class="badge" fill="#c084fc">0-Latency Browser Sound</text>
+    </g>
 
-  <!-- 5. Curator -> TMDB -->
-  <path d="M 1060 230 L 1120 280" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowBlue)"/>
+    <!-- Cloud 3: ClickHouse Cloud -->
+    <g transform="translate(760, 20)">
+      <rect width="350" height="78" fill="url(#boxGrad)" stroke="#eab308" stroke-width="1.2" rx="8" filter="url(#softGlow)"/>
+      <text x="14" y="22" class="box-title" fill="#fde047">🗄️ ClickHouse Cloud (OLAP)</text>
+      <text x="14" y="42" class="box-bullet">• Session &amp; audience memory storage</text>
+      <text x="14" y="58" class="box-bullet">• Emotional / cinematic analytics &amp; ratings</text>
+      <text x="14" y="72" class="badge" fill="#fde047">High-Speed Cloud Vault</text>
+    </g>
+  </g>
 
-  <!-- 6. Constellation -> Lyria WebAudio -->
-  <path d="M 1060 630 L 1120 630" fill="none" stroke="#c084fc" stroke-width="1.5" marker-end="url(#arrowPurple)"/>
+  <!-- MAIN FLOW ARROW 5 -> 6 -->
+  <line x1="600" y1="755" x2="600" y2="780" stroke="#f3d069" stroke-width="2.5" marker-end="url(#mainArrow)"/>
 
-  <!-- 7. Cinémathèque -> ClickHouse Query -->
-  <path d="M 340 500 Q 730 460 1120 130" fill="none" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrowGreen)"/>
+  <!-- ================= STAGE 6: THE CINEMA EXPERIENCE OUTCOME ================= -->
+  <g transform="translate(45, 788)">
+    <text x="0" y="10" class="stage-label">5. COMPLETE CINEMA NIGHT DELIVERABLE &amp; MEMORY LOOP</text>
+    
+    <g transform="translate(0, 18)">
+      <rect width="1110" height="75" fill="url(#brainGrad)" stroke="#d4af37" stroke-width="1.8" rx="10" filter="url(#goldGlow)"/>
+      
+      <!-- Deliverables List -->
+      <text x="24" y="28" class="hero-title" fill="#fef08a">✨ Complete Cinema Sanctuary Experience</text>
+      <text x="24" y="50" class="hero-bullet">🎬 Curated Auteur Film • 🎵 OST Musicology • 🍿 Dietary Concession • ✉️ Email Epistle • 🌌 3D Constellation</text>
+      
+      <!-- Collaborative Feedback Loop Note -->
+      <g transform="translate(780, 14)">
+        <rect width="305" height="48" fill="#0b1120" stroke="#34d399" stroke-width="1" rx="6"/>
+        <text x="12" y="20" class="box-title" font-size="11.5" fill="#6ee7b7">🔄 Active Memory Loop (ClickHouse)</text>
+        <text x="12" y="38" class="box-bullet" font-size="10.5">Learns ratings &amp; constraints for next session</text>
+      </g>
+    </g>
+  </g>
 
 </svg>
