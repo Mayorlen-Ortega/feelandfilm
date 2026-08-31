@@ -397,9 +397,9 @@
       <rect width="290" height="95" fill="#0b1120" stroke="#a855f7" stroke-width="1.2" rx="8"/>
       <text x="14" y="22" class="box-title" fill="#e9d5ff">🎵 WebAudio API Synth Engine</text>
       <text x="14" y="38" class="box-desc">• Browser Native AudioContext</text>
-      <text x="14" y="52" class="box-desc">• Polyphonic Sine/Triangle Oscillators</text>
-      <text x="14" y="66" class="box-desc">• Lowpass warm filters &amp; Celesta arpeggios</text>
-      <text x="14" y="80" class="box-desc">• Plays Google Lyria mood-harmonic chords</text>
+      <text x="14" y="52" class="box-desc">• Procedural Cathedral Reverb Convolver</text>
+      <text x="14" y="66" class="box-desc">• Multi-Oscillator &amp; Analog Chorus DSP</text>
+      <text x="14" y="80" class="box-desc">• Synthesizes 5s Google Lyria Leitmotifs</text>
     </g>
   </g>
 
